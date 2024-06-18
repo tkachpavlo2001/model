@@ -2,7 +2,10 @@
 
 void DC_engine::to_calculate_the_load()
 {
-    ;
+    parameters[TORQUE_OF_LOAD] =
+            parameters[LOAD_K_0] +
+            parameters[LOAD_K_1] * parameters[VELOCITY] +
+            parameters[LOAD_K_2] * parameters[VELOCITY] * parameters[VELOCITY];
 }
 bool DC_engine::to_check_amount_of_parameters() const
 {
@@ -53,5 +56,9 @@ bool DC_engine::to_set_all_parameters(const std::vector<double> & _r_parameters)
 
 void DC_engine::to_calculate()
 {
-    parameters[ACCELERATION] = ( parameters[TORQUE] - parameters[TORQUE_RESISTING] ) / parameters[MOMENT_OF_INERTIA];
+    parameters[MOMENT_OF_INERTIA] = parameters[MOMENT_OF_INERTIA_OF_ENGINE] + parameters[MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD];
+    parameters[ACCELERATION] = ( parameters[TORQUE] - parameters[TORQUE_OF_LOAD] ) / parameters[MOMENT_OF_INERTIA];
+    parameters[VELOCITY] = parameters[ACCELERATION] * parameters[DT];
+    to_calculate_the_load();
+    parameters[THETA] = parameters[VELOCITY] * parameters[DT];
 }
