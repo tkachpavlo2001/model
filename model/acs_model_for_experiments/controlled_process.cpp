@@ -1,5 +1,9 @@
 #include "controlled_process.h"
 
+void DC_engine::to_calculate_the_load()
+{
+    ;
+}
 bool DC_engine::to_check_amount_of_parameters() const
 {
     if (parameters.size() != SIZE) return false;
@@ -49,5 +53,5 @@ bool DC_engine::to_set_all_parameters(const std::vector<double> & _r_parameters)
 
 void DC_engine::to_calculate()
 {
-    ;
+    parameters[ACCELERATION] = ( parameters[TORQUE] - parameters[TORQUE_RESISTING] ) / parameters[MOMENT_OF_INERTIA];
 }
