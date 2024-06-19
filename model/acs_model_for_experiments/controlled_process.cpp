@@ -1,12 +1,5 @@
 #include "controlled_process.h"
 
-void DC_engine::to_calculate_the_load()
-{
-    parameters[TORQUE_OF_LOAD] =
-            parameters[LOAD_K_0] +
-            parameters[LOAD_K_1] * parameters[VELOCITY] +
-            parameters[LOAD_K_2] * parameters[VELOCITY] * parameters[VELOCITY];
-}
 bool DC_engine::to_check_amount_of_parameters() const
 {
     if (parameters.size() != SIZE) return false;
@@ -56,9 +49,45 @@ bool DC_engine::to_set_all_parameters(const std::vector<double> & _r_parameters)
 
 void DC_engine::to_calculate()
 {
+    // THE SECOND-ORDER DERIVATIVES DEFINITION STAGE
+        // to define d(current)/dt
+    parameters[DCURRENT_DT] =
+            (
+                parameters[VOLTAGE]
+                - parameters[KF] * parameters[VELOCITY]
+                - parameters[CURRENT] * parameters[RESISTANCE]
+            )
+            / parameters[INDUCTIVITY];
+    // d(current)/dt has been defined
+    // to define d(velocity)/dt or d^2(theta)/dt^2
     parameters[MOMENT_OF_INERTIA] = parameters[MOMENT_OF_INERTIA_OF_ENGINE] + parameters[MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD];
     parameters[ACCELERATION] = ( parameters[TORQUE] - parameters[TORQUE_OF_LOAD] ) / parameters[MOMENT_OF_INERTIA];
+    // d(velocity)/dt or d^2(theta)/dt^2 has been defined
+
+
+
+    // THE FIRST-ORDER DERIVATIVES DEFINITION STAGE
+        // to define velocity or d(theta)/dt
     parameters[VELOCITY] = parameters[ACCELERATION] * parameters[DT];
-    to_calculate_the_load();
+    parameters[CURRENT] = parameters[DCURRENT_DT] * parameters[DT];
+    // velocity or d(theta)/dt has been defined
+
+
+
+    // THE NULL-ORDER DERIVATIVES DEFINITION STAGE
+        // to define theta
     parameters[THETA] = parameters[VELOCITY] * parameters[DT];
+    // theta has been defined
+    // THE NULL-ORDER ... FOR THE NEXT CALCULATION CYCLE
+    // to define torque
+    parameters[TORQUE] = parameters[KF] * parameters[CURRENT];
+    // torque has been defined
+    // do define the torque of the load
+    parameters[TORQUE_OF_LOAD] =
+            parameters[LOAD_K_0]
+            + parameters[LOAD_K_1] * parameters[VELOCITY]
+            + parameters[LOAD_K_2] * parameters[VELOCITY] * parameters[VELOCITY];
+    // torque of the load has been defined
+
+    // THE END OF THE CYCLE. THE NEXT ONE MUST BEGIN.
 }
