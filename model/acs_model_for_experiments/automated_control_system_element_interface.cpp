@@ -51,6 +51,11 @@ std::vector<double> & Automated_control_system_element_interface::to_get_paramet
     return parameters;
 }
 
+unsigned int Automated_control_system_element_interface::to_check_amount_of_parameters() const
+{
+    return parameters.size();
+}
+
 Automated_control_system_element_interface::~Automated_control_system_element_interface() //virtual
 {}
 

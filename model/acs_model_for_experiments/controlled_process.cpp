@@ -1,16 +1,15 @@
 #include "controlled_process.h"
 
-bool DC_engine::to_check_amount_of_parameters() const
+bool DC_engine::to_verify_amount_of_parameters() const
 {
     if (parameters.size() != SIZE) return false;
     return true;
 }
 DC_engine::DC_engine() : Automated_control_system_element_interface()
-{}
-DC_engine::~DC_engine()
 {
-    Automated_control_system_element_interface::~Automated_control_system_element_interface();
+    while (parameters.size() < SIZE) parameters.push_back(0);
 }
+DC_engine::~DC_engine(){}
 
 bool DC_engine::to_set_element_parameters(const std::vector<double> & _r_parameters)
 {
