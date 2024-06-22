@@ -13,7 +13,7 @@ add_library(
     controlled_process.cpp
 )
 
-add_executable( acs_model_for_experiments main.cpp)
+add_executable( acs_model_for_experiments main.cpp DC_engine_tester.h)
 
 target_link_libraries( acs_model_for_experiments Controlled_process)
 

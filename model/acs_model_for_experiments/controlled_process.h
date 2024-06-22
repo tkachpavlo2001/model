@@ -3,9 +3,12 @@
 
 #include "automated_control_system_element_interface.h"
 
+class DC_engine_tester;
+
 class DC_engine : public Automated_control_system_element_interface
 {
 private:
+    friend class DC_engine_tester;
     enum
     {
         THETA = END_INTERFACE + 0,
@@ -45,10 +48,9 @@ protected:
         SIZE = END_DC_ENGINE
     };
 public:
-    bool to_verify_amount_of_parameters() const override;
-public:
     DC_engine();
     virtual ~DC_engine() override;
+    bool to_verify_amount_of_parameters() const override;
     bool to_set_element_parameters(const std::vector<double> &) override;
     bool to_set_all_parameters(const std::vector<double> &) override;
     void to_calculate() override;

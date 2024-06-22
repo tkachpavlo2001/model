@@ -5,8 +5,6 @@
 
 class Automated_control_system_element_interface
 {
-private:
-    virtual bool to_verify_amount_of_parameters() const = 0;     // is this unnecessary?
 protected:
     std::vector<double> parameters;
     enum
@@ -30,9 +28,10 @@ public:
     virtual ~Automated_control_system_element_interface() = 0;
 
     //interface:
+    virtual bool to_verify_amount_of_parameters() const = 0;
     virtual bool to_set_element_parameters(const std::vector<double> &) = 0;
-    virtual bool to_set_all_parameters(const std::vector<double> &) = 0;
-    virtual void to_calculate() = 0;
+    virtual bool to_set_all_parameters(const std::vector<double> &) = 0;            // missed
+    virtual void to_calculate() = 0;                                                // missed
 };
 
 #endif // AUTOMATED_CONTROL_SYSTEM_ELEMENT_INTERFACE_H
