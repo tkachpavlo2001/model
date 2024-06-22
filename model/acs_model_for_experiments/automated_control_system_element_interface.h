@@ -30,7 +30,7 @@ public:
     //interface:
     virtual bool to_verify_amount_of_parameters() const = 0;
     virtual bool to_set_element_parameters(const std::vector<double> &) = 0;
-    virtual bool to_set_all_parameters(const std::vector<double> &) = 0;            // missed
+    virtual bool to_set_all_parameters(const std::vector<double> &) = 0;
     virtual void to_calculate() = 0;                                                // missed
 };
 

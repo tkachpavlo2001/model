@@ -32,17 +32,17 @@ int DC_engine_tester::test_1(DC_engine * _drive = nullptr)
     drive.to_receive_input_signal(2.2);
     std::cout << drive.parameters[drive.INPUT_SIGNAL] << endl;
     std::cout << "to_get_output_signal() -> " << drive.to_get_output_signal() << endl;
-    std::cout << "After: parameters(OUTPUT_SIGNAL) = 3.3";
+    std::cout << "After: parameters[OUTPUT_SIGNAL] = 3.3 to_get_output_signal() -> ";
     drive.parameters[drive.OUTPUT_SIGNAL] = 3.3;
     std::cout << drive.to_get_output_signal() << endl;
-    std::cout << "All parameters counted from 0:";
+    std::cout << "All parameters counted from 0: \n";
     {
         int j = 0;
         for (auto i = std::begin(drive.parameters); i != std::end(drive.parameters); ++i, ++j)
             *i = j;
     }
     for (auto i : drive.parameters)
-        std::cout << i << '\t';
+        std::cout << i << '\n';
     std::cout << endl;
     std::cout << "The last one number must be smaller by 1 than next equal to each other numbers: <<parameters.size() = SIZE = to_check_amount_of_parameters()>> : ";
     std::cout << drive.parameters.size() << " = " << drive.SIZE << " = " << drive.to_check_amount_of_parameters() << endl;
@@ -51,13 +51,17 @@ int DC_engine_tester::test_1(DC_engine * _drive = nullptr)
     std::cout << "Setting the parameters defined by the interface: \n";
     std::vector<double> temporary_array;
     for (int i = 0, j = 4; i < drive.END_INTERFACE; ++i, ++j)
-        temporary_array[i] = 1.1 * j;
+        temporary_array.push_back(1.1 * j);
     drive.to_set_parameters(temporary_array);
     {
         auto i = std::begin(drive.parameters);
         auto j = std::begin(temporary_array);
-        for (; i != std::end(drive.parameters) || j != std::end(temporary_array); ++i, ++j)
+        for (; i != std::end(drive.parameters) || j != std::end(temporary_array);)
+        {
             std::cout << *i << '\t' << *j << std::endl;
+            if (i != std::end(drive.parameters)) ++i;
+            if (j != std::end(temporary_array)) ++j;
+        }
     }
     std::cout << "If you see this message and all of those numbers are the same then you have reached success!\n";
     std::cout << "to_check_parameters() \\t to_get_parameters : \n";
@@ -65,31 +69,41 @@ int DC_engine_tester::test_1(DC_engine * _drive = nullptr)
         auto check_vector = drive.to_check_parameters();
         auto get_vector = drive.to_get_parameters();
         auto i = std::begin(check_vector);
-        auto j = std::end(get_vector);
+        auto j = std::begin(get_vector);
         for (; i != std::end(check_vector) || j != std::end(get_vector); ++i, ++j)
             std::cout << *i << '\t' << *j << std::endl;
     }
     std::cout << "If you see this message and all of those numbers are the same then you have reached success!\n";
     std::cout << "to_set_element_parameters(): \n";
-    for (int i = 0, j = 1; i < ( drive.END_DC_ENGINE - drive.END_INTERFACE); ++i, ++j)
-        temporary_array[i] = 11.1 * j;
+    temporary_array.clear();
+    for (int i = 0, j = 1; i < ( drive.SIZE - drive.END_INTERFACE); ++i, ++j)
+        temporary_array.push_back(11.1 * j);
     drive.to_set_element_parameters(temporary_array);
     {
         auto i = std::begin(drive.parameters);
         auto j = std::begin(temporary_array);
-        for (; i != std::end(drive.parameters) || j != std::end(temporary_array); ++i, ++j)
+        for (; i != std::end(drive.parameters) || j != std::end(temporary_array);)
+        {
             std::cout << *i << '\t' << *j << std::endl;
+            if (i != std::end(drive.parameters)) ++i;
+            if (j != std::end(temporary_array)) ++j;
+        }
     }
     std::cout << "If you see this message and all of those numbers are the same then you have reached success!\n";
     std::cout << "to_set_all_parameters(): \n";
+    temporary_array.clear();
     for (int i = 0, j = 1; i < drive.SIZE; ++i, ++j)
-        temporary_array[i] = 11.11 * j;
+        temporary_array.push_back(11.11 * j);
     drive.to_set_all_parameters(temporary_array);
     {
         auto i = std::begin(drive.parameters);
         auto j = std::begin(temporary_array);
-        for (; i != std::end(drive.parameters) || j != std::end(temporary_array); ++i, ++j)
+        for (; i != std::end(drive.parameters) || j != std::end(temporary_array);)
+        {
             std::cout << *i << '\t' << *j << std::endl;
+            if (i != std::end(drive.parameters)) ++i;
+            if (j != std::end(temporary_array)) ++j;
+        }
     }
     std::cout << "If you see this message and all of those numbers are the same then you have reached success!\n";
     std::cout << "";
