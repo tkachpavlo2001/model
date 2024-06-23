@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    //cout << "Hello World!" << endl;
     DC_engine drive;
     DC_engine_tester tester;
     tester.test_1(&drive);
