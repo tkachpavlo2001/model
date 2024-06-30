@@ -9,6 +9,9 @@ class DC_engine : public Automated_control_system_element_interface
 {
 private:
     friend class DC_engine_tester;
+public:
+    DC_engine();
+    virtual ~DC_engine() override;
     enum
     {
         THETA = END_INTERFACE + 0,
@@ -41,15 +44,11 @@ private:
         LOAD_K_2 = END_ENGINE + 2,
         LAST_DC_ENGINE = LOAD_K_2
     };
-protected:
     enum
     {
         END_DC_ENGINE = (LAST_DC_ENGINE + 1),
         SIZE = END_DC_ENGINE
     };
-public:
-    DC_engine();
-    virtual ~DC_engine() override;
     bool to_verify_amount_of_parameters() const override;
     bool to_set_element_parameters(const std::vector<double> &) override;
     bool to_set_all_parameters(const std::vector<double> &) override;

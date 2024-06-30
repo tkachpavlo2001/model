@@ -7,6 +7,8 @@ class Automated_control_system_element_interface
 {
 protected:
     std::vector<double> parameters;
+public:
+    Automated_control_system_element_interface();
     enum
     {
         DT = 0,
@@ -15,8 +17,6 @@ protected:
         LAST_INTERFACE = OUTPUT_SIGNAL,                          // END_INTERFACE DEPENDS ON THIS!!! DO NOT CHANGE! (WITHOUT EXAMINATION)
         END_INTERFACE = (LAST_INTERFACE + 1)                    // DEPENDANT ON LAST_INTERFACE
     };
-public:
-    Automated_control_system_element_interface();
     bool to_set_dt(double const &);
     bool to_receive_input_signal(double const &);
     double to_get_output_signal();

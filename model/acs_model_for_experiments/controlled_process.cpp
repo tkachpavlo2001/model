@@ -50,6 +50,8 @@ bool DC_engine::to_set_all_parameters(const std::vector<double> & _r_parameters)
 
 void DC_engine::to_calculate()
 {
+    parameters[VOLTAGE] = parameters[INPUT_SIGNAL];
+
     // THE SECOND-ORDER DERIVATIVES DEFINITION STAGE
         // to define d(current)/dt
     parameters[DCURRENT_DT] =
@@ -89,6 +91,8 @@ void DC_engine::to_calculate()
             + parameters[LOAD_K_1] * parameters[VELOCITY]
             + parameters[LOAD_K_2] * parameters[VELOCITY] * parameters[VELOCITY];
     // torque of the load has been defined
+
+    parameters[OUTPUT_SIGNAL] = parameters[VELOCITY];
 
     // THE END OF THE CYCLE. THE NEXT ONE MUST BEGIN.
 }
