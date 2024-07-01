@@ -9,6 +9,11 @@ class DC_engine : public Automated_control_system_element_interface
 {
 private:
     friend class DC_engine_tester;
+    void to_define_the_values();
+    void to_define_first_order_derivatives();
+    void to_define_second_order_derivatives();
+    void to_define_dcurrent_dt(double, double);
+    void to_define_acceleration();
 public:
     DC_engine();
     virtual ~DC_engine() override;

@@ -1,4 +1,5 @@
 #include "controlled_process.h"
+#include<array>
 
 DC_engine::DC_engine() : Automated_control_system_element_interface()
 {
@@ -53,7 +54,23 @@ void DC_engine::to_calculate()
     parameters[VOLTAGE] = parameters[INPUT_SIGNAL];
 
     // THE SECOND-ORDER DERIVATIVES DEFINITION STAGE
-        // to define d(current)/dt
+    to_define_second_order_derivatives();
+
+    // THE FIRST-ORDER DERIVATIVES DEFINITION STAGE
+    to_define_first_order_derivatives();
+
+    // THE NULL-ORDER DERIVATIVES DEFINITION STAGE
+    to_define_the_values();
+
+    parameters[OUTPUT_SIGNAL] = parameters[VELOCITY];
+
+    // THE END OF THE CYCLE. THE NEXT ONE MUST BEGIN.
+}
+
+void DC_engine::to_define_second_order_derivatives()
+{
+
+    // to define d(current)/dt
     parameters[DCURRENT_DT] =
             (
                 parameters[VOLTAGE]
@@ -66,19 +83,27 @@ void DC_engine::to_calculate()
     parameters[MOMENT_OF_INERTIA] = parameters[MOMENT_OF_INERTIA_OF_ENGINE] + parameters[MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD];
     parameters[ACCELERATION] = ( parameters[TORQUE] - parameters[TORQUE_OF_LOAD] ) / parameters[MOMENT_OF_INERTIA];
     // d(velocity)/dt or d^2(theta)/dt^2 has been defined
+}
+void DC_engine::to_define_dcurrent_dt(double current, double t)
+{
+    std::array<double, 4> K = {0};
+    ;
+}
+void DC_engine::to_define_acceleration()
+{
+    ;
+}
+void DC_engine::to_define_first_order_derivatives()
+{
 
-
-
-    // THE FIRST-ORDER DERIVATIVES DEFINITION STAGE
-        // to define velocity or d(theta)/dt
+    // to define velocity or d(theta)/dt
     parameters[VELOCITY] = parameters[ACCELERATION] * parameters[DT];
     parameters[CURRENT] = parameters[DCURRENT_DT] * parameters[DT];
     // velocity or d(theta)/dt has been defined
-
-
-
-    // THE NULL-ORDER DERIVATIVES DEFINITION STAGE
-        // to define theta
+}
+void DC_engine::to_define_the_values()
+{
+    // to define theta
     parameters[THETA] = parameters[VELOCITY] * parameters[DT];
     // theta has been defined
     // THE NULL-ORDER ... FOR THE NEXT CALCULATION CYCLE
@@ -91,8 +116,4 @@ void DC_engine::to_calculate()
             + parameters[LOAD_K_1] * parameters[VELOCITY]
             + parameters[LOAD_K_2] * parameters[VELOCITY] * parameters[VELOCITY];
     // torque of the load has been defined
-
-    parameters[OUTPUT_SIGNAL] = parameters[VELOCITY];
-
-    // THE END OF THE CYCLE. THE NEXT ONE MUST BEGIN.
 }
