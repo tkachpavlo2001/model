@@ -7,6 +7,7 @@
 #include<cmath>
 #include<sstream>
 #include<cstring>
+#include<fstream>
 #include"controlled_process.h"
 
 class DC_engine_tester
@@ -19,6 +20,7 @@ private:
 public:
     int test_1(DC_engine*);
     int test_2(DC_engine*);
+    int test_2_1(DC_engine *);
     int debug_2(DC_engine*);
 };
 bool DC_engine_tester::ask_user()
@@ -296,7 +298,71 @@ int DC_engine_tester::test_2(DC_engine * drive)
 
     return 0;
 }
+int DC_engine_tester::test_2_1(DC_engine * drive)
+{
+    // Двигатель типа П2-630-204,5-4 К
+    double power = 800;
+    double voltage_the_nominal = 750;
+    double current_the_nominal = 1240;
+    double turnovers_per_minute = 40;
+    double efficiency = 84;                     // %
+    double inertia = 5150;                      // кгм2
+    double mass = 46000;                        // кг
+    // Convertion
+    double velocity_the_nominal_radians_per_second = turnovers_per_minute * M_PI * 2 / 60;
+    double torque_the_nominal_calculated = power / velocity_the_nominal_radians_per_second;
+    double kf_calculated = torque_the_nominal_calculated / current_the_nominal;
+    double electromotive_force = kf_calculated * velocity_the_nominal_radians_per_second;
+    double electromotive_force_to_chek = power / current_the_nominal;
+    if (electromotive_force == electromotive_force_to_chek) std::cout << "EMF is ok" << std::endl;
+    else std::cout << "EMF is NOT ok" << std::endl;
+    double resistance = ( voltage_the_nominal - electromotive_force ) / current_the_nominal;
 
+    // The simulation settings
+    double my_inductivity = 5e-4;   // 0.1 mH - 1 mH +-= 0.5 mH
+
+    unsigned int t_start = 0;
+    unsigned int t_end = 10;
+    unsigned int dt = 100000;
+
+    double my_dt = 1 / static_cast<double>(dt);
+
+    std::array<double, DC_engine::SIZE> array_of_the_parameters_to_set = {0};
+    array_of_the_parameters_to_set[DC_engine::DT] = my_dt;
+    array_of_the_parameters_to_set[DC_engine::INPUT_SIGNAL] = voltage_the_nominal;
+    array_of_the_parameters_to_set[DC_engine::KF] = kf_calculated;
+    array_of_the_parameters_to_set[DC_engine::RESISTANCE] = resistance;
+    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE] = inertia;
+    array_of_the_parameters_to_set[DC_engine::INDUCTIVITY] = my_inductivity;
+
+    array_of_the_parameters_to_set[DC_engine::LOAD_K_0] = torque_the_nominal_calculated;
+
+    drive->to_set_all_parameters(std::vector<double> (std::begin(array_of_the_parameters_to_set), std::end(array_of_the_parameters_to_set)));
+
+    std::ostringstream out_string;
+    std::ofstream fout("test_2_1_data.txt");
+    fout << "t\t" << "Velocity\n";
+
+    for (unsigned int t = t_start * dt; t < t_end * dt; ++t)
+    {
+        drive->to_calculate();
+        if ( !(t * 100 % dt))
+        out_string << static_cast<double>(t) / static_cast<double>(dt)
+                   << '\t' << drive->to_get_output_signal() << std::endl;
+        std::string string_to_out = out_string.str();
+        for (auto i = std::begin(string_to_out); i < std::end(string_to_out); i++)
+            if (*i == '.') *i = ',';
+        std::cout << string_to_out;
+        fout << string_to_out;
+    }
+
+
+    fout << "\nThe nominal velocity: " << velocity_the_nominal_radians_per_second << std::endl;
+    std::cout << "\nThe nominal velocity: " << velocity_the_nominal_radians_per_second << std::endl;
+
+    fout.close();
+    return 0;
+}
 
 int DC_engine_tester::debug_2(DC_engine * p_drive)
 {

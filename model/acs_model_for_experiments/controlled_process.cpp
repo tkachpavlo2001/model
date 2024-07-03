@@ -25,8 +25,7 @@ bool DC_engine::to_set_element_parameters(const std::vector<double> & _r_paramet
             *i = *j;
         if ( !(i == std::end(parameters) && j == std::end(_r_parameters)) ) return false;
     }
-    // THE NULL-ORDER ... FOR THE NEXT CALCULATION CYCLE
-    to_define_torque_all_and_inertion(parameters);
+    to_actulize_the_parameters();
     return true;
 }
 
@@ -50,8 +49,7 @@ bool DC_engine::to_set_all_parameters(const std::vector<double> & _r_parameters)
             *i = *j;
         if ( !(i == std::end(parameters) && j == std::end(_r_parameters)) ) return false;
     }
-    // THE NULL-ORDER ... FOR THE NEXT CALCULATION CYCLE
-    to_define_torque_all_and_inertion(parameters);
+    to_actulize_the_parameters();
     return true;
 }
 
@@ -59,193 +57,53 @@ void DC_engine::to_calculate()
 {
     parameters[VOLTAGE] = parameters[INPUT_SIGNAL];
 
-    to_runge_kutta_method();
+    to_solve();
 
     parameters[OUTPUT_SIGNAL] = parameters[VELOCITY];
 
     // THE END OF THE CYCLE. THE NEXT ONE MUST BEGIN.
 }
-void DC_engine::to_runge_kutta_method()
+void DC_engine::to_solve()
 {
-    std::array<std::vector<double>, 4> K_parameters;
+    parameters[DCURRENT_DT] = to_dcurrent_dt(
+                parameters[VOLTAGE],
+                parameters[CURRENT],
+                parameters[RESISTANCE],
+                parameters[KF],
+                parameters[VELOCITY],
+                parameters[INDUCTIVITY]
+                );
+    parameters[ACCELERATION] = to_dvelocity_dt(
+                parameters[KF],
+                parameters[CURRENT],
+                parameters[TORQUE_OF_LOAD],
+                parameters[MOMENT_OF_INERTIA]
+                );
 
-    for (auto i = std::begin(K_parameters); i < std::end(K_parameters); ++i)
-    {
-        *i = parameters;
-        for(auto j = std::begin(*i); j < std::end(*i); ++j)
-            *j = 0;
-    }
+    parameters[CURRENT] += parameters[DCURRENT_DT] * parameters[DT];
+    parameters[VELOCITY] += parameters[ACCELERATION] * parameters[DT];
 
-    std::vector<double> doubled_parameters = parameters;
-    unsigned int i = 0;
-    for (auto p_i_K_parameters = std::begin(K_parameters); p_i_K_parameters < std::end(K_parameters); ++p_i_K_parameters, ++i)
-    {
-        auto & i_K_parameters = *p_i_K_parameters;
-        auto new_parameters = doubled_parameters;
+    //parameters[COULOMBLS] += parameters[CURRENT] * parameters[DT];
+    parameters[THETA] += parameters[VELOCITY] * parameters[DT];
 
-        // THE SECOND-ORDER DERIVATIVES DEFINITION STAGE
-        to_define_second_order_derivatives(new_parameters);
-
-        // THE FIRST-ORDER DERIVATIVES DEFINITION STAGE
-        to_define_first_order_derivatives(new_parameters);
-
-        // THE NULL-ORDER DERIVATIVES DEFINITION STAGE
-        to_define_the_values(new_parameters);
-/*
-        std::vector<std::string> titles;
-        titles.push_back("DT: ");
-        titles.push_back("T: ");
-        titles.push_back("INPUT_SIGNAL: ");
-        titles.push_back("OUTPUT_SIGNAL: ");
-        titles.push_back("LOAD_K_0: ");
-        titles.push_back("LOAD_K_1: ");
-        titles.push_back("LOAD_K_2: ");
-        titles.push_back("RESISTANCE: ");
-        titles.push_back("INDUCTIVITY: ");
-        titles.push_back("KF: ");
-        titles.push_back("MOMENT_OF_INERTIA: ");
-        titles.push_back("MOMENT_OF_INERTIA_OF_ENGINE: ");
-        titles.push_back("MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD: ");
-        titles.push_back("THETA: ");
-        titles.push_back("VELOCITY: ");
-        titles.push_back("ACCELERATION: ");
-        titles.push_back("COULOMBLS: ");
-        titles.push_back("CURRENT: ");
-        titles.push_back("DCURRENT_DT: ");
-        titles.push_back("VOLTAGE: ");
-        titles.push_back("TORQUE: ");
-        titles.push_back("TORQUE_OF_LOAD: ");
-*/
-        if (i == 0)
-        {
-            unsigned int j = BEGIN_NONSTATIC;
-            for (auto i = &(i_K_parameters[BEGIN_NONSTATIC]); i < &(i_K_parameters[END_NONSTATIC]) && j < END_NONSTATIC; ++i, ++j)
-            {
-                *i = new_parameters[j] - parameters[j];
-                *i /= 2;
-                doubled_parameters[j] += *i; // to parameters values
-            }
-            doubled_parameters[DT] /= 2;
-/*
-            std::cout << "After the first runge-kutta step the new parameters:\n";
-            unsigned int k = 0;
-            for (const auto i : new_parameters)
-            {
-                std::cout << titles[k] << '\t' << i << std::endl;
-                k++;
-            }
-            std::cout << std::endl;
-
-            std::cout << "After the first runge-kutta step the K_parameters[0]:\n";
-            k = 0;
-            for (const auto i : i_K_parameters)
-            {
-                std::cout << titles[k] << '\t' << i << std::endl;
-                k++;
-            }
-            std::cout << std::endl;
-
-            std::cout << "After the first runge-kutta step the doubled parameters:\n";
-            k = 0;
-            for (const auto i : doubled_parameters)
-            {
-                std::cout << titles[k] << '\t' << i << std::endl;
-                k++;
-            }
-            std::cout << std::endl;
-*/
-        }
-        if (i == 1)
-        {
-            unsigned int j = BEGIN_NONSTATIC;
-            for (auto i = &(i_K_parameters[BEGIN_NONSTATIC]); i < &(i_K_parameters[END_NONSTATIC]) && j < END_NONSTATIC; ++i, ++j)
-            {
-                *i = new_parameters[j] - parameters[j];
-                *i /= 2;
-                doubled_parameters[j] = parameters[j];
-                doubled_parameters[j] += *i; // to parameters values
-            }
-            doubled_parameters[DT] /= 2;
-        }
-        if (i == 2)
-        {
-            unsigned int j = BEGIN_NONSTATIC;
-            for (auto i = &(i_K_parameters[BEGIN_NONSTATIC]); i < &(i_K_parameters[END_NONSTATIC]) && j < END_NONSTATIC; ++i, ++j)
-            {
-                *i = new_parameters[j] - parameters[j];
-                *i /= 2;
-                doubled_parameters[j] = parameters[j];
-                doubled_parameters[j] += *i; // to parameters values
-            }
-            doubled_parameters[DT] /= 2;
-        }
-        if (i == 3)
-        {
-            unsigned int j = BEGIN_NONSTATIC;
-            for (auto i = &(i_K_parameters[BEGIN_NONSTATIC]); i < &(i_K_parameters[END_NONSTATIC]) && j < END_NONSTATIC; ++i, ++j)
-            {
-                *i = new_parameters[j] - parameters[j];
-            }
-        }
-    }
-
-    unsigned int j = BEGIN_NONSTATIC;
-    for (auto i_parameters = &(parameters[BEGIN_NONSTATIC]); i_parameters < &(parameters[END_NONSTATIC]) && j < END_NONSTATIC; ++i_parameters, ++j)
-    {
-        *i_parameters += (K_parameters[0][j] + 2 * K_parameters[1][j] + 2 * K_parameters[2][j] + K_parameters[3][j]) / 6;
-    }
+    //parameters[TORQUE] = parameters[KF] * parameters[CURRENT];
 }
+double DC_engine::to_dcurrent_dt(double U, double I, double R, double kf, double w, double L)
+{
+    return ( U - I * R - kf * w ) / L;
+}
+double DC_engine::to_dvelocity_dt(double kf, double I, double T_L, double J)
+{
+    return ( kf * I - T_L) / J;
+}
+void DC_engine::to_actulize_the_parameters()
+{
+    parameters[TORQUE_OF_LOAD] =
+            parameters[LOAD_K_0] +
+            parameters[LOAD_K_1] * parameters[VELOCITY] +
+            parameters[LOAD_K_2] * parameters[VELOCITY] * parameters[VELOCITY];
 
-void DC_engine::to_define_second_order_derivatives(std::vector<double>& _parameters)
-{
-    // to define d(current)/dt
-    to_define_dcurrent_dt(_parameters);
-    // d(current)/dt has been defined
-    // to define d(velocity)/dt or d^2(theta)/dt^2
-    to_define_acceleration(_parameters);
-    // d(velocity)/dt or d^2(theta)/dt^2 has been defined
-}
-void DC_engine::to_define_dcurrent_dt(std::vector<double>& _parameters)
-{
-    _parameters[DCURRENT_DT] =
-            (
-                _parameters[VOLTAGE]
-                - _parameters[KF] * _parameters[VELOCITY]
-                - _parameters[CURRENT] * _parameters[RESISTANCE]
-            )
-            / _parameters[INDUCTIVITY];
-}
-void DC_engine::to_define_acceleration(std::vector<double>& _parameters)
-{
-    to_define_torque_all_and_inertion(_parameters);
-    _parameters[ACCELERATION] = ( _parameters[TORQUE] - _parameters[TORQUE_OF_LOAD] ) / _parameters[MOMENT_OF_INERTIA];
-}
-void DC_engine::to_define_first_order_derivatives(std::vector<double>& _parameters)
-{
-    // to define velocity or d(theta)/dt
-    _parameters[VELOCITY] = _parameters[ACCELERATION] * _parameters[DT];
-    _parameters[CURRENT] = _parameters[DCURRENT_DT] * _parameters[DT];
-    // velocity or d(theta)/dt has been defined
-}
-void DC_engine::to_define_the_values(std::vector<double>& _parameters)
-{
-    // to define theta
-    _parameters[THETA] = _parameters[VELOCITY] * _parameters[DT];
-    // theta has been defined
-    // THE NULL-ORDER ... FOR THE NEXT CALCULATION CYCLE
-    to_define_torque_all_and_inertion(_parameters);
-
-}
-void DC_engine::to_define_torque_all_and_inertion(std::vector<double>& _parameters)
-{
-    _parameters[MOMENT_OF_INERTIA] = _parameters[MOMENT_OF_INERTIA_OF_ENGINE] + _parameters[MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD];
-    // to define torque
-    _parameters[TORQUE] = _parameters[KF] * _parameters[CURRENT];
-    // torque has been defined
-    // do define the torque of the load
-    _parameters[TORQUE_OF_LOAD] =
-            _parameters[LOAD_K_0]
-            + _parameters[LOAD_K_1] * _parameters[VELOCITY]
-            + _parameters[LOAD_K_2] * _parameters[VELOCITY] * _parameters[VELOCITY];
-    // torque of the load has been defined
+    parameters[MOMENT_OF_INERTIA] =
+            parameters[MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] +
+            parameters[MOMENT_OF_INERTIA_OF_ENGINE];
 }

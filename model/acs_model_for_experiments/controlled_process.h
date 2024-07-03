@@ -9,13 +9,10 @@ class DC_engine : public Automated_control_system_element_interface
 {
 private:
     friend class DC_engine_tester;
-    void to_runge_kutta_method();
-    void to_define_the_values(std::vector<double>&);
-    void to_define_first_order_derivatives(std::vector<double>&);
-    void to_define_second_order_derivatives(std::vector<double>&);
-    void to_define_dcurrent_dt(std::vector<double>&);
-    void to_define_acceleration(std::vector<double>&);
-    void to_define_torque_all_and_inertion(std::vector<double>&);
+    void to_actulize_the_parameters();
+    double to_dcurrent_dt(double U, double I, double R, double kf, double w, double L);
+    double to_dvelocity_dt(double kf, double I, double T_L, double J);
+    void to_solve();
 public:
     DC_engine();
     virtual ~DC_engine() override;
@@ -65,16 +62,20 @@ public:
 
         // X V A
         THETA = BEGIN_NONSTATIC + 0,
+
         DTHETA_DT = BEGIN_NONSTATIC + 1,
         VELOCITY = DTHETA_DT,
+
         DDTHETA_DTT = BEGIN_NONSTATIC + 2,
         DVELOCITY_DT = DDTHETA_DTT,
         ACCELERATION = DVELOCITY_DT,
 
-        // I
+        // q I dI/dt
         COULOMBLS = BEGIN_NONSTATIC + 3,
+
         DCOULOMBS_DT = BEGIN_NONSTATIC + 4,
         CURRENT = DCOULOMBS_DT,
+
         DDCOULUMBS_DTT = BEGIN_NONSTATIC + 5,
         DCURRENT_DT = DDCOULUMBS_DTT,
 
