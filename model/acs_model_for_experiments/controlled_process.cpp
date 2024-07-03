@@ -23,8 +23,10 @@ bool DC_engine::to_set_element_parameters(const std::vector<double> & _r_paramet
                 ++i, ++j, ++k
              )
             *i = *j;
-        if (i == std::end(parameters) || j == std::end(_r_parameters)) return false;
+        if ( !(i == std::end(parameters) && j == std::end(_r_parameters)) ) return false;
     }
+    // THE NULL-ORDER ... FOR THE NEXT CALCULATION CYCLE
+    to_define_torque_all_and_inertion(parameters);
     return true;
 }
 
@@ -46,8 +48,10 @@ bool DC_engine::to_set_all_parameters(const std::vector<double> & _r_parameters)
                 ++i, ++j, ++k
              )
             *i = *j;
-        if (i == std::end(parameters) || j == std::end(_r_parameters)) return false;
+        if ( !(i == std::end(parameters) && j == std::end(_r_parameters)) ) return false;
     }
+    // THE NULL-ORDER ... FOR THE NEXT CALCULATION CYCLE
+    to_define_torque_all_and_inertion(parameters);
     return true;
 }
 
@@ -68,10 +72,11 @@ void DC_engine::to_runge_kutta_method()
     for (auto i = std::begin(K_parameters); i < std::end(K_parameters); ++i)
     {
         *i = parameters;
-        i->clear();
+        for(auto j = std::begin(*i); j < std::end(*i); ++j)
+            *j = 0;
     }
 
-    auto doubled_parameters = parameters;
+    std::vector<double> doubled_parameters = parameters;
     unsigned int i = 0;
     for (auto p_i_K_parameters = std::begin(K_parameters); p_i_K_parameters < std::end(K_parameters); ++p_i_K_parameters, ++i)
     {
@@ -86,7 +91,7 @@ void DC_engine::to_runge_kutta_method()
 
         // THE NULL-ORDER DERIVATIVES DEFINITION STAGE
         to_define_the_values(new_parameters);
-
+/*
         std::vector<std::string> titles;
         titles.push_back("DT: ");
         titles.push_back("T: ");
@@ -98,6 +103,9 @@ void DC_engine::to_runge_kutta_method()
         titles.push_back("RESISTANCE: ");
         titles.push_back("INDUCTIVITY: ");
         titles.push_back("KF: ");
+        titles.push_back("MOMENT_OF_INERTIA: ");
+        titles.push_back("MOMENT_OF_INERTIA_OF_ENGINE: ");
+        titles.push_back("MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD: ");
         titles.push_back("THETA: ");
         titles.push_back("VELOCITY: ");
         titles.push_back("ACCELERATION: ");
@@ -107,10 +115,7 @@ void DC_engine::to_runge_kutta_method()
         titles.push_back("VOLTAGE: ");
         titles.push_back("TORQUE: ");
         titles.push_back("TORQUE_OF_LOAD: ");
-        titles.push_back("MOMENT_OF_INERTIA: ");
-        titles.push_back("MOMENT_OF_INERTIA_OF_ENGINE: ");
-        titles.push_back("MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD: ");
-
+*/
         if (i == 0)
         {
             unsigned int j = BEGIN_NONSTATIC;
@@ -118,9 +123,10 @@ void DC_engine::to_runge_kutta_method()
             {
                 *i = new_parameters[j] - parameters[j];
                 *i /= 2;
+                doubled_parameters[j] += *i; // to parameters values
             }
             doubled_parameters[DT] /= 2;
-
+/*
             std::cout << "After the first runge-kutta step the new parameters:\n";
             unsigned int k = 0;
             for (const auto i : new_parameters)
@@ -147,6 +153,7 @@ void DC_engine::to_runge_kutta_method()
                 k++;
             }
             std::cout << std::endl;
+*/
         }
         if (i == 1)
         {
@@ -155,7 +162,10 @@ void DC_engine::to_runge_kutta_method()
             {
                 *i = new_parameters[j] - parameters[j];
                 *i /= 2;
+                doubled_parameters[j] = parameters[j];
+                doubled_parameters[j] += *i; // to parameters values
             }
+            doubled_parameters[DT] /= 2;
         }
         if (i == 2)
         {
@@ -163,8 +173,11 @@ void DC_engine::to_runge_kutta_method()
             for (auto i = &(i_K_parameters[BEGIN_NONSTATIC]); i < &(i_K_parameters[END_NONSTATIC]) && j < END_NONSTATIC; ++i, ++j)
             {
                 *i = new_parameters[j] - parameters[j];
+                *i /= 2;
+                doubled_parameters[j] = parameters[j];
+                doubled_parameters[j] += *i; // to parameters values
             }
-            doubled_parameters[DT] = parameters[DT];
+            doubled_parameters[DT] /= 2;
         }
         if (i == 3)
         {
@@ -204,7 +217,7 @@ void DC_engine::to_define_dcurrent_dt(std::vector<double>& _parameters)
 }
 void DC_engine::to_define_acceleration(std::vector<double>& _parameters)
 {
-    _parameters[MOMENT_OF_INERTIA] = _parameters[MOMENT_OF_INERTIA_OF_ENGINE] + _parameters[MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD];
+    to_define_torque_all_and_inertion(_parameters);
     _parameters[ACCELERATION] = ( _parameters[TORQUE] - _parameters[TORQUE_OF_LOAD] ) / _parameters[MOMENT_OF_INERTIA];
 }
 void DC_engine::to_define_first_order_derivatives(std::vector<double>& _parameters)
@@ -220,6 +233,12 @@ void DC_engine::to_define_the_values(std::vector<double>& _parameters)
     _parameters[THETA] = _parameters[VELOCITY] * _parameters[DT];
     // theta has been defined
     // THE NULL-ORDER ... FOR THE NEXT CALCULATION CYCLE
+    to_define_torque_all_and_inertion(_parameters);
+
+}
+void DC_engine::to_define_torque_all_and_inertion(std::vector<double>& _parameters)
+{
+    _parameters[MOMENT_OF_INERTIA] = _parameters[MOMENT_OF_INERTIA_OF_ENGINE] + _parameters[MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD];
     // to define torque
     _parameters[TORQUE] = _parameters[KF] * _parameters[CURRENT];
     // torque has been defined

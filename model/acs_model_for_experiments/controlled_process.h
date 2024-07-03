@@ -15,6 +15,7 @@ private:
     void to_define_second_order_derivatives(std::vector<double>&);
     void to_define_dcurrent_dt(std::vector<double>&);
     void to_define_acceleration(std::vector<double>&);
+    void to_define_torque_all_and_inertion(std::vector<double>&);
 public:
     DC_engine();
     virtual ~DC_engine() override;
@@ -42,12 +43,17 @@ public:
     {
         BEGIN_DC_ENGINE = END_LOAD_K,       /// BE CRARE FOR THE TRUE OF THE EQUATION !!
 
-        RESISTANCE = END_LOAD_K + 0,
-        INDUCTIVITY = END_LOAD_K + 1,
-        KF = END_LOAD_K + 2,
+        RESISTANCE = BEGIN_DC_ENGINE + 0,
+        INDUCTIVITY = BEGIN_DC_ENGINE + 1,
+        KF = BEGIN_DC_ENGINE + 2,
+
+        // J
+        MOMENT_OF_INERTIA = BEGIN_DC_ENGINE + 3,
+        MOMENT_OF_INERTIA_OF_ENGINE = BEGIN_DC_ENGINE + 4,
+        MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD = BEGIN_DC_ENGINE + 5,
 
 
-        LAST_SATIC = KF,                    /// BE CRARE FOR THE TRUE OF THE EQUATION !!
+        LAST_SATIC = MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD,                    /// BE CRARE FOR THE TRUE OF THE EQUATION !!
         END_STATIC = LAST_SATIC + 1,        /// BE CRARE FOR THE TRUE OF THE EQUATION !!
     };
     // END OF THE STATIC PARAMETERS
@@ -79,14 +85,10 @@ public:
         TORQUE = BEGIN_NONSTATIC + 7,
         TORQUE_OF_LOAD = BEGIN_NONSTATIC + 8,
 
-        // J
-        MOMENT_OF_INERTIA = BEGIN_NONSTATIC + 9,
-        MOMENT_OF_INERTIA_OF_ENGINE = BEGIN_NONSTATIC + 10,
-        MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD = BEGIN_NONSTATIC + 11,
 
 
 
-        LAST_ENGINE = MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD,         /// BE CRARE FOR THE TRUE OF THE EQUATION !!
+        LAST_ENGINE = TORQUE_OF_LOAD,                               /// BE CRARE FOR THE TRUE OF THE EQUATION !!
         END_ENGINE = LAST_ENGINE + 1,                               /// BE CRARE FOR THE TRUE OF THE EQUATION !!
     };
 

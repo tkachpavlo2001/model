@@ -11,6 +11,6 @@ int main()
     //cout << "Hello World!" << endl;
     DC_engine drive;
     DC_engine_tester tester;
-    tester.debug_2(&drive);
+    tester.test_1(&drive);
     return 0;
 }

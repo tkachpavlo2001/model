@@ -311,6 +311,9 @@ int DC_engine_tester::debug_2(DC_engine * p_drive)
     titles.push_back("RESISTANCE: ");
     titles.push_back("INDUCTIVITY: ");
     titles.push_back("KF: ");
+    titles.push_back("MOMENT_OF_INERTIA: ");
+    titles.push_back("MOMENT_OF_INERTIA_OF_ENGINE: ");
+    titles.push_back("MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD: ");
     titles.push_back("THETA: ");
     titles.push_back("VELOCITY: ");
     titles.push_back("ACCELERATION: ");
@@ -320,9 +323,6 @@ int DC_engine_tester::debug_2(DC_engine * p_drive)
     titles.push_back("VOLTAGE: ");
     titles.push_back("TORQUE: ");
     titles.push_back("TORQUE_OF_LOAD: ");
-    titles.push_back("MOMENT_OF_INERTIA: ");
-    titles.push_back("MOMENT_OF_INERTIA_OF_ENGINE: ");
-    titles.push_back("MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD: ");
 
     // Двигатель типа П2-630-204,5-4 К
     double power = 800;
