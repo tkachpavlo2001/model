@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(
     Controlled_process SHARED
+    DC_engine_tester.h
     automated_control_system_element_interface.h
     automated_control_system_element_interface.cpp
     controlled_process.h
@@ -18,7 +19,7 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable( acs_model_for_experiments main.cpp DC_engine_tester.h)
+add_executable( acs_model_for_experiments main.cpp)
 
 target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )
 

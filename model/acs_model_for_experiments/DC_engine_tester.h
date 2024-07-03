@@ -34,7 +34,7 @@ bool DC_engine_tester::ask_user()
             continue;
         to_backspace = true;
     }
-    if (answer == 'n') return 1;
+    if (std::tolower(answer) == 'n') return 1;
     return 0;
 }
 void DC_engine_tester::to_sum_up(unsigned int ordinal_number_of_the_current_test)

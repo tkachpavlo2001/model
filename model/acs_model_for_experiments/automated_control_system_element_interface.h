@@ -11,11 +11,16 @@ public:
     Automated_control_system_element_interface();
     enum
     {
-        DT = 0,
-        INPUT_SIGNAL = 1,
-        OUTPUT_SIGNAL = 2,
-        LAST_INTERFACE = OUTPUT_SIGNAL,                          // END_INTERFACE DEPENDS ON THIS!!! DO NOT CHANGE! (WITHOUT EXAMINATION)
-        END_INTERFACE = (LAST_INTERFACE + 1)                    // DEPENDANT ON LAST_INTERFACE
+        BEGIN_INTERFACE = 0,
+
+        DT = BEGIN_INTERFACE + 0,
+        T = BEGIN_INTERFACE + 1,
+        INPUT_SIGNAL = BEGIN_INTERFACE + 2,
+        OUTPUT_SIGNAL = BEGIN_INTERFACE + 3,
+
+
+        LAST_INTERFACE = OUTPUT_SIGNAL,                         // END_INTERFACE DEPENDS ON THIS!!! DO NOT CHANGE! (WITHOUT EXAMINATION)
+        END_INTERFACE = LAST_INTERFACE + 1                      // DEPENDANT ON LAST_INTERFACE
     };
     bool to_set_dt(double const &);
     bool to_receive_input_signal(double const &);
