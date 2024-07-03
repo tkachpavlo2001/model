@@ -1,5 +1,7 @@
 #include "controlled_process.h"
 #include<array>
+#include<string>
+#include<iostream>
 
 DC_engine::DC_engine() : Automated_control_system_element_interface()
 {
@@ -85,6 +87,30 @@ void DC_engine::to_runge_kutta_method()
         // THE NULL-ORDER DERIVATIVES DEFINITION STAGE
         to_define_the_values(new_parameters);
 
+        std::vector<std::string> titles;
+        titles.push_back("DT: ");
+        titles.push_back("T: ");
+        titles.push_back("INPUT_SIGNAL: ");
+        titles.push_back("OUTPUT_SIGNAL: ");
+        titles.push_back("LOAD_K_0: ");
+        titles.push_back("LOAD_K_1: ");
+        titles.push_back("LOAD_K_2: ");
+        titles.push_back("RESISTANCE: ");
+        titles.push_back("INDUCTIVITY: ");
+        titles.push_back("KF: ");
+        titles.push_back("THETA: ");
+        titles.push_back("VELOCITY: ");
+        titles.push_back("ACCELERATION: ");
+        titles.push_back("COULOMBLS: ");
+        titles.push_back("CURRENT: ");
+        titles.push_back("DCURRENT_DT: ");
+        titles.push_back("VOLTAGE: ");
+        titles.push_back("TORQUE: ");
+        titles.push_back("TORQUE_OF_LOAD: ");
+        titles.push_back("MOMENT_OF_INERTIA: ");
+        titles.push_back("MOMENT_OF_INERTIA_OF_ENGINE: ");
+        titles.push_back("MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD: ");
+
         if (i == 0)
         {
             unsigned int j = BEGIN_NONSTATIC;
@@ -94,6 +120,33 @@ void DC_engine::to_runge_kutta_method()
                 *i /= 2;
             }
             doubled_parameters[DT] /= 2;
+
+            std::cout << "After the first runge-kutta step the new parameters:\n";
+            unsigned int k = 0;
+            for (const auto i : new_parameters)
+            {
+                std::cout << titles[k] << '\t' << i << std::endl;
+                k++;
+            }
+            std::cout << std::endl;
+
+            std::cout << "After the first runge-kutta step the K_parameters[0]:\n";
+            k = 0;
+            for (const auto i : i_K_parameters)
+            {
+                std::cout << titles[k] << '\t' << i << std::endl;
+                k++;
+            }
+            std::cout << std::endl;
+
+            std::cout << "After the first runge-kutta step the doubled parameters:\n";
+            k = 0;
+            for (const auto i : doubled_parameters)
+            {
+                std::cout << titles[k] << '\t' << i << std::endl;
+                k++;
+            }
+            std::cout << std::endl;
         }
         if (i == 1)
         {
@@ -126,7 +179,7 @@ void DC_engine::to_runge_kutta_method()
     unsigned int j = BEGIN_NONSTATIC;
     for (auto i_parameters = &(parameters[BEGIN_NONSTATIC]); i_parameters < &(parameters[END_NONSTATIC]) && j < END_NONSTATIC; ++i_parameters, ++j)
     {
-        *i_parameters = (K_parameters[0][j] + 2 * K_parameters[1][j] + 2 * K_parameters[2][j] + K_parameters[3][j]) / 6;
+        *i_parameters += (K_parameters[0][j] + 2 * K_parameters[1][j] + 2 * K_parameters[2][j] + K_parameters[3][j]) / 6;
     }
 }
 
