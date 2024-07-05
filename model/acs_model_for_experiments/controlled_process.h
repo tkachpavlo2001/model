@@ -13,6 +13,10 @@ private:
     double to_dcurrent_dt(double U, double I, double R, double kf, double w, double L);
     double to_dvelocity_dt(double kf, double I, double T_L, double J);
     void to_solve();
+    void runge_kutta_stage_1(std::vector<double>&);
+    void runge_kutta_stage_2(std::vector<double>&,std::vector<double>&);
+    void runge_kutta_stage_3(std::vector<double>&,std::vector<double>&);
+    void runge_kutta_stage_4(std::vector<double>&,std::vector<double>&);
 public:
     DC_engine();
     virtual ~DC_engine() override;

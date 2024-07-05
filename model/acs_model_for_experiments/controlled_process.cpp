@@ -65,7 +65,28 @@ void DC_engine::to_calculate()
 }
 void DC_engine::to_solve()
 {
-    parameters[DCURRENT_DT] = to_dcurrent_dt(
+
+    std::vector<double> k_1(SIZE, 0);
+    std::vector<double> k_2(SIZE, 0);
+    std::vector<double> k_3(SIZE, 0);
+    std::vector<double> k_4(SIZE, 0);
+
+    runge_kutta_stage_1(k_1);
+    runge_kutta_stage_2(k_2,k_1);
+    runge_kutta_stage_3(k_3,k_2);
+    runge_kutta_stage_4(k_4,k_3);
+
+
+    for (auto i : {DCURRENT_DT, ACCELERATION, CURRENT, VELOCITY, THETA})
+        parameters[i] += ( k_1[i] + 2 * k_2[i] + 2 * k_3[i] + k_4[i] ) / 6;
+
+
+    //parameters[COULOMBLS] += parameters[CURRENT] * parameters[DT];
+    //parameters[TORQUE] = parameters[KF] * parameters[CURRENT];
+}
+void DC_engine::runge_kutta_stage_1(std::vector<double>& k_1)
+{
+    k_1[DCURRENT_DT] = parameters[DT] * to_dcurrent_dt(
                 parameters[VOLTAGE],
                 parameters[CURRENT],
                 parameters[RESISTANCE],
@@ -73,20 +94,79 @@ void DC_engine::to_solve()
                 parameters[VELOCITY],
                 parameters[INDUCTIVITY]
                 );
-    parameters[ACCELERATION] = to_dvelocity_dt(
+    k_1[ACCELERATION] = parameters[DT] * to_dvelocity_dt(
                 parameters[KF],
                 parameters[CURRENT],
                 parameters[TORQUE_OF_LOAD],
                 parameters[MOMENT_OF_INERTIA]
                 );
 
-    parameters[CURRENT] += parameters[DCURRENT_DT] * parameters[DT];
-    parameters[VELOCITY] += parameters[ACCELERATION] * parameters[DT];
+    k_1[CURRENT] = parameters[DCURRENT_DT] * parameters[DT];
+    k_1[VELOCITY] = parameters[ACCELERATION] * parameters[DT];
+    k_1[THETA] = parameters[VELOCITY] * parameters[DT];
+}
+void DC_engine::runge_kutta_stage_2(std::vector<double>& k_2,std::vector<double>& k_1)
+{
+    k_2[DCURRENT_DT] = parameters[DT] * to_dcurrent_dt(
+                parameters[VOLTAGE] + (k_1[VOLTAGE] / 2),
+                parameters[CURRENT] + (k_1[CURRENT] / 2),
+                parameters[RESISTANCE] + (k_1[RESISTANCE] / 2),
+                parameters[KF] + (k_1[KF] / 2),
+                parameters[VELOCITY] + (k_1[VELOCITY] / 2),
+                parameters[INDUCTIVITY] + (k_1[INDUCTIVITY] / 2)
+                );
+    k_2[ACCELERATION] = parameters[DT] * to_dvelocity_dt(
+                parameters[KF] + (k_1[KF] / 2),
+                parameters[CURRENT] + (k_1[CURRENT] / 2),
+                parameters[TORQUE_OF_LOAD] + (k_1[TORQUE_OF_LOAD] / 2),
+                parameters[MOMENT_OF_INERTIA] + (k_1[MOMENT_OF_INERTIA] / 2)
+                );
 
-    //parameters[COULOMBLS] += parameters[CURRENT] * parameters[DT];
-    parameters[THETA] += parameters[VELOCITY] * parameters[DT];
+    k_2[CURRENT] = ( parameters[DCURRENT_DT] + k_1[DCURRENT_DT] / 2 ) * parameters[DT];
+    k_2[VELOCITY] = ( parameters[ACCELERATION] + k_1[ACCELERATION] / 2 ) * parameters[DT];
+    k_2[THETA] = ( parameters[VELOCITY] + k_1[VELOCITY] / 2 ) * parameters[DT];
+}
+void DC_engine::runge_kutta_stage_3(std::vector<double>& k_3,std::vector<double>& k_2)
+{
+    k_3[DCURRENT_DT] = parameters[DT] * to_dcurrent_dt(
+                parameters[VOLTAGE] + (k_2[VOLTAGE] / 2),
+                parameters[CURRENT] + (k_2[CURRENT] / 2),
+                parameters[RESISTANCE] + (k_2[RESISTANCE] / 2),
+                parameters[KF] + (k_2[KF] / 2),
+                parameters[VELOCITY] + (k_2[VELOCITY] / 2),
+                parameters[INDUCTIVITY] + (k_2[INDUCTIVITY] / 2)
+                );
+    k_3[ACCELERATION] = parameters[DT] * to_dvelocity_dt(
+                parameters[KF] + (k_2[KF] / 2),
+                parameters[CURRENT] + (k_2[CURRENT] / 2),
+                parameters[TORQUE_OF_LOAD] + (k_2[TORQUE_OF_LOAD] / 2),
+                parameters[MOMENT_OF_INERTIA] + (k_2[MOMENT_OF_INERTIA] / 2)
+                );
 
-    //parameters[TORQUE] = parameters[KF] * parameters[CURRENT];
+    k_3[CURRENT] = ( parameters[DCURRENT_DT] + k_2[DCURRENT_DT] / 2 ) * parameters[DT];
+    k_3[VELOCITY] = ( parameters[ACCELERATION] + k_2[ACCELERATION] / 2 ) * parameters[DT];
+    k_3[THETA] = ( parameters[VELOCITY] + k_2[VELOCITY] / 2 ) * parameters[DT];
+}
+void DC_engine::runge_kutta_stage_4(std::vector<double>& k_4, std::vector<double>& k_3)
+{
+    k_4[DCURRENT_DT] = parameters[DT] * to_dcurrent_dt(
+                parameters[VOLTAGE] + k_3[VOLTAGE],
+                parameters[CURRENT] + k_3[CURRENT],
+                parameters[RESISTANCE] + k_3[RESISTANCE],
+                parameters[KF] + k_3[KF],
+                parameters[VELOCITY] + k_3[VELOCITY],
+                parameters[INDUCTIVITY] + k_3[INDUCTIVITY]
+                );
+    k_4[ACCELERATION] = parameters[DT] * to_dvelocity_dt(
+                parameters[KF] + k_3[KF],
+                parameters[CURRENT] + k_3[CURRENT],
+                parameters[TORQUE_OF_LOAD] + k_3[TORQUE_OF_LOAD],
+                parameters[MOMENT_OF_INERTIA] + k_3[MOMENT_OF_INERTIA]
+                );
+
+    k_4[CURRENT] = ( parameters[DCURRENT_DT] + k_3[DCURRENT_DT] ) * parameters[DT];
+    k_4[VELOCITY] = ( parameters[ACCELERATION] + k_3[ACCELERATION] ) * parameters[DT];
+    k_4[THETA] = ( parameters[VELOCITY] + k_3[VELOCITY] ) * parameters[DT];
 }
 double DC_engine::to_dcurrent_dt(double U, double I, double R, double kf, double w, double L)
 {

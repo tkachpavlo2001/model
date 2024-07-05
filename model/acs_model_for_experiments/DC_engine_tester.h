@@ -306,7 +306,7 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
     double current_the_nominal = 1240;
     double turnovers_per_minute = 40;
     double efficiency = 84;                     // %
-    double inertia = 5150;                      // кгм2
+    double inertia = 5150 / 100;                      // кгм2
     double mass = 46000;                        // кг
     // Convertion
     double velocity_the_nominal_radians_per_second = turnovers_per_minute * M_PI * 2 / 60;
@@ -322,8 +322,8 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
     double my_inductivity = 5e-4;   // 0.1 mH - 1 mH +-= 0.5 mH
 
     unsigned int t_start = 0;
-    unsigned int t_end = 10;
-    unsigned int dt = 100000;
+    unsigned int t_end = 100;
+    unsigned int dt = 1000;
 
     double my_dt = 1 / static_cast<double>(dt);
 
@@ -339,7 +339,6 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
 
     drive->to_set_all_parameters(std::vector<double> (std::begin(array_of_the_parameters_to_set), std::end(array_of_the_parameters_to_set)));
 
-    std::ostringstream out_string;
     std::ofstream fout("test_2_1_data.txt");
     fout << "t\t" << "Velocity\n";
 
@@ -347,18 +346,28 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
     {
         drive->to_calculate();
         if ( !(t * 100 % dt))
-        out_string << static_cast<double>(t) / static_cast<double>(dt)
-                   << '\t' << drive->to_get_output_signal() << std::endl;
-        std::string string_to_out = out_string.str();
-        for (auto i = std::begin(string_to_out); i < std::end(string_to_out); i++)
-            if (*i == '.') *i = ',';
-        std::cout << string_to_out;
-        fout << string_to_out;
+        {
+            std::ostringstream out_string;
+            out_string << static_cast<double>(t) / static_cast<double>(dt)
+                       << '\t' << drive->to_get_output_signal() << std::endl;
+            std::string string_to_out = out_string.str();
+            for (auto i = std::begin(string_to_out); i < std::end(string_to_out); i++)
+                if (*i == '.') *i = ',';
+            std::cout << string_to_out << std::flush;
+            fout << string_to_out << std::flush;
+            string_to_out.clear();
+        }
     }
 
 
     fout << "\nThe nominal velocity: " << velocity_the_nominal_radians_per_second << std::endl;
     std::cout << "\nThe nominal velocity: " << velocity_the_nominal_radians_per_second << std::endl;
+
+    for(auto i : drive->parameters)
+    {
+        std::cout << i << std::endl;
+        fout << i << std::endl;
+    }
 
     fout.close();
     return 0;
