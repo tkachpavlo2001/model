@@ -14,6 +14,10 @@ private:
     double to_dvelocity_dt(double kf, double I, double T_L, double J);
     double to_dtorque_of_load_dt(double w, double kL_0, double kL_1, double kL_2, double T);
     double to_actulize_the_torque_of_load(double w, double kL_0, double kL_1, double kL_2);
+    double to_actulize_current(double previous_I, double dI_dt, double dt);
+    double to_actulize_velocity(double previous_w, double dw_dt, double dt);
+    double to_actulize_theta(double previous_x, double dx_dt, double dt);
+    double to_actulize_the_torque_of_load_from_dT_dt(double previous_T, double dT_dt, double dt);
     void to_solve_with_euler();
     void to_solve_with_runge_kutta();
     void runge_kutta_stage_1(std::vector<double>&);

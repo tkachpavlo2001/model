@@ -320,10 +320,10 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
 
     // The simulation settings
     double my_inductivity = 5e-4;   // 0.1 mH - 1 mH +-= 0.5 mH
-    double inertia_chosen = inertia;  // 10e-7 Euler
+    double inertia_chosen = inertia * 10e-7;  // 10e-7 Euler
     double inertia_load_chosen = inertia_chosen * 0;
     double torque_chosen = torque_the_nominal_calculated * 0.9;
-    double torque_resistance = torque_chosen * 0.2;
+    double torque_resistance = torque_chosen * 0;
     double kL_0 = torque_chosen;
     double kL_1 = 1 * torque_resistance / velocity_the_nominal_radians_per_second;
 
