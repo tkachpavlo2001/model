@@ -12,6 +12,8 @@ private:
     void to_actulize_the_parameters();
     double to_dcurrent_dt(double U, double I, double R, double kf, double w, double L);
     double to_dvelocity_dt(double kf, double I, double T_L, double J);
+    double to_dtorque_of_load_dt(double w, double kL_0, double kL_1, double kL_2, double T);
+    double to_actulize_the_torque_of_load(double w, double kL_0, double kL_1, double kL_2);
     void to_solve_with_euler();
     void to_solve_with_runge_kutta();
     void runge_kutta_stage_1(std::vector<double>&);
@@ -90,11 +92,12 @@ public:
         // T_engine
         TORQUE = BEGIN_NONSTATIC + 7,
         TORQUE_OF_LOAD = BEGIN_NONSTATIC + 8,
+        DTORQUE_OF_LOAD_DT = BEGIN_NONSTATIC + 9,
 
 
 
 
-        LAST_ENGINE = TORQUE_OF_LOAD,                               /// BE CRARE FOR THE TRUE OF THE EQUATION !!
+        LAST_ENGINE = DTORQUE_OF_LOAD_DT,                           /// BE CRARE FOR THE TRUE OF THE EQUATION !!
         END_ENGINE = LAST_ENGINE + 1,                               /// BE CRARE FOR THE TRUE OF THE EQUATION !!
     };
 

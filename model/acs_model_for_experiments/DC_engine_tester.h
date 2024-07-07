@@ -320,6 +320,8 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
 
     // The simulation settings
     double my_inductivity = 5e-4;   // 0.1 mH - 1 mH +-= 0.5 mH
+    double torque_resistance = torque_the_nominal_calculated * 0.2;
+    double kL_1 = 0 * torque_resistance / velocity_the_nominal_radians_per_second;
 
     unsigned int t_start = 0;
     unsigned int t_end = 20;
@@ -333,25 +335,27 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
     array_of_the_parameters_to_set[DC_engine::KF] = kf_calculated;
     array_of_the_parameters_to_set[DC_engine::RESISTANCE] = resistance;
     array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE] = inertia;
-    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = inertia * 9;
+    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = inertia * 99;
     array_of_the_parameters_to_set[DC_engine::INDUCTIVITY] = my_inductivity;
 
     array_of_the_parameters_to_set[DC_engine::LOAD_K_0] = torque_the_nominal_calculated;
+    array_of_the_parameters_to_set[DC_engine::LOAD_K_1] = kL_1;
 
     drive->to_set_all_parameters(std::vector<double> (std::begin(array_of_the_parameters_to_set), std::end(array_of_the_parameters_to_set)));
 
     std::ofstream fout("test_2_1_data.txt");
-    fout << "t\t\t" << "Velocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
-    std::cout << "t\t\t" << "Velocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
+    fout << "t\t\t\tTheta\t\t\tVelocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
+    std::cout << "t\t\t\tTheta\t\t\tVelocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
 
     for (unsigned int t = t_start * dt; t < t_end * dt; ++t)
     {
         drive->to_calculate();
-        if ( !(t % ((t_end - t_start) * dt / 2000)) )
+        //if ( !(t % ((t_end - t_start) * dt / 2000)) )
         //if ( !(t * 100 % dt))
         {
             std::ostringstream out_string;
             out_string << static_cast<double>(t) / static_cast<double>(dt) << "\t\t\t"
+                       << drive->parameters[DC_engine::THETA] << "\t\t\t"
                        << drive->to_get_output_signal() << "\t\t\t"
                        << drive->parameters[DC_engine::CURRENT] << "\t\t\t"
                        << drive->parameters[DC_engine::CURRENT] * drive->parameters[DC_engine::KF] << "\t\t\t"
@@ -366,8 +370,8 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
             string_to_out.clear();
         }
     }
-    fout << "t\t\t" << "Velocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
-    std::cout << "t\t\t" << "Velocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
+    fout << "t\t\t\tTheta\t\t\tVelocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
+    std::cout << "t\t\t\tTheta\t\t\tVelocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
 
 
     fout << "\nThe nominal velocity: " << velocity_the_nominal_radians_per_second << std::endl;
