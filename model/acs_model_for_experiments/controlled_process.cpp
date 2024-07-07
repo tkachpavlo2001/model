@@ -111,14 +111,14 @@ void DC_engine::to_solve_with_runge_kutta()
     for (auto i : {DCURRENT_DT, ACCELERATION, CURRENT, VELOCITY, THETA}) //, TORQUE_OF_LOAD})
         parameters[i] += ( k_1[i] + 2 * k_2[i] + 2 * k_3[i] + k_4[i] ) / 6;
 
-
+/*
     parameters[TORQUE_OF_LOAD] = to_actulize_the_torque_of_load(
                 parameters[VELOCITY],
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
                 parameters[LOAD_K_2]
                 );
-
+*/
     //parameters[COULOMBLS] += parameters[CURRENT] * parameters[DT];
     //parameters[TORQUE] = parameters[KF] * parameters[CURRENT];
 }
@@ -150,7 +150,7 @@ void DC_engine::runge_kutta_stage_1(std::vector<double>& k_1)
                 k_1[LOAD_K_2],
                 k_1[TORQUE_OF_LOAD]
                 );
-    k_1[TORQUE_OF_LOAD] = k_1[DTORQUE_OF_LOAD_DT] * k_1[DT];
+    k_1[TORQUE_OF_LOAD] += k_1[DTORQUE_OF_LOAD_DT] * k_1[DT];
 }
 void DC_engine::runge_kutta_stage_2(std::vector<double>& k_2,std::vector<double>& k_1)
 {
@@ -180,7 +180,7 @@ void DC_engine::runge_kutta_stage_2(std::vector<double>& k_2,std::vector<double>
                 parameters[LOAD_K_2],
                 parameters[TORQUE_OF_LOAD] + ( k_1[DTORQUE_OF_LOAD_DT] * k_1[DT] / 2 )
                 );
-    k_2[TORQUE_OF_LOAD] = k_2[DTORQUE_OF_LOAD_DT] * k_2[DT];
+    k_2[TORQUE_OF_LOAD] += k_2[DTORQUE_OF_LOAD_DT] * k_2[DT];
 }
 void DC_engine::runge_kutta_stage_3(std::vector<double>& k_3,std::vector<double>& k_2)
 {
@@ -210,7 +210,7 @@ void DC_engine::runge_kutta_stage_3(std::vector<double>& k_3,std::vector<double>
                 parameters[LOAD_K_2],
                 parameters[TORQUE_OF_LOAD] + ( k_2[DTORQUE_OF_LOAD_DT] * k_2[DT] / 2 )
                 );
-    k_3[TORQUE_OF_LOAD] = k_3[DTORQUE_OF_LOAD_DT] * k_3[DT];
+    k_3[TORQUE_OF_LOAD] += k_3[DTORQUE_OF_LOAD_DT] * k_3[DT];
 }
 void DC_engine::runge_kutta_stage_4(std::vector<double>& k_4, std::vector<double>& k_3)
 {
@@ -240,7 +240,7 @@ void DC_engine::runge_kutta_stage_4(std::vector<double>& k_4, std::vector<double
                 parameters[LOAD_K_2],
                 parameters[TORQUE_OF_LOAD] + k_3[DTORQUE_OF_LOAD_DT] * k_3[DT]
                 );
-    k_4[TORQUE_OF_LOAD] = k_4[DTORQUE_OF_LOAD_DT] * k_4[DT];
+    k_4[TORQUE_OF_LOAD] += k_4[DTORQUE_OF_LOAD_DT] * k_4[DT];
 }
 double DC_engine::to_dcurrent_dt(double U, double I, double R, double kf, double w, double L)
 {

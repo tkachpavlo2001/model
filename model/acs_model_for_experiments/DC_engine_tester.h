@@ -320,11 +320,18 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
 
     // The simulation settings
     double my_inductivity = 5e-4;   // 0.1 mH - 1 mH +-= 0.5 mH
-    double torque_resistance = torque_the_nominal_calculated * 0.2;
-    double kL_1 = 0 * torque_resistance / velocity_the_nominal_radians_per_second;
+    double inertia_chosen = inertia;  // 10e-7 Euler
+    double inertia_load_chosen = inertia_chosen * 0;
+    double torque_chosen = torque_the_nominal_calculated * 0.9;
+    double torque_resistance = torque_chosen * 0.2;
+    double kL_0 = torque_chosen;
+    double kL_1 = 1 * torque_resistance / velocity_the_nominal_radians_per_second;
+
+    // THEN:
+    double velocity_calculated = voltage_the_nominal/kf_calculated - torque_chosen * resistance / (kf_calculated * kf_calculated);
 
     unsigned int t_start = 0;
-    unsigned int t_end = 20;
+    unsigned int t_end = 5;
     unsigned int dt = 10e6;
 
     double my_dt = 1 / static_cast<double>(dt);
@@ -334,11 +341,11 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
     array_of_the_parameters_to_set[DC_engine::INPUT_SIGNAL] = voltage_the_nominal;
     array_of_the_parameters_to_set[DC_engine::KF] = kf_calculated;
     array_of_the_parameters_to_set[DC_engine::RESISTANCE] = resistance;
-    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE] = inertia;
-    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = inertia * 99;
+    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE] = inertia_chosen;
+    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = inertia_load_chosen;
     array_of_the_parameters_to_set[DC_engine::INDUCTIVITY] = my_inductivity;
 
-    array_of_the_parameters_to_set[DC_engine::LOAD_K_0] = torque_the_nominal_calculated;
+    array_of_the_parameters_to_set[DC_engine::LOAD_K_0] = kL_0;
     array_of_the_parameters_to_set[DC_engine::LOAD_K_1] = kL_1;
 
     drive->to_set_all_parameters(std::vector<double> (std::begin(array_of_the_parameters_to_set), std::end(array_of_the_parameters_to_set)));
@@ -350,7 +357,7 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
     for (unsigned int t = t_start * dt; t < t_end * dt; ++t)
     {
         drive->to_calculate();
-        //if ( !(t % ((t_end - t_start) * dt / 2000)) )
+        if ( !(t % ((t_end - t_start) * dt / 2000)) )
         //if ( !(t * 100 % dt))
         {
             std::ostringstream out_string;
@@ -374,8 +381,8 @@ int DC_engine_tester::test_2_1(DC_engine * drive)
     std::cout << "t\t\t\tTheta\t\t\tVelocity\t\t\tCurrent\t\t\tTorque\t\t\tLoad\t\t\tAcceleration\n";
 
 
-    fout << "\nThe nominal velocity: " << velocity_the_nominal_radians_per_second << std::endl;
-    std::cout << "\nThe nominal velocity: " << velocity_the_nominal_radians_per_second << std::endl;
+    fout << "\nThe w(torque_chosen): " << velocity_calculated << std::endl;
+    std::cout << "\nThe w(torque_chosen): " << velocity_calculated << std::endl;
 
     for(auto i : drive->parameters)
     {
