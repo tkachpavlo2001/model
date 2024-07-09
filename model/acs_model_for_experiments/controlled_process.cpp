@@ -9,7 +9,12 @@ DC_engine::DC_engine() : Automated_control_system_element_interface()
 }
 
 DC_engine::~DC_engine(){}
-
+/*
+const std::vector<double> & DC_engine::get_parameters()
+{
+    return parameters;
+}
+*/
 bool DC_engine::to_set_element_parameters(const std::vector<double> & _r_parameters)
 {
     {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 9.0.2, 2024-07-07T23:22:15. -->
+<!-- Written by QtCreator 9.0.2, 2024-07-09T06:10:47. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -68,7 +68,17 @@
     <value type="bool" key="AutoTest.Framework.QtQuickTest">true</value>
     <value type="bool" key="AutoTest.Framework.QtTest">true</value>
    </valuemap>
-   <valuemap type="QVariantMap" key="AutoTest.CheckStates"/>
+   <valuemap type="QVariantMap" key="AutoTest.CheckStates">
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:DC_engine_interface_testing">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_1_DC_engine_object_creating">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_2_Verifying_to_set_dt">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_3_Verifying_to_receive_input_signal">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_4_Verifying_to_set_all_parameters">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_5_Verifying_to_check_parameters_and_to_get_parameters">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_6_Verifying_amount_of_parameters_methods">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_7_Verifying_to_get_output_signal">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_8_Verifying_to_set_parameters">Checked</value>
+   </valuemap>
    <value type="int" key="AutoTest.RunAfterBuild">0</value>
    <value type="bool" key="AutoTest.UseGlobal">true</value>
    <valuemap type="QVariantMap" key="ClangTools">
@@ -391,7 +401,24 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/tkachpavlo/Документы/HomeWork/Codding/diploma/model/build-acs_model_for_experiments-Desktop-Debug</value>
    </valuemap>
-   <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.1">
+    <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
+    <valuelist type="QVariantList" key="CustomOutputParsers"/>
+    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
+    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">unit_test</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.unit_test</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">unit_test</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/tkachpavlo/Документы/HomeWork/Codding/diploma/model/build-acs_model_for_experiments-Desktop-Debug</value>
+   </valuemap>
+   <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">2</value>
   </valuemap>
  </data>
  <data>

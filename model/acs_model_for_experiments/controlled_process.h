@@ -27,6 +27,7 @@ private:
 public:
     DC_engine();
     virtual ~DC_engine() override;
+    //const std::vector<double> & get_parameters();
 
 
     // BEGIN OF THE STATIC PARAMETERS
