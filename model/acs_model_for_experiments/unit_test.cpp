@@ -39,6 +39,13 @@ BOOST_AUTO_TEST_CASE(case_1_4_Verifying_to_set_all_parameters)
     for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
         *i = 1 * num;
     drive.to_set_all_parameters(parameters_to_set);
+    parameters_to_set[DC_engine::TORQUE_OF_LOAD] =
+            parameters_to_set[DC_engine::LOAD_K_0] +
+            parameters_to_set[DC_engine::LOAD_K_1] * parameters_to_set[DC_engine::VELOCITY] +
+            parameters_to_set[DC_engine::LOAD_K_2] * parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::VELOCITY];
+    parameters_to_set[DC_engine::MOMENT_OF_INERTIA] =
+            parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] +
+            parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE];
     BOOST_REQUIRE(
                 std::equal(
                     drive.to_check_parameters().begin(),
@@ -46,7 +53,6 @@ BOOST_AUTO_TEST_CASE(case_1_4_Verifying_to_set_all_parameters)
                     parameters_to_set.begin()
                     )
                 );
-    std::cout << num << " = " << DC_engine::SIZE << std::endl;
     BOOST_WARN_MESSAGE( (drive.to_check_parameters()[DC_engine::SIZE] + 1) == DC_engine::SIZE, "Size-problem");
 }
 
@@ -110,7 +116,26 @@ BOOST_AUTO_TEST_CASE(case_1_8_Verifying_to_set_parameters)
     for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
         *i = 1.1 * num;
     drive.to_set_parameters(parameters_to_set);
+    parameters_to_set[DC_engine::TORQUE_OF_LOAD] =
+            parameters_to_set[DC_engine::LOAD_K_0] +
+            parameters_to_set[DC_engine::LOAD_K_1] * parameters_to_set[DC_engine::VELOCITY] +
+            parameters_to_set[DC_engine::LOAD_K_2] * parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::VELOCITY];
+    parameters_to_set[DC_engine::MOMENT_OF_INERTIA] =
+            parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] +
+            parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE];
+    {
+        auto i = std::begin(drive.to_check_parameters());
+        auto j = std::begin(parameters_to_initiate);
+        for(; i < std::begin(drive.to_check_parameters()) + DC_engine::BEGIN_NONSTATIC; ++i, ++j)
+            std::cout << *i << " = " << *j << std::endl;
+    }
 
+    {
+        auto i = std::begin(drive.to_check_parameters()) + DC_engine::BEGIN_NONSTATIC;
+        auto j = std::begin(parameters_to_set);
+        for(; i < std::end(drive.to_check_parameters()); ++i, ++j)
+            std::cout << *i << " = " << *j << std::endl;
+    }
     BOOST_WARN_MESSAGE(
                 std::equal(
                     std::begin(drive.to_check_parameters()),
