@@ -85,6 +85,8 @@ BOOST_AUTO_TEST_CASE(case_1_6_Verifying_amount_of_parameters_methods)
     BOOST_WARN_MESSAGE(drive.to_verify_amount_of_parameters(), "to_verify_amount_of_parameters() -- problem");
     BOOST_REQUIRE(
                 drive.to_check_amount_of_parameters() == DC_engine::SIZE &&
+                drive.to_check_parameters().size() == DC_engine::SIZE &&
+                drive.to_check_parameters()[DC_engine::END_DC_ENGINE - 1] + 1 == DC_engine::SIZE &&
                 drive.to_verify_amount_of_parameters()
                 );
 }
@@ -103,19 +105,28 @@ BOOST_AUTO_TEST_CASE(case_1_7_Verifying_to_get_output_signal)
             );
 }
 
-BOOST_AUTO_TEST_CASE(case_1_8_Verifying_to_set_parameters)
+BOOST_AUTO_TEST_CASE(case_1_8_Verifying_to_set_element_parameters)
 {
     DC_engine drive;
+
     double num = 0;
     std::vector<double> parameters_to_initiate = drive.to_check_parameters();
     std::vector<double> parameters_to_set = drive.to_check_parameters();
+
+    // parameters_to_initiate filling
     for (auto i = std::begin(parameters_to_initiate); i < std::end(parameters_to_initiate); ++num, ++i)
         *i = 1 * num;
+    // parameters_to_initiate setting
     drive.to_set_all_parameters(parameters_to_initiate);
-    num = DC_engine::END_STATIC;
+
+
+    // parameters_to_set filling
+    num = 0;
     for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
-        *i = 1.1 * num;
-    drive.to_set_parameters(parameters_to_set);
+        *i = 1.01 * num;
+    // parameters_to_set setting
+    drive.to_set_element_parameters(parameters_to_set);
+
     parameters_to_set[DC_engine::TORQUE_OF_LOAD] =
             parameters_to_set[DC_engine::LOAD_K_0] +
             parameters_to_set[DC_engine::LOAD_K_1] * parameters_to_set[DC_engine::VELOCITY] +
@@ -123,41 +134,34 @@ BOOST_AUTO_TEST_CASE(case_1_8_Verifying_to_set_parameters)
     parameters_to_set[DC_engine::MOMENT_OF_INERTIA] =
             parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] +
             parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE];
-    {
-        auto i = std::begin(drive.to_check_parameters());
-        auto j = std::begin(parameters_to_initiate);
-        for(; i < std::begin(drive.to_check_parameters()) + DC_engine::BEGIN_NONSTATIC; ++i, ++j)
-            std::cout << *i << " = " << *j << std::endl;
-    }
 
-    {
-        auto i = std::begin(drive.to_check_parameters()) + DC_engine::BEGIN_NONSTATIC;
-        auto j = std::begin(parameters_to_set);
-        for(; i < std::end(drive.to_check_parameters()); ++i, ++j)
-            std::cout << *i << " = " << *j << std::endl;
-    }
-    BOOST_WARN_MESSAGE(
-                std::equal(
-                    std::begin(drive.to_check_parameters()),
-                    std::begin(drive.to_check_parameters()) + DC_engine::BEGIN_NONSTATIC,
-                    std::begin(parameters_to_initiate)
-                    ), "The static part has been impacted");
-    BOOST_WARN_MESSAGE(
-                std::equal(
-                    std::begin(drive.to_check_parameters()) + DC_engine::BEGIN_NONSTATIC,
-                    std::end(drive.to_check_parameters()),
-                    std::begin(parameters_to_set)
-                    ), "The nonstatic part has been incorrectly modificated");
     BOOST_REQUIRE(
                 std::equal(
                     std::begin(drive.to_check_parameters()),
-                    std::begin(drive.to_check_parameters()) + DC_engine::BEGIN_NONSTATIC,
+                    std::begin(drive.to_check_parameters()) + DC_engine::END_INTERFACE,
                     std::begin(parameters_to_initiate)
                     ) &&
                 std::equal(
-                    std::begin(drive.to_check_parameters()) + DC_engine::BEGIN_NONSTATIC,
+                    std::begin(drive.to_check_parameters()) + DC_engine::END_INTERFACE,
                     std::end(drive.to_check_parameters()),
-                    std::begin(parameters_to_set)
+                    std::begin(parameters_to_set) + DC_engine::END_INTERFACE
+                    )
+                );
+}
+
+BOOST_AUTO_TEST_CASE(case_1_9_Verifying_to_set_configurative_parameters)
+{
+    DC_engine drive;
+    double num = 0;
+    std::vector<double> parameters_to_set = std::vector<double>(DC_engine::SIZE, 0);
+    for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
+        *i = 1.1 * num;
+    drive.to_set_configurative_parameters(parameters_to_set);
+    BOOST_REQUIRE(
+                std::equal(
+                    drive.to_check_parameters().begin(),
+                    drive.to_check_parameters().begin() + DC_engine::END_INTERFACE,
+                    parameters_to_set.begin()
                     )
                 );
 }

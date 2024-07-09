@@ -123,7 +123,7 @@ int DC_engine_tester::test_1(DC_engine * _drive = nullptr)
     std::vector<double> temporary_array;
     for (int i = 0, j = 4; i < drive.END_INTERFACE; ++i, ++j)
         temporary_array.push_back(1.1 * j);
-    drive.to_set_parameters(temporary_array);
+    drive.to_set_configurative_parameters(temporary_array);
     {
         auto i = std::begin(drive.parameters);
         auto j = std::begin(temporary_array);

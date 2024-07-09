@@ -24,7 +24,7 @@ double Automated_control_system_element_interface::to_get_output_signal()
     return parameters[OUTPUT_SIGNAL];
 }
 
-bool Automated_control_system_element_interface::to_set_parameters(const std::vector<double> & _r_parameters)
+bool Automated_control_system_element_interface::to_set_configurative_parameters(const std::vector<double> & _r_parameters)
 {
     {
         auto i = std::begin(parameters);

@@ -25,7 +25,7 @@ public:
     bool to_set_dt(double const &);
     bool to_receive_input_signal(double const &);
     double to_get_output_signal();
-    bool to_set_parameters(const std::vector<double> &);
+    bool to_set_configurative_parameters(const std::vector<double> &);
     const std::vector<double> & to_check_parameters() const;
     std::vector<double> & to_get_parameters();
     unsigned int to_check_amount_of_parameters() const;
