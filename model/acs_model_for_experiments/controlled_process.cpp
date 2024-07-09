@@ -9,6 +9,16 @@ DC_engine::DC_engine() : Automated_control_system_element_interface()
 }
 
 DC_engine::~DC_engine(){}
+
+void DC_engine::to_set_calculation_mode(DC_engine::calculation_mode_states _calculation_mode_state)
+{
+    calculation_mode_state = _calculation_mode_state;
+}
+const DC_engine::calculation_mode_states DC_engine::to_check_calculation_mode()
+{
+    return calculation_mode_state;
+}
+
 /*
 const std::vector<double> & DC_engine::get_parameters()
 {
@@ -63,7 +73,10 @@ void DC_engine::to_calculate()
 {
     parameters[VOLTAGE] = parameters[INPUT_SIGNAL];
 
-    to_solve_with_runge_kutta();
+    if (calculation_mode_state == DC_engine::EULER)
+        to_solve_with_euler();
+    if (calculation_mode_state == DC_engine::RUNGE_KUTTA)
+        to_solve_with_runge_kutta();
 
     parameters[OUTPUT_SIGNAL] = parameters[VELOCITY];
 

@@ -27,6 +27,12 @@ private:
 public:
     DC_engine();
     virtual ~DC_engine() override;
+    enum calculation_mode_states { EULER, RUNGE_KUTTA };
+private:
+    calculation_mode_states calculation_mode_state;
+public:
+    void to_set_calculation_mode(calculation_mode_states);
+    const calculation_mode_states to_check_calculation_mode();
     //const std::vector<double> & get_parameters();
 
 
@@ -117,6 +123,7 @@ public:
 
         SIZE = END_DC_ENGINE                                        /// BE CRARE FOR THE TRUE OF THE EQUATION !!
     };
+
     bool to_verify_amount_of_parameters() const override;
     bool to_set_element_parameters(const std::vector<double> &) override;
     bool to_set_all_parameters(const std::vector<double> &) override;
