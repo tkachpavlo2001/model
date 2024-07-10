@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 9.0.2, 2024-07-09T14:41:55. -->
+<!-- Written by QtCreator 9.0.2, 2024-07-10T21:48:09. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -69,6 +69,7 @@
     <value type="bool" key="AutoTest.Framework.QtTest">true</value>
    </valuemap>
    <valuemap type="QVariantMap" key="AutoTest.CheckStates">
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:DC_engine_calculations_testing">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:DC_engine_interface_testing">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_1_DC_engine_object_creating">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_2_Verifying_to_set_dt">Checked</value>
@@ -77,7 +78,12 @@
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_5_Verifying_to_check_parameters_and_to_get_parameters">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_6_Verifying_amount_of_parameters_methods">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_7_Verifying_to_get_output_signal">Checked</value>
-    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_8_Verifying_to_set_parameters">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_8_Verifying_to_set_element_parameters">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_9_Verifying_to_set_configurative_parameters">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_2_1_Verifying_to_set_calculation_mode_and_to_check_calculation_mode">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_2_2_calculations_for_the_final_value_statement_with_euler">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_2_3_calculations_for_the_final_value_statement_with_runge_kutta">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_2_4_comparation_of_the_both_methods">Checked</value>
    </valuemap>
    <value type="int" key="AutoTest.RunAfterBuild">0</value>
    <value type="bool" key="AutoTest.UseGlobal">true</value>

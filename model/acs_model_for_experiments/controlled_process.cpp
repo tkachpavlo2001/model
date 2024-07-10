@@ -102,28 +102,35 @@ void DC_engine::to_solve_with_euler()
 
     new_parameters[CURRENT] = to_actulize_current(
                 parameters[CURRENT],
-                parameters[DCURRENT_DT],
+                new_parameters[DCURRENT_DT],
                 parameters[DT]
                 );
     new_parameters[VELOCITY] = to_actulize_velocity(
                 parameters[VELOCITY],
-                parameters[ACCELERATION],
+                new_parameters[ACCELERATION],
                 parameters[DT]
                 );
 
 
     new_parameters[THETA] = to_actulize_theta(
                 parameters[THETA],
-                parameters[VELOCITY],
+                new_parameters[VELOCITY],
                 parameters[DT]
                 );
 
 
-    new_parameters[TORQUE_OF_LOAD] = to_actulize_the_torque_of_load(
-                parameters[VELOCITY],
+    new_parameters[DTORQUE_OF_LOAD_DT] = to_dtorque_of_load_dt(
+                new_parameters[VELOCITY],
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
-                parameters[LOAD_K_2]
+                parameters[LOAD_K_2],
+                parameters[TORQUE_OF_LOAD]
+                );
+
+    new_parameters[TORQUE_OF_LOAD] = to_actulize_the_torque_of_load_from_dT_dt(
+                parameters[TORQUE_OF_LOAD],
+                new_parameters[DTORQUE_OF_LOAD_DT],
+                parameters[DT]
                 );
 
     parameters = new_parameters;
