@@ -74,8 +74,6 @@ void DC_engine::to_calculate()
         to_solve_with_runge_kutta();
 
     parameters[OUTPUT_SIGNAL] = parameters[VELOCITY];
-
-    // THE END OF THE CYCLE. THE NEXT ONE MUST BEGIN.
 }
 void DC_engine::to_solve_with_euler()
 {
@@ -118,7 +116,6 @@ void DC_engine::to_solve_with_euler()
                 new_parameters[VELOCITY],
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
-                parameters[LOAD_K_2],
                 parameters[LOAD_K_EXP_LIMIT],
                 parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD]
@@ -145,21 +142,9 @@ void DC_engine::to_solve_with_runge_kutta()
     runge_kutta_stage_3(k_3,k_2);
     runge_kutta_stage_4(k_4,k_3);
 
-
-    for (auto i : {ACCELERATION, CURRENT, VELOCITY, THETA, TORQUE_OF_LOAD}) //, TORQUE_OF_LOAD})
+    for (auto i : {ACCELERATION, CURRENT, VELOCITY, THETA, TORQUE_OF_LOAD})
         parameters[i] += ( k_1[i] + 2 * k_2[i] + 2 * k_3[i] + k_4[i] ) / 6;
 
-
-/*
-    parameters[TORQUE_OF_LOAD] = to_actulize_the_torque_of_load(
-                parameters[VELOCITY],
-                parameters[LOAD_K_0],
-                parameters[LOAD_K_1],
-                parameters[LOAD_K_2]
-                );
-*/
-    //parameters[COULOMBLS] += parameters[CURRENT] * parameters[DT];
-    //parameters[TORQUE] = parameters[KF] * parameters[CURRENT];
 }
 void DC_engine::runge_kutta_stage_1(std::vector<double>& k_1)
 {
@@ -182,7 +167,6 @@ void DC_engine::runge_kutta_stage_1(std::vector<double>& k_1)
                 parameters[VELOCITY],
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
-                parameters[LOAD_K_2],
                 parameters[LOAD_K_EXP_LIMIT],
                 parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD]
@@ -219,7 +203,6 @@ void DC_engine::runge_kutta_stage_2(std::vector<double>& k_2,std::vector<double>
                 parameters[VELOCITY] + k_1[VELOCITY] / 2,
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
-                parameters[LOAD_K_2],
                 parameters[LOAD_K_EXP_LIMIT],
                 parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD] + k_1[TORQUE_OF_LOAD] / 2
@@ -252,7 +235,6 @@ void DC_engine::runge_kutta_stage_3(std::vector<double>& k_3,std::vector<double>
                 parameters[VELOCITY] + k_2[VELOCITY] / 2,
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
-                parameters[LOAD_K_2],
                 parameters[LOAD_K_EXP_LIMIT],
                 parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD] + k_2[TORQUE_OF_LOAD] / 2
@@ -285,7 +267,6 @@ void DC_engine::runge_kutta_stage_4(std::vector<double>& k_4, std::vector<double
                 parameters[VELOCITY] + k_3[VELOCITY],
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
-                parameters[LOAD_K_2],
                 parameters[LOAD_K_EXP_LIMIT],
                 parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD] + k_3[TORQUE_OF_LOAD]
@@ -305,9 +286,9 @@ double DC_engine::to_dvelocity_dt(double kf, double I, double T_L, double J)
 {
     return ( kf * I - T_L) / J;
 }
-double DC_engine::to_dtorque_of_load_dt(double w, double kL_0, double kL_1, double kL_2, double k_exp_lim, double k_exp_curv, double T)
+double DC_engine::to_dtorque_of_load_dt(double w, double kL_0, double kL_1, double k_exp_lim, double k_exp_curv, double T)
 {
-    return to_actulize_the_torque_of_load(w, kL_0, kL_1, kL_2, k_exp_lim, k_exp_curv) - T;
+    return to_actulize_the_torque_of_load(w, kL_0, kL_1, k_exp_lim, k_exp_curv) - T;
 }
 double DC_engine::to_actulize_current(double previous_I, double dI_dt, double dt)
 {
@@ -321,9 +302,9 @@ double DC_engine::to_actulize_theta(double previous_x, double dx_dt, double dt)
 {
     return previous_x + dx_dt * dt;
 }
-double DC_engine::to_actulize_the_torque_of_load(double w, double kL_0, double kL_1, double kL_2, double k_exp_lim, double k_exp_curv)
+double DC_engine::to_actulize_the_torque_of_load(double w, double kL_0, double kL_1, double k_exp_lim, double k_exp_curv)
 {
-    return kL_0 + kL_1 * w + kL_2 * w * w + ( (w > 0)? k_exp_lim * (1 - std::exp(-w * k_exp_curv)) : k_exp_lim * (- 1 + std::exp(w * k_exp_curv)));
+    return kL_0 + kL_1 * w + ( (w > 0)? k_exp_lim * (1 - std::exp(-w * k_exp_curv)) : k_exp_lim * (- 1 + std::exp(w * k_exp_curv)));
 }
 double DC_engine::to_actulize_the_torque_of_load_from_dT_dt(double previous_T, double dT_dt, double dt)
 {
@@ -336,7 +317,6 @@ void DC_engine::to_actulize_the_parameters()
                 parameters[VELOCITY],
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
-                parameters[LOAD_K_2],
                 parameters[LOAD_K_EXP_LIMIT],
                 parameters[LOAD_K_EXP_CURVATURE]
                 );

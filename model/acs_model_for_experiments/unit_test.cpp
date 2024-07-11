@@ -150,7 +150,6 @@ BOOST_AUTO_TEST_CASE(case_1_4_Verifying_to_set_all_parameters)
     parameters_to_set[DC_engine::TORQUE_OF_LOAD] =
             parameters_to_set[DC_engine::LOAD_K_0] +
             parameters_to_set[DC_engine::LOAD_K_1] * parameters_to_set[DC_engine::VELOCITY] +
-            parameters_to_set[DC_engine::LOAD_K_2] * parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::VELOCITY] +
             (
                 (parameters_to_set[DC_engine::VELOCITY] > 0) ?
                 parameters_to_set[DC_engine::LOAD_K_EXP_LIMIT] *
@@ -246,7 +245,6 @@ BOOST_AUTO_TEST_CASE(case_1_8_Verifying_to_set_element_parameters)
     parameters_to_set[DC_engine::TORQUE_OF_LOAD] =
             parameters_to_set[DC_engine::LOAD_K_0] +
             parameters_to_set[DC_engine::LOAD_K_1] * parameters_to_set[DC_engine::VELOCITY] +
-            parameters_to_set[DC_engine::LOAD_K_2] * parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::VELOCITY] +
             (
                 (parameters_to_set[DC_engine::VELOCITY] > 0) ?
                 parameters_to_set[DC_engine::LOAD_K_EXP_LIMIT] *
