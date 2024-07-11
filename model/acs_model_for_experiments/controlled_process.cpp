@@ -2,6 +2,7 @@
 #include<array>
 #include<string>
 #include<iostream>
+#include<cmath>
 
 DC_engine::DC_engine() : Automated_control_system_element_interface()
 {
@@ -19,12 +20,6 @@ const DC_engine::calculation_mode_states DC_engine::to_check_calculation_mode()
     return calculation_mode_state;
 }
 
-/*
-const std::vector<double> & DC_engine::get_parameters()
-{
-    return parameters;
-}
-*/
 bool DC_engine::to_set_element_parameters(const std::vector<double> & _r_parameters)
 {
     {
@@ -124,6 +119,8 @@ void DC_engine::to_solve_with_euler()
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
                 parameters[LOAD_K_2],
+                parameters[LOAD_K_EXP_LIMIT],
+                parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD]
                 );
 
@@ -186,6 +183,8 @@ void DC_engine::runge_kutta_stage_1(std::vector<double>& k_1)
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
                 parameters[LOAD_K_2],
+                parameters[LOAD_K_EXP_LIMIT],
+                parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD]
                 );
     // dy = dt * f(x,t) = dy/dt * dt = dy
@@ -221,6 +220,8 @@ void DC_engine::runge_kutta_stage_2(std::vector<double>& k_2,std::vector<double>
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
                 parameters[LOAD_K_2],
+                parameters[LOAD_K_EXP_LIMIT],
+                parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD] + k_1[TORQUE_OF_LOAD] / 2
                 );
     // dy = dt * f(<x + kx/2>, t) = dy/dt * dt = dy
@@ -252,6 +253,8 @@ void DC_engine::runge_kutta_stage_3(std::vector<double>& k_3,std::vector<double>
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
                 parameters[LOAD_K_2],
+                parameters[LOAD_K_EXP_LIMIT],
+                parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD] + k_2[TORQUE_OF_LOAD] / 2
                 );
     // dy = dt * f(<x + kx/2>, t) = dy/dt * dt = dy
@@ -283,6 +286,8 @@ void DC_engine::runge_kutta_stage_4(std::vector<double>& k_4, std::vector<double
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
                 parameters[LOAD_K_2],
+                parameters[LOAD_K_EXP_LIMIT],
+                parameters[LOAD_K_EXP_CURVATURE],
                 parameters[TORQUE_OF_LOAD] + k_3[TORQUE_OF_LOAD]
                 );
     // dy = dt * f(<x + kx/2>, t) = dy/dt * dt = dy
@@ -300,9 +305,9 @@ double DC_engine::to_dvelocity_dt(double kf, double I, double T_L, double J)
 {
     return ( kf * I - T_L) / J;
 }
-double DC_engine::to_dtorque_of_load_dt(double w, double kL_0, double kL_1, double kL_2, double T)
+double DC_engine::to_dtorque_of_load_dt(double w, double kL_0, double kL_1, double kL_2, double k_exp_lim, double k_exp_curv, double T)
 {
-    return to_actulize_the_torque_of_load(w, kL_0, kL_1, kL_2) - T;
+    return to_actulize_the_torque_of_load(w, kL_0, kL_1, kL_2, k_exp_lim, k_exp_curv) - T;
 }
 double DC_engine::to_actulize_current(double previous_I, double dI_dt, double dt)
 {
@@ -316,9 +321,9 @@ double DC_engine::to_actulize_theta(double previous_x, double dx_dt, double dt)
 {
     return previous_x + dx_dt * dt;
 }
-double DC_engine::to_actulize_the_torque_of_load(double w, double kL_0, double kL_1, double kL_2)
+double DC_engine::to_actulize_the_torque_of_load(double w, double kL_0, double kL_1, double kL_2, double k_exp_lim, double k_exp_curv)
 {
-    return kL_0 + kL_1 * w + kL_2 * w * w;
+    return kL_0 + kL_1 * w + kL_2 * w * w + ( (w > 0)? k_exp_lim * (1 - std::exp(-w * k_exp_curv)) : k_exp_lim * (- 1 + std::exp(w * k_exp_curv)));
 }
 double DC_engine::to_actulize_the_torque_of_load_from_dT_dt(double previous_T, double dT_dt, double dt)
 {
@@ -331,7 +336,9 @@ void DC_engine::to_actulize_the_parameters()
                 parameters[VELOCITY],
                 parameters[LOAD_K_0],
                 parameters[LOAD_K_1],
-                parameters[LOAD_K_2]
+                parameters[LOAD_K_2],
+                parameters[LOAD_K_EXP_LIMIT],
+                parameters[LOAD_K_EXP_CURVATURE]
                 );
 
     parameters[MOMENT_OF_INERTIA] =

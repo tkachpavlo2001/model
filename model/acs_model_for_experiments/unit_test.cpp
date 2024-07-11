@@ -150,7 +150,15 @@ BOOST_AUTO_TEST_CASE(case_1_4_Verifying_to_set_all_parameters)
     parameters_to_set[DC_engine::TORQUE_OF_LOAD] =
             parameters_to_set[DC_engine::LOAD_K_0] +
             parameters_to_set[DC_engine::LOAD_K_1] * parameters_to_set[DC_engine::VELOCITY] +
-            parameters_to_set[DC_engine::LOAD_K_2] * parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::VELOCITY];
+            parameters_to_set[DC_engine::LOAD_K_2] * parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::VELOCITY] +
+            (
+                (parameters_to_set[DC_engine::VELOCITY] > 0) ?
+                parameters_to_set[DC_engine::LOAD_K_EXP_LIMIT] *
+                (1 - std::exp( - parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::LOAD_K_EXP_CURVATURE]))
+                :
+                parameters_to_set[DC_engine::LOAD_K_EXP_LIMIT] *
+                (- 1 + std::exp(parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::LOAD_K_EXP_CURVATURE]))
+            );
     parameters_to_set[DC_engine::MOMENT_OF_INERTIA] =
             parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] +
             parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE];
@@ -238,7 +246,15 @@ BOOST_AUTO_TEST_CASE(case_1_8_Verifying_to_set_element_parameters)
     parameters_to_set[DC_engine::TORQUE_OF_LOAD] =
             parameters_to_set[DC_engine::LOAD_K_0] +
             parameters_to_set[DC_engine::LOAD_K_1] * parameters_to_set[DC_engine::VELOCITY] +
-            parameters_to_set[DC_engine::LOAD_K_2] * parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::VELOCITY];
+            parameters_to_set[DC_engine::LOAD_K_2] * parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::VELOCITY] +
+            (
+                (parameters_to_set[DC_engine::VELOCITY] > 0) ?
+                parameters_to_set[DC_engine::LOAD_K_EXP_LIMIT] *
+                (1 - std::exp( - parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::LOAD_K_EXP_CURVATURE]))
+                :
+                parameters_to_set[DC_engine::LOAD_K_EXP_LIMIT] *
+                (- 1 + std::exp(parameters_to_set[DC_engine::VELOCITY] * parameters_to_set[DC_engine::LOAD_K_EXP_CURVATURE]))
+            );
     parameters_to_set[DC_engine::MOMENT_OF_INERTIA] =
             parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] +
             parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE];
@@ -558,7 +574,6 @@ BOOST_AUTO_TEST_CASE(case_2_4_comparation_of_the_both_methods_at_static_load)
     }
 }
 
-
 BOOST_AUTO_TEST_CASE(case_2_5_comparation_of_the_both_methods_at_nonstatic_load)
 {
     DC_engine drive_with_euler;
@@ -616,6 +631,119 @@ BOOST_AUTO_TEST_CASE(case_2_5_comparation_of_the_both_methods_at_nonstatic_load)
 
     array_of_the_parameters_to_set[DC_engine::LOAD_K_0] = kL_0;
     array_of_the_parameters_to_set[DC_engine::LOAD_K_1] = kL_1;
+
+
+    drive_with_euler.to_set_all_parameters(
+                std::vector<double> (
+                    std::begin(array_of_the_parameters_to_set),
+                    std::end(array_of_the_parameters_to_set)
+                    )
+                );
+    drive_with_runge_kutta.to_set_all_parameters(
+                std::vector<double> (
+                    std::begin(array_of_the_parameters_to_set),
+                    std::end(array_of_the_parameters_to_set)
+                    )
+                );
+
+    std::vector<double> moment_of_measurments;
+    for(int i = 1 ; i < 10; ++i)
+        moment_of_measurments.push_back(i / 10.0);
+
+    std::vector<std::pair<double, double>> records = calculation_loop_both_methods(
+                drive_with_euler,
+                drive_with_runge_kutta,
+                t_length,
+                dt_chosen,
+                moment_of_measurments
+                );
+    BOOST_REQUIRE( records.size() );
+    int j = 0;
+    for ( auto i : records )
+    {
+        if (verbose_mode_of_calculations) std::cout << '#' << j << std::endl;
+        ++j;
+        BOOST_REQUIRE_CLOSE_FRACTION( (records.at(0).first) , (records.at(0).second) , std::fabs(20) / 2 );
+    }
+
+    drive_with_euler.to_get_parameters()[DC_engine::INPUT_SIGNAL] = 100;
+    drive_with_runge_kutta.to_get_parameters()[DC_engine::INPUT_SIGNAL] = 100;
+    records = calculation_loop_both_methods(
+                drive_with_euler,
+                drive_with_runge_kutta,
+                t_length,
+                dt_chosen,
+                moment_of_measurments
+                );
+    BOOST_REQUIRE( records.size() );
+    j = 0;
+    for ( auto i : records )
+    {
+        if (verbose_mode_of_calculations) std::cout << '#' << j << std::endl;
+        ++j;
+        BOOST_REQUIRE_CLOSE_FRACTION( (records.at(0).first) , (records.at(0).second) , std::fabs(20) / 2 );
+    }
+}
+
+BOOST_AUTO_TEST_CASE(case_2_6_comparation_of_the_both_methods_at_exponantal_load)
+{
+    DC_engine drive_with_euler;
+    DC_engine drive_with_runge_kutta;
+    drive_with_euler.to_set_calculation_mode(DC_engine::EULER);
+    drive_with_runge_kutta.to_set_calculation_mode(DC_engine::RUNGE_KUTTA);
+    // 4ITO100L1 engine and given parameters:
+    double power_given = 1.5e3;
+    double voltage_given = 220;
+    double current_given = 19;
+    double velocity_nominal_given_turnout_per_minute = 1500;
+    //double velocity_max_given_turnout_per_minute = 4000;
+    // calculated paremeters of the engine:
+    double velocity_nominal_calculated_rad_per_second =
+            velocity_nominal_given_turnout_per_minute *
+            2 *
+            M_PI /
+            60;
+
+    double torque_nominal_calculated =
+            power_given /
+            velocity_nominal_calculated_rad_per_second;
+    double kf_calculated = torque_nominal_calculated / current_given;
+    double electromotive_force = kf_calculated * velocity_nominal_calculated_rad_per_second;
+    double electromotive_force_to_check = power_given / current_given;
+    BOOST_REQUIRE_EQUAL(electromotive_force, electromotive_force_to_check);
+    double resistance_calculated = ( voltage_given - electromotive_force ) / current_given;
+    // suggested parameters of the engine
+    double inductivity_suggested = 5e-4;   // 0.1 mH - 1 mH +-= 0.5 mH
+    double inertia_suggested = 1e3;
+    double inertia_load_suggested = 4e3;
+
+
+    // chosen parameters for the engine modeling
+    double voltage_chosen = voltage_given;
+    double kf_chosen = kf_calculated;
+    double resistance_chosen = resistance_calculated;
+    double inertia_chosen = inertia_suggested * 10e-6;
+    double inertia_load_chosen = inertia_load_suggested * 10e-7;
+    double inductivity_chosen = inductivity_suggested;
+    double kL_0 = 0;
+    double kL_1 = 0;
+    double kL_exp_lim = torque_nominal_calculated * 0.9;
+    double kL_exp_curv = 6 / velocity_nominal_calculated_rad_per_second ;
+    // calculation settings
+    double dt_chosen = 10e-5;
+    double t_length = 8;
+
+    std::array<double, DC_engine::SIZE> array_of_the_parameters_to_set = {0};
+    array_of_the_parameters_to_set[DC_engine::DT] = dt_chosen;
+    array_of_the_parameters_to_set[DC_engine::INPUT_SIGNAL] = voltage_chosen;
+    array_of_the_parameters_to_set[DC_engine::KF] = kf_chosen;
+    array_of_the_parameters_to_set[DC_engine::RESISTANCE] = resistance_chosen;
+    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE] = inertia_chosen;
+    array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = inertia_load_chosen;
+    array_of_the_parameters_to_set[DC_engine::INDUCTIVITY] = inductivity_chosen;
+
+    array_of_the_parameters_to_set[DC_engine::LOAD_K_EXP_LIMIT] = kL_exp_lim;
+    array_of_the_parameters_to_set[DC_engine::LOAD_K_EXP_CURVATURE] = kL_exp_curv;
 
 
     drive_with_euler.to_set_all_parameters(

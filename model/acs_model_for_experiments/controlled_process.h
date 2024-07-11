@@ -12,8 +12,8 @@ private:
     void to_actulize_the_parameters();
     double to_dcurrent_dt(double U, double I, double R, double kf, double w, double L);
     double to_dvelocity_dt(double kf, double I, double T_L, double J);
-    double to_dtorque_of_load_dt(double w, double kL_0, double kL_1, double kL_2, double T);
-    double to_actulize_the_torque_of_load(double w, double kL_0, double kL_1, double kL_2);
+    double to_dtorque_of_load_dt(double w, double kL_0, double kL_1, double kL_2, double k_exp_lim, double k_exp_curv, double T);
+    double to_actulize_the_torque_of_load(double w, double kL_0, double kL_1, double kL_2, double k_exp_lim, double k_exp_curv);
     double to_actulize_current(double previous_I, double dI_dt, double dt);
     double to_actulize_velocity(double previous_w, double dw_dt, double dt);
     double to_actulize_theta(double previous_x, double dx_dt, double dt);
@@ -47,9 +47,11 @@ public:
         LOAD_K_0 = BEGIN_LOAD_K + 0,
         LOAD_K_1 = BEGIN_LOAD_K + 1,
         LOAD_K_2 = BEGIN_LOAD_K + 2,
+        LOAD_K_EXP_LIMIT = BEGIN_LOAD_K + 3,
+        LOAD_K_EXP_CURVATURE = BEGIN_LOAD_K + 4,
 
 
-        LAST_LOAD_K = LOAD_K_2,             /// BE CRARE FOR THE TRUE OF THE EQUATION !!
+        LAST_LOAD_K = LOAD_K_EXP_CURVATURE,             /// BE CRARE FOR THE TRUE OF THE EQUATION !!
         END_LOAD_K = LAST_LOAD_K + 1,       /// BE CRARE FOR THE TRUE OF THE EQUATION !!
 
     };
