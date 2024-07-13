@@ -726,7 +726,7 @@ BOOST_AUTO_TEST_CASE(case_2_6_comparation_of_the_both_methods_at_exponantal_load
     double kL_0 = 0;
     double kL_1 = 0;
     double kL_exp_lim = torque_nominal_calculated * 0.9;
-    double kL_exp_curv = 6 / velocity_nominal_calculated_rad_per_second ;
+    double kL_exp_curv = 0.5 / velocity_nominal_calculated_rad_per_second ;
     // calculation settings
     double dt_chosen = 10e-5;
     double t_length = 8;
@@ -777,8 +777,8 @@ BOOST_AUTO_TEST_CASE(case_2_6_comparation_of_the_both_methods_at_exponantal_load
         BOOST_REQUIRE_CLOSE_FRACTION( (records.at(0).first) , (records.at(0).second) , std::fabs(20) / 2 );
     }
 
-    drive_with_euler.to_get_parameters()[DC_engine::INPUT_SIGNAL] = 100;
-    drive_with_runge_kutta.to_get_parameters()[DC_engine::INPUT_SIGNAL] = 100;
+    drive_with_euler.to_get_parameters()[DC_engine::INPUT_SIGNAL] = -220;
+    drive_with_runge_kutta.to_get_parameters()[DC_engine::INPUT_SIGNAL] = -220;
     records = calculation_loop_both_methods(
                 drive_with_euler,
                 drive_with_runge_kutta,
