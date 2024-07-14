@@ -9,11 +9,16 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 add_library(
     Controlled_process SHARED
-    DC_engine_tester.h
+    automated_control_system_element_interface.cpp
+    controlled_process.cpp
+)
+
+add_library(
+    Regulator SHARED
     automated_control_system_element_interface.h
     automated_control_system_element_interface.cpp
-    controlled_process.h
-    controlled_process.cpp
+    regulator.cpp
+    regulator.h
 )
 
 #target_include_directories(
@@ -27,9 +32,15 @@ add_executable( unit_test unit_test.cpp)
 
 target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )
 
+target_link_libraries( acs_model_for_experiments PUBLIC Regulator)
+
 target_link_libraries( unit_test PRIVATE
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
     Controlled_process )
+
+target_link_libraries( unit_test PRIVATE
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+    Regulator )
 
 #install(TARGETS acs_model_for_experiments
 #    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

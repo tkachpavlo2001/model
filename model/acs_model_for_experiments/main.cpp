@@ -1,6 +1,4 @@
 #include <iostream>
-#include "controlled_process.h"
-#include "DC_engine_tester.h"
 
 using namespace std;
 
@@ -8,9 +6,6 @@ using namespace std;
 
 int main()
 {
-    //cout << "Hello World!" << endl;
-    DC_engine drive;
-    DC_engine_tester tester;
-    tester.test_2_1(&drive);
+    cout << "Hello World!" << endl;
     return 0;
 }
