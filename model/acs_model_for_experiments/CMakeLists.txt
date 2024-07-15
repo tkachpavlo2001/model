@@ -11,6 +11,7 @@ add_library(
     Controlled_process SHARED
     automated_control_system_element_interface.cpp
     controlled_process.cpp
+    controlled_process.h
 )
 
 add_library(
@@ -19,6 +20,8 @@ add_library(
     automated_control_system_element_interface.cpp
     regulator.cpp
     regulator.h
+    reference_signal_definder_static.h
+    reference_signal_definder_static.cpp
 )
 
 #target_include_directories(
