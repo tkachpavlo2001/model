@@ -17,19 +17,19 @@ double PID_regulator::P()
 
 double PID_regulator::I()
 {
-    return parameters[INTEGRAL_SIGNAL] = parameters[K_I] * parameters[ERROR_SIGNAL];
+    return parameters[INTEGRAL_SIGNAL] += parameters[K_I] * parameters[ERROR_SIGNAL];
 }
 
-double PID_regulator::D()
+double PID_regulator::D() // can be paralleled
 {
-    parameters[DERIVATIVE_SIGNAL] =  ( parameters[ERROR_SIGNAL] - parameters[PREVIOUS_ERROR] ) / parameters[DT];
+    parameters[DERIVATIVE_SIGNAL] =  parameters[K_D] * ( parameters[ERROR_SIGNAL] - parameters[PREVIOUS_ERROR] ) / parameters[DT];
     parameters[PREVIOUS_ERROR] = parameters[ERROR_SIGNAL];
     return parameters[DERIVATIVE_SIGNAL];
 }
 
 PID_regulator::PID_regulator()
 {
-
+    while (parameters.size() < SIZE) parameters.push_back(0);
 }
 
 void PID_regulator::to_set_koefficients(double kp, double ki, double kd)

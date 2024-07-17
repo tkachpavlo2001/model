@@ -4,11 +4,15 @@
 
 #include<boost/test/unit_test.hpp>
 #include"controlled_process.h"
+#include"regulator.h"
+#include"reference_signal_definder_static.h"
 #include<memory>
 #include<algorithm>
 #include<cmath>
 #include<array>
 #include<sstream>
+
+
 
 bool verbose_mode_of_calculations = false;
 
@@ -34,6 +38,7 @@ public:
 };
 
 ask_tester question(verbose_mode_of_calculations);
+
 
 double calculation_loop(DC_engine & _drive, double _t_length, double _dt_chosen, bool _show_mode = verbose_mode_of_calculations)
 {
@@ -116,7 +121,20 @@ std::vector<std::pair<double, double>> calculation_loop_both_methods(DC_engine &
     return records;
 }
 
-BOOST_AUTO_TEST_SUITE(DC_engine_interface_testing)
+std::vector<double> calculation_regulator_check(PID_regulator & _controller, const std::vector<double> & _signals)
+{
+    std::vector<double> u_of_t;
+    for (auto selected_signal : _signals)
+    {
+        _controller.to_receive_input_signal(selected_signal);
+        _controller.to_calculate();
+        u_of_t.push_back(_controller.to_check_parameters()[PID_regulator::OUTPUT_SIGNAL]);
+    }
+    return u_of_t;
+}
+
+
+BOOST_AUTO_TEST_SUITE(DC_engine_interface_testing_and_abstract_class_part_testing)
 
 BOOST_AUTO_TEST_CASE(case_1_1_DC_engine_object_creating)
 {
@@ -125,14 +143,14 @@ BOOST_AUTO_TEST_CASE(case_1_1_DC_engine_object_creating)
     BOOST_REQUIRE(p_drive != nullptr);
 }
 
-BOOST_AUTO_TEST_CASE(case_1_2_Verifying_to_set_dt)
+BOOST_AUTO_TEST_CASE(case_1_2_Verifying_to_set_dt_inherited)
 {
     DC_engine drive;
     drive.to_set_dt(2.2);
     BOOST_REQUIRE(drive.to_check_parameters()[DC_engine::DT] == 2.2);
 }
 
-BOOST_AUTO_TEST_CASE(case_1_3_Verifying_to_receive_input_signal)
+BOOST_AUTO_TEST_CASE(case_1_3_Verifying_to_receive_input_signal_inherited)
 {
     DC_engine drive;
     drive.to_receive_input_signal(3.3);
@@ -171,7 +189,7 @@ BOOST_AUTO_TEST_CASE(case_1_4_Verifying_to_set_all_parameters)
     BOOST_WARN_MESSAGE( (drive.to_check_parameters()[DC_engine::SIZE] + 1) == DC_engine::SIZE, "Size-problem");
 }
 
-BOOST_AUTO_TEST_CASE(case_1_5_Verifying_to_check_parameters_and_to_get_parameters)
+BOOST_AUTO_TEST_CASE(case_1_5_Verifying_to_check_parameters_and_to_get_parameters_inherited)
 {
     DC_engine drive;
     double num = 1;
@@ -188,7 +206,7 @@ BOOST_AUTO_TEST_CASE(case_1_5_Verifying_to_check_parameters_and_to_get_parameter
                 );
 }
 
-BOOST_AUTO_TEST_CASE(case_1_6_Verifying_amount_of_parameters_methods)
+BOOST_AUTO_TEST_CASE(case_1_6_Verifying_amount_of_parameters_methods_inherited)
 {
     DC_engine drive;
     double num = 0;
@@ -206,7 +224,7 @@ BOOST_AUTO_TEST_CASE(case_1_6_Verifying_amount_of_parameters_methods)
                 );
 }
 
-BOOST_AUTO_TEST_CASE(case_1_7_Verifying_to_get_output_signal)
+BOOST_AUTO_TEST_CASE(case_1_7_Verifying_to_get_output_signal_inherited)
 {
     DC_engine drive;
     std::vector<double> parameters_to_set = drive.to_check_parameters();
@@ -289,7 +307,6 @@ BOOST_AUTO_TEST_CASE(case_1_9_Verifying_to_set_configurative_parameters)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
 
 
 BOOST_AUTO_TEST_SUITE(DC_engine_calculations_testing)
@@ -796,7 +813,212 @@ BOOST_AUTO_TEST_CASE(case_2_6_comparation_of_the_both_methods_at_exponantal_load
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(PID_regulator_interface_testing)
+
+BOOST_AUTO_TEST_CASE(case_3_1_PID_regulator_object_creating)
+{
+    std::shared_ptr<PID_regulator> controller = nullptr;
+    controller = std::make_shared<PID_regulator>();
+    BOOST_CHECK(controller != nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(case_3_2_Verifying_to_set_koefficients)
+{
+    PID_regulator controller;
+    controller.to_set_koefficients(1.1, 2.2, 3.3);
+    BOOST_CHECK(controller.to_check_parameters()[PID_regulator::K_P] == 1.1);
+    BOOST_CHECK(controller.to_check_parameters()[PID_regulator::K_I] == 2.2);
+    BOOST_CHECK(controller.to_check_parameters()[PID_regulator::K_D] == 3.3);
+}
+
+BOOST_AUTO_TEST_CASE(case_3_2_Verifying_to_receive_reference_signal)
+{
+    PID_regulator controller;
+    controller.to_receive_reference_signal(1.11);
+    BOOST_CHECK(controller.to_check_parameters()[PID_regulator::REFERENCE_SIGNAL] == 1.11);
+}
+
+BOOST_AUTO_TEST_CASE(case_3_3_Verifying_to_verify_amount_of_parameters)
+{
+    PID_regulator controller;
+    double num = 0;
+    std::vector<double> parameters_to_set = controller.to_check_parameters();
+    for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
+        *i = 1 * num;
+    controller.to_set_all_parameters(parameters_to_set);
+    BOOST_WARN_MESSAGE(controller.to_check_amount_of_parameters() == PID_regulator::SIZE, "to_check_amount_of_parameters() -- problem");
+    BOOST_WARN_MESSAGE(controller.to_verify_amount_of_parameters(), "to_verify_amount_of_parameters() -- problem");
+    BOOST_REQUIRE(
+                controller.to_check_amount_of_parameters() == PID_regulator::SIZE &&
+                controller.to_check_parameters().size() == PID_regulator::SIZE &&
+                controller.to_check_parameters()[PID_regulator::END_REGULATOR - 1] + 1 == PID_regulator::SIZE &&
+                controller.to_verify_amount_of_parameters()
+                );
+}
+
+BOOST_AUTO_TEST_CASE(case_3_4_Verifying_to_set_all_parameters)
+{
+    PID_regulator controller;
+
+    double num = 0;
+    std::vector<double> parameters_to_initiate = controller.to_check_parameters();
+
+    // parameters_to_initiate filling
+    for (auto i = std::begin(parameters_to_initiate); i < std::end(parameters_to_initiate); ++num, ++i)
+        *i = 1 * num;
+    // parameters_to_initiate setting
+    controller.to_set_all_parameters(parameters_to_initiate);
+
+    BOOST_REQUIRE(
+                std::equal(
+                    std::begin(controller.to_check_parameters()),
+                    std::end(controller.to_check_parameters()),
+                    std::begin(parameters_to_initiate)
+                    )
+                );
+}
+
+BOOST_AUTO_TEST_CASE(case_3_5_Verifying_to_set_element_parameters)
+{
+    PID_regulator controller;
+
+    double num = 0;
+    std::vector<double> parameters_to_initiate = controller.to_check_parameters();
+    std::vector<double> parameters_to_set = controller.to_check_parameters();
+
+    // parameters_to_initiate filling
+    for (auto i = std::begin(parameters_to_initiate); i < std::end(parameters_to_initiate); ++num, ++i)
+        *i = 1 * num;
+    // parameters_to_initiate setting
+    controller.to_set_all_parameters(parameters_to_initiate);
+
+
+    // parameters_to_set filling
+    num = 0;
+    for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
+        *i = 1.01 * num;
+    // parameters_to_set setting
+    controller.to_set_element_parameters(parameters_to_set);
+
+    BOOST_REQUIRE(
+                std::equal(
+                    std::begin(controller.to_check_parameters()),
+                    std::begin(controller.to_check_parameters()) + PID_regulator::END_INTERFACE,
+                    std::begin(parameters_to_initiate)
+                    ) &&
+                std::equal(
+                    std::begin(controller.to_check_parameters()) + PID_regulator::END_INTERFACE,
+                    std::end(controller.to_check_parameters()),
+                    std::begin(parameters_to_set) + PID_regulator::END_INTERFACE
+                    )
+                );
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
 
+BOOST_AUTO_TEST_SUITE(PID_regulator_calculation_testing)
+
+BOOST_AUTO_TEST_CASE(case_4_1_verifying_of_the_P_regulation)
+{
+    PID_regulator controller;
+    double reference_signal = 10;
+    controller.to_set_dt(2);
+    controller.to_receive_reference_signal(reference_signal);
+    controller.to_receive_input_signal(0);
+    controller.to_set_koefficients(2);
+    std::vector<double> y_of_t {0, 1, 2, 3, 5, 7, 9, 11, 13, 17};
+    std::vector<double> u_of_t_to_check = calculation_regulator_check(controller, y_of_t);
+    if (verbose_mode_of_calculations) for (auto i : u_of_t_to_check)
+        std::cout << i << std::endl;
+    if (verbose_mode_of_calculations) std::cout << std::endl << std::endl;
+    std::vector<double> u_of_t_reference;
+    for (auto selected_signal : y_of_t)
+    {
+        u_of_t_reference.push_back(
+                        (
+                            reference_signal -
+                            selected_signal
+                        ) * controller.to_check_parameters()[PID_regulator::K_P]
+                    );
+    }
+    for(
+        int i = 0;
+        std::begin(u_of_t_reference) + i < std::end(u_of_t_reference);
+        ++i
+        )
+        BOOST_CHECK_EQUAL( *(std::begin(u_of_t_reference)+i), *(std::begin(u_of_t_to_check)+i) );
+}
+
+BOOST_AUTO_TEST_CASE(case_4_2_verifying_of_the_I_regulation)
+{
+    PID_regulator controller;
+    double reference_signal = 10;
+    controller.to_set_dt(2);
+    controller.to_receive_reference_signal(reference_signal);
+    controller.to_receive_input_signal(0);
+    controller.to_set_koefficients(0, 1.5);
+    std::vector<double> y_of_t {0, 1, 2, 3, 5, 7, 9, 11, 13, 17};
+    std::vector<double> u_of_t_to_check = calculation_regulator_check(controller, y_of_t);
+    if (verbose_mode_of_calculations) for (auto i : u_of_t_to_check)
+        std::cout << i << std::endl;
+    if (verbose_mode_of_calculations) std::cout << std::endl << std::endl;
+    std::vector<double> u_of_t_reference;
+    double sum_of_errors;
+    for (auto selected_signal : y_of_t)
+    {
+        sum_of_errors += reference_signal - selected_signal;
+        u_of_t_reference.push_back( sum_of_errors * controller.to_check_parameters()[PID_regulator::K_I] );
+    }
+    for(
+        int i = 0;
+        std::begin(u_of_t_reference) + i < std::end(u_of_t_reference);
+        ++i
+        )
+        BOOST_CHECK_EQUAL( *(std::begin(u_of_t_reference)+i), *(std::begin(u_of_t_to_check)+i) );
+}
+
+BOOST_AUTO_TEST_CASE(case_4_3_verifying_of_the_the_whole_PID_regulator_calculation_D_regulations_in_particular)
+{
+    PID_regulator controller;
+    double reference_signal = 10;
+    controller.to_set_dt(2);
+    controller.to_receive_reference_signal(reference_signal);
+    controller.to_receive_input_signal(0);
+    controller.to_set_koefficients(2, 1, 0.5);
+    std::vector<double> y_of_t {0, 1, 2, 3, 5, 7, 9, 11, 13, 17};
+    std::vector<double> u_of_t_to_check = calculation_regulator_check(controller, y_of_t);
+    if (verbose_mode_of_calculations) for (auto i : u_of_t_to_check)
+        std::cout << i << std::endl;
+    if (verbose_mode_of_calculations) std::cout << std::endl << std::endl;
+    std::vector<double> u_of_t_reference;
+    double error;
+    double sum_of_errors;
+    for (auto selected_signal : y_of_t)
+    {
+        static double previous_error = 0;
+        double derror_dt;
+        error = reference_signal - selected_signal;
+        sum_of_errors += error;
+        derror_dt = (error - previous_error) / controller.to_check_parameters()[PID_regulator::DT];
+
+        double p_of_t = controller.to_check_parameters()[PID_regulator::K_P] * error;
+        double i_of_t = controller.to_check_parameters()[PID_regulator::K_I] * sum_of_errors;
+        double d_of_t = controller.to_check_parameters()[PID_regulator::K_D] * derror_dt;
+
+        u_of_t_reference.push_back( p_of_t + i_of_t + d_of_t );
+
+        previous_error = error;
+    }
+    for(
+        int i = 0;
+        std::begin(u_of_t_reference) + i < std::end(u_of_t_reference);
+        ++i
+        )
+        BOOST_CHECK_EQUAL( *(std::begin(u_of_t_reference)+i), *(std::begin(u_of_t_to_check)+i) );
+}
+
+BOOST_AUTO_TEST_SUITE_END()

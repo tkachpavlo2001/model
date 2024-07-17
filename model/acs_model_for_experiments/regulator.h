@@ -15,7 +15,7 @@ private:
 public:
     PID_regulator();
 
-    void to_set_koefficients(double, double=0, double=0);
+    void to_set_koefficients(double=0, double=0, double=0);
     void to_receive_reference_signal(double);
 
     enum {
