@@ -2,6 +2,7 @@
 
 Reference_signal_definder_static::Reference_signal_definder_static(double r)
 {
+    while (parameters.size() < SIZE) parameters.push_back(0);
     to_set_signal(r);
 }
 
@@ -18,22 +19,7 @@ bool Reference_signal_definder_static::to_verify_amount_of_parameters() const
 
 bool Reference_signal_definder_static::to_set_element_parameters(const std::vector<double> & _r_parameters)
 {
-    {
-        auto i = std::begin(parameters);
-        std::advance(i, END_INTERFACE);
-        auto j = std::begin(_r_parameters);
-        std::advance(j, END_INTERFACE);
-        int k = 0;
-        for (
-                ;
-                i != std::end(parameters) && j != std::end(_r_parameters) && k < SIZE;
-                ++i, ++j, ++k
-             )
-            *i = *j;
-        if ( !(i == std::end(parameters) && j == std::end(_r_parameters)) ) return false;
-    }
-    return true;
-
+    return false;
 }
 
 bool Reference_signal_definder_static::to_set_all_parameters(const std::vector<double> & _r_parameters)

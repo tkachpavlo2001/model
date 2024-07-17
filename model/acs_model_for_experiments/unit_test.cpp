@@ -1022,3 +1022,94 @@ BOOST_AUTO_TEST_CASE(case_4_3_verifying_of_the_the_whole_PID_regulator_calculati
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(reference_signal_definder_static_calculation_testing)
+
+BOOST_AUTO_TEST_CASE(case_5_1_reference_signal_definder_static_object_creating)
+{
+    std::shared_ptr<Reference_signal_definder_static> definder = nullptr;
+    definder = std::make_shared<Reference_signal_definder_static>();
+    BOOST_CHECK(definder != nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(case_5_2_Verifying_to_set_koefficients)
+{
+    Reference_signal_definder_static definder;
+    definder.to_set_signal(1.1);
+    BOOST_CHECK(definder.to_check_parameters()[Reference_signal_definder_static::OUTPUT_SIGNAL] == 1.1);
+}
+
+BOOST_AUTO_TEST_CASE(case_5_3_Verifying_to_verify_amount_of_parameters)
+{
+    Reference_signal_definder_static definder;
+    double num = 0;
+    std::vector<double> parameters_to_set = definder.to_check_parameters();
+    for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
+        *i = 1 * num;
+    definder.to_set_all_parameters(parameters_to_set);
+    BOOST_REQUIRE(definder.to_check_amount_of_parameters() == Reference_signal_definder_static::SIZE);
+    BOOST_REQUIRE(definder.to_check_parameters().size() == Reference_signal_definder_static::SIZE);
+    BOOST_REQUIRE(definder.to_check_parameters()[Reference_signal_definder_static::END_INTERFACE - 1] + 1 == Reference_signal_definder_static::SIZE);
+    BOOST_REQUIRE(definder.to_verify_amount_of_parameters());
+}
+
+BOOST_AUTO_TEST_CASE(case_5_4_Verifying_to_set_all_parameters)
+{
+    Reference_signal_definder_static definder;
+
+    double num = 0;
+    std::vector<double> parameters_to_initiate = definder.to_check_parameters();
+
+    // parameters_to_initiate filling
+    for (auto i = std::begin(parameters_to_initiate); i < std::end(parameters_to_initiate); ++num, ++i)
+        *i = 1 * num;
+    // parameters_to_initiate setting
+    definder.to_set_all_parameters(parameters_to_initiate);
+
+    BOOST_REQUIRE(
+                std::equal(
+                    std::begin(definder.to_check_parameters()),
+                    std::end(definder.to_check_parameters()),
+                    std::begin(parameters_to_initiate)
+                    )
+                );
+}
+
+BOOST_AUTO_TEST_CASE(case_5_5_Verifying_to_set_element_parameters)
+{
+    Reference_signal_definder_static definder;
+
+    double num = 0;
+    std::vector<double> parameters_to_initiate = definder.to_check_parameters();
+    std::vector<double> parameters_to_set = definder.to_check_parameters();
+
+    // parameters_to_initiate filling
+    for (auto i = std::begin(parameters_to_initiate); i < std::end(parameters_to_initiate); ++num, ++i)
+        *i = 1 * num;
+    // parameters_to_initiate setting
+    definder.to_set_all_parameters(parameters_to_initiate);
+
+
+    // parameters_to_set filling
+    num = 0;
+    for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
+        *i = 1.01 * num;
+    // parameters_to_set setting
+    BOOST_REQUIRE(!definder.to_set_element_parameters(parameters_to_set));
+
+    BOOST_REQUIRE(
+                std::equal(
+                    std::begin(definder.to_check_parameters()),
+                    std::begin(definder.to_check_parameters()) + Reference_signal_definder_static::END_INTERFACE,
+                    std::begin(parameters_to_initiate)
+                    ) &&
+                std::equal(
+                    std::begin(definder.to_check_parameters()) + Reference_signal_definder_static::END_INTERFACE,
+                    std::end(definder.to_check_parameters()),
+                    std::begin(parameters_to_set) + Reference_signal_definder_static::END_INTERFACE
+                    )
+                );
+}
+
+BOOST_AUTO_TEST_SUITE_END()
