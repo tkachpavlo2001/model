@@ -6,6 +6,7 @@
 
 DC_engine::DC_engine() : Automated_control_system_element_interface()
 {
+    the_type = DC_engine::PROCESS;
     while (parameters.size() < SIZE) parameters.push_back(0);
 }
 

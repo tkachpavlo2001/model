@@ -306,6 +306,13 @@ BOOST_AUTO_TEST_CASE(case_1_9_Verifying_to_set_configurative_parameters)
                 );
 }
 
+BOOST_AUTO_TEST_CASE(case_1_10_Verifying_to_check_the_type)
+{
+    std::shared_ptr<DC_engine> p_drive = nullptr;
+    p_drive = std::make_shared<DC_engine>();
+    BOOST_REQUIRE(p_drive->to_check_the_type() == DC_engine::PROCESS);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 
@@ -917,6 +924,13 @@ BOOST_AUTO_TEST_CASE(case_3_5_Verifying_to_set_element_parameters)
                 );
 }
 
+BOOST_AUTO_TEST_CASE(case_3_6_Verifying_to_check_the_type)
+{
+    std::shared_ptr<PID_regulator> controller = nullptr;
+    controller = std::make_shared<PID_regulator>();
+    BOOST_REQUIRE(controller->to_check_the_type() == PID_regulator::REGULATOR);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 
@@ -1110,6 +1124,13 @@ BOOST_AUTO_TEST_CASE(case_5_5_Verifying_to_set_element_parameters)
                     std::begin(parameters_to_set) + Reference_signal_definder_static::END_INTERFACE
                     )
                 );
+}
+
+BOOST_AUTO_TEST_CASE(case_5_6_Verifying_to_check_the_type)
+{
+    std::shared_ptr<Reference_signal_definder_static> definder = nullptr;
+    definder = std::make_shared<Reference_signal_definder_static>();
+    BOOST_REQUIRE(definder->to_check_the_type() == Reference_signal_definder_static::REFERENCE_SIGNAL_DEFINDER);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

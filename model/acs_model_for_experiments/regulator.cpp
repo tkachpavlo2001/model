@@ -27,8 +27,9 @@ double PID_regulator::D() // can be paralleled
     return parameters[DERIVATIVE_SIGNAL];
 }
 
-PID_regulator::PID_regulator()
+PID_regulator::PID_regulator() : Automated_control_system_element_interface()
 {
+    the_type = PID_regulator::REGULATOR;
     while (parameters.size() < SIZE) parameters.push_back(0);
 }
 

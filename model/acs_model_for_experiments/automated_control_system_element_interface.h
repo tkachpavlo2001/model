@@ -9,6 +9,16 @@ protected:
     std::vector<double> parameters;
 public:
     Automated_control_system_element_interface();
+    enum type_of_element
+    {
+        PROCESS,
+        REGULATOR,
+        REFERENCE_SIGNAL_DEFINDER
+    };
+protected:
+    type_of_element the_type;
+public:
+    type_of_element to_check_the_type();
     enum
     {
         BEGIN_INTERFACE = 0,

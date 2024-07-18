@@ -1,7 +1,8 @@
 #include "reference_signal_definder_static.h"
 
-Reference_signal_definder_static::Reference_signal_definder_static(double r)
+Reference_signal_definder_static::Reference_signal_definder_static(double r) : Automated_control_system_element_interface()
 {
+    the_type = Reference_signal_definder_static::REFERENCE_SIGNAL_DEFINDER;
     while (parameters.size() < SIZE) parameters.push_back(0);
     to_set_signal(r);
 }

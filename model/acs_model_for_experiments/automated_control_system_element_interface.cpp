@@ -3,6 +3,10 @@
 Automated_control_system_element_interface::Automated_control_system_element_interface() : parameters(3,0)
 {}
 
+Automated_control_system_element_interface::type_of_element Automated_control_system_element_interface::to_check_the_type()
+{
+    return the_type;
+}
 bool Automated_control_system_element_interface::to_set_dt(double const & _r_dt)
 {
     double * r_pareameter = &parameters[DT];
