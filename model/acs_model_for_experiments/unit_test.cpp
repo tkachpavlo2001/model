@@ -3,9 +3,12 @@
 #define BOOST_TEST_DYN_LINK
 
 #include<boost/test/unit_test.hpp>
+
 #include"controlled_process.h"
 #include"regulator.h"
 #include"reference_signal_definder_static.h"
+#include"dc_source.h"
+
 #include<memory>
 #include<algorithm>
 #include<cmath>
@@ -1131,6 +1134,134 @@ BOOST_AUTO_TEST_CASE(case_5_6_Verifying_to_check_the_type)
     std::shared_ptr<Reference_signal_definder_static> definder = nullptr;
     definder = std::make_shared<Reference_signal_definder_static>();
     BOOST_REQUIRE(definder->to_check_the_type() == Reference_signal_definder_static::REFERENCE_SIGNAL_DEFINDER);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(DC_source_testing)
+
+BOOST_AUTO_TEST_CASE(case_6_1_reference_DC_source_object_creating)
+{
+    std::shared_ptr<DC_source> source = nullptr;
+    source = std::make_shared<DC_source>();
+    BOOST_CHECK(source != nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(case_6_2_Verifying_to_set_limit_voltage)
+{
+    DC_source source;
+    source.to_set_max_voltage(1.1);
+    source.to_set_min_voltage(-2.2);
+    BOOST_CHECK(source.to_check_parameters()[DC_source::MAX_VOLTAGE] == 1.1);
+    BOOST_CHECK(source.to_check_parameters()[DC_source::MIN_VOLTAGE] == -2.2);
+}
+
+BOOST_AUTO_TEST_CASE(case_6_3_Verifying_to_verify_amount_of_parameters)
+{
+    DC_source source;
+    double num = 0;
+    std::vector<double> parameters_to_set = source.to_check_parameters();
+    for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
+        *i = 1 * num;
+    source.to_set_all_parameters(parameters_to_set);
+    BOOST_REQUIRE(source.to_check_amount_of_parameters() == DC_source::SIZE);
+    BOOST_REQUIRE(source.to_check_parameters().size() == DC_source::SIZE);
+    BOOST_REQUIRE(source.to_check_parameters()[DC_source::END_SOURCE - 1] + 1 == DC_source::SIZE);
+    BOOST_REQUIRE(source.to_verify_amount_of_parameters());
+}
+
+BOOST_AUTO_TEST_CASE(case_6_4_Verifying_to_set_all_parameters)
+{
+    DC_source source;
+
+    double num = 0;
+    std::vector<double> parameters_to_initiate = source.to_check_parameters();
+
+    // parameters_to_initiate filling
+    for (auto i = std::begin(parameters_to_initiate); i < std::end(parameters_to_initiate); ++num, ++i)
+        *i = 1 * num;
+    // parameters_to_initiate setting
+    source.to_set_all_parameters(parameters_to_initiate);
+
+    BOOST_REQUIRE(
+                std::equal(
+                    std::begin(source.to_check_parameters()),
+                    std::end(source.to_check_parameters()),
+                    std::begin(parameters_to_initiate)
+                    )
+                );
+}
+
+BOOST_AUTO_TEST_CASE(case_6_5_Verifying_to_set_element_parameters)
+{
+    DC_source source;
+
+    double num = 0;
+    std::vector<double> parameters_to_initiate = source.to_check_parameters();
+    std::vector<double> parameters_to_set = source.to_check_parameters();
+
+    // parameters_to_initiate filling
+    for (auto i = std::begin(parameters_to_initiate); i < std::end(parameters_to_initiate); ++num, ++i)
+        *i = 1 * num;
+    // parameters_to_initiate setting
+    source.to_set_all_parameters(parameters_to_initiate);
+
+
+    // parameters_to_set filling
+    num = 0;
+    for (auto i = std::begin(parameters_to_set); i < std::end(parameters_to_set); ++num, ++i)
+        *i = 1.01 * num;
+    // parameters_to_set setting
+    BOOST_REQUIRE(!source.to_set_element_parameters(parameters_to_set));
+
+    BOOST_REQUIRE(
+                std::equal(
+                    std::begin(source.to_check_parameters()),
+                    std::begin(source.to_check_parameters()) + DC_source::END_INTERFACE,
+                    std::begin(parameters_to_initiate)
+                    ) &&
+                std::equal(
+                    std::begin(source.to_check_parameters()) + DC_source::END_INTERFACE,
+                    std::end(source.to_check_parameters()),
+                    std::begin(parameters_to_set) + DC_source::END_INTERFACE
+                    )
+                );
+}
+
+BOOST_AUTO_TEST_CASE(case_6_6_Verifying_to_check_the_type)
+{
+    std::shared_ptr<DC_source> source = nullptr;
+    source = std::make_shared<DC_source>();
+    BOOST_REQUIRE(source->to_check_the_type() == DC_source::ENERGY_SOURCE);
+}
+
+BOOST_AUTO_TEST_CASE(case_6_7_Verifying_to_calculate)
+{
+    DC_source source;
+    source.to_set_max_voltage(11.1);
+    source.to_set_min_voltage(-5.5);
+    source.to_receive_input_signal(10);
+    source.to_calculate();
+    BOOST_REQUIRE_EQUAL(source.to_get_output_signal(), 10);
+
+    source.to_receive_input_signal(20);
+    source.to_calculate();
+    BOOST_REQUIRE_EQUAL(source.to_get_output_signal(), 11.1);
+
+    source.to_receive_input_signal(-10);
+    source.to_calculate();
+    BOOST_REQUIRE_EQUAL(source.to_get_output_signal(), -5.5);
+}
+
+BOOST_AUTO_TEST_CASE(case_5_7_Verifying_to_set_limit_voltage_incapsulation)
+{
+    DC_source source;
+    source.to_set_max_voltage(1);
+    source.to_set_min_voltage(2);
+    BOOST_REQUIRE_EQUAL(source.to_check_parameters()[DC_source::MIN_VOLTAGE], 1);
+    source.to_set_max_voltage(-1);
+    BOOST_REQUIRE_EQUAL(source.to_check_parameters()[DC_source::MIN_VOLTAGE], 1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

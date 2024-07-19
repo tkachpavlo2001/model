@@ -68,7 +68,6 @@ bool PID_regulator::to_set_element_parameters(const std::vector<double> & _r_par
         if ( !(i == std::end(parameters) && j == std::end(_r_parameters)) ) return false;
     }
     return true;
-
 }
 
 bool PID_regulator::to_set_all_parameters(const std::vector<double> & _r_parameters)

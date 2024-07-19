@@ -23,7 +23,10 @@ add_library(
     reference_signal_definder_static.h
     reference_signal_definder_static.cpp
 )
-
+add_library(
+    DC_source SHARED
+    dc_source.h dc_source.cpp
+)
 #target_include_directories(
 #    Controlled_process PUBLIC
 #    ${CMAKE_CURRENT_SOURCE_DIR}
@@ -37,6 +40,8 @@ target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )
 
 target_link_libraries( acs_model_for_experiments PUBLIC Regulator)
 
+target_link_libraries( acs_model_for_experiments PUBLIC DC_source)
+
 target_link_libraries( unit_test PRIVATE
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
     Controlled_process )
@@ -44,6 +49,10 @@ target_link_libraries( unit_test PRIVATE
 target_link_libraries( unit_test PRIVATE
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
     Regulator )
+
+target_link_libraries( unit_test PRIVATE
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+    DC_source )
 
 #install(TARGETS acs_model_for_experiments
 #    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

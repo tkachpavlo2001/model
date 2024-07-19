@@ -13,7 +13,8 @@ public:
     {
         PROCESS,
         REGULATOR,
-        REFERENCE_SIGNAL_DEFINDER
+        REFERENCE_SIGNAL_DEFINDER,
+        ENERGY_SOURCE
     };
 protected:
     type_of_element the_type;
