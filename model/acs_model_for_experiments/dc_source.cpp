@@ -1,8 +1,8 @@
 #include "dc_source.h"
 
-DC_source::DC_source()
+DC_source::DC_source() : Automated_control_system_element_interface()
 {
-    the_type = DC_source::ENERGY_SOURCE;
+    the_type = Automated_control_system_element_interface::ENERGY_SOURCE;
     while (parameters.size() < SIZE) parameters.push_back(0);
 }
 

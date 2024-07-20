@@ -8,6 +8,7 @@
 #include"regulator.h"
 #include"reference_signal_definder_static.h"
 #include"dc_source.h"
+#include"automated_control_system.h"
 
 #include<memory>
 #include<algorithm>
@@ -1262,6 +1263,118 @@ BOOST_AUTO_TEST_CASE(case_5_7_Verifying_to_set_limit_voltage_incapsulation)
     BOOST_REQUIRE_EQUAL(source.to_check_parameters()[DC_source::MIN_VOLTAGE], 1);
     source.to_set_max_voltage(-1);
     BOOST_REQUIRE_EQUAL(source.to_check_parameters()[DC_source::MIN_VOLTAGE], 1);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(Automated_control_system_testing)
+
+BOOST_AUTO_TEST_CASE(case_7_1_Automated_control_system_creating)
+{
+    std::shared_ptr<Automated_control_system> acs_model = nullptr;
+    acs_model = std::make_shared<Automated_control_system>();
+    BOOST_CHECK(acs_model != nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(case_7_2_Verifying_to_check_elements_and_its_attributes_initialising)
+{
+    Automated_control_system acs_model;
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements().size(), 4);
+    DC_source source;
+    acs_model.to_mount_the_element(source); // HERE
+    BOOST_REQUIRE(acs_model.to_check_elements()[3]->to_check_the_type() == DC_source::ENERGY_SOURCE);
+}
+
+BOOST_AUTO_TEST_CASE(case_7_3_Verifying_to_mount_the_element_first_part)
+{
+    Automated_control_system acs_model;
+    std::vector<Automated_control_system_element_interface *> elements_line(4);
+    elements_line[0] = new DC_source;
+    elements_line[1] = new DC_engine;
+    elements_line[2] = new Reference_signal_definder_static;
+    elements_line[3] = new PID_regulator;
+    for (auto & i : elements_line)
+        acs_model.to_mount_the_element(i);
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements()[0]->to_check_the_type(), Automated_control_system_element_interface::PROCESS);
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements()[1]->to_check_the_type(), Automated_control_system_element_interface::REGULATOR);
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements()[2]->to_check_the_type(), Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER);
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements()[3]->to_check_the_type(), Automated_control_system_element_interface::ENERGY_SOURCE);
+    for ( int i = 0; i < 3; ++i)
+        elements_line[i]->to_get_parameters()[Automated_control_system_element_interface::DT] = (i+1) * 1.1;
+    for (int i = 0; i < 3; ++i)
+        BOOST_REQUIRE_CLOSE
+                (
+                    acs_model.to_check_elements()[i]->to_check_parameters()[Automated_control_system_element_interface::DT],
+                    (i+1) * 1.1,
+                    0.001
+                );
+
+
+    for (auto & i : elements_line)
+        delete i;
+}
+
+BOOST_AUTO_TEST_CASE(case_7_4_Verifying_to_mount_the_element_second_part)
+{
+    Automated_control_system acs_model;
+    std::vector<Automated_control_system_element_interface *> elements_line(4);
+    elements_line[0] = new DC_source;
+    elements_line[1] = new DC_engine;
+    elements_line[2] = new Reference_signal_definder_static;
+    elements_line[3] = new PID_regulator;
+    for (auto & i : elements_line)
+        acs_model.to_mount_the_element(i);
+    for ( int i = 0; i < 3; ++i)
+        elements_line[i]->to_get_parameters()[Automated_control_system_element_interface::DT] = (i+1) * 1.1;
+
+    DC_source new_source;
+    DC_engine new_drive;
+    new_source.to_set_dt(5.5);
+    new_drive.to_set_dt(6.6);
+    acs_model.to_mount_the_element(new_source);
+    acs_model.to_mount_the_element(new_drive);
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements().size(), 4);
+    BOOST_REQUIRE_EQUAL
+            (
+                acs_model.to_check_elements()[0]->to_check_parameters()[Automated_control_system_element_interface::DT],
+                6.6
+            );
+    BOOST_REQUIRE_EQUAL
+            (
+                acs_model.to_check_elements()[1]->to_check_parameters()[Automated_control_system_element_interface::DT],
+                2.2
+            );
+    BOOST_REQUIRE_EQUAL(
+                acs_model.to_check_elements()[2]->to_check_parameters()[Automated_control_system_element_interface::DT],
+                3.3
+            );
+    BOOST_REQUIRE_EQUAL
+            (
+                acs_model.to_check_elements()[3]->to_check_parameters()[Automated_control_system_element_interface::DT],
+                5.5
+            );
+
+    for (auto & i : elements_line)
+        delete i;
+}
+
+BOOST_AUTO_TEST_CASE(case_7_5_Verifying_to_set_dt)
+{
+    Automated_control_system acs_model;
+    std::vector<Automated_control_system_element_interface *> elements_line(4);
+    elements_line[0] = new DC_source;
+    elements_line[1] = new DC_engine;
+    elements_line[2] = new Reference_signal_definder_static;
+    elements_line[3] = new PID_regulator;
+    for(auto & i : elements_line)
+        acs_model.to_mount_the_element(i);
+    acs_model.to_set_dt(0.01);
+    for (auto & i : elements_line)
+        BOOST_REQUIRE(i->to_check_parameters()[Automated_control_system_element_interface::DT] == 0.01);
+    acs_model.to_set_dt(2);
+    for (auto & i : elements_line)
+        BOOST_REQUIRE(i->to_check_parameters()[Automated_control_system_element_interface::DT] == 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

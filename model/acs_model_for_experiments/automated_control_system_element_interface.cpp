@@ -3,7 +3,7 @@
 Automated_control_system_element_interface::Automated_control_system_element_interface() : parameters(3,0)
 {}
 
-Automated_control_system_element_interface::type_of_element Automated_control_system_element_interface::to_check_the_type()
+const int Automated_control_system_element_interface::to_check_the_type() const
 {
     return the_type;
 }

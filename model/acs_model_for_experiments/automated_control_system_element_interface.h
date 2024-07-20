@@ -19,7 +19,7 @@ public:
 protected:
     type_of_element the_type;
 public:
-    type_of_element to_check_the_type();
+    const int to_check_the_type() const;
     enum
     {
         BEGIN_INTERFACE = 0,
