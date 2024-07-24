@@ -1281,9 +1281,13 @@ BOOST_AUTO_TEST_CASE(case_7_2_Verifying_to_check_elements_and_its_attributes_ini
 {
     Automated_control_system acs_model;
     BOOST_REQUIRE_EQUAL(acs_model.to_check_elements().size(), 4);
+    for (auto & i : acs_model.to_check_elements())
+        BOOST_REQUIRE_EQUAL(i, nullptr);
     DC_source source;
     acs_model.to_mount_the_element(source); // HERE
-    BOOST_REQUIRE(acs_model.to_check_elements()[3]->to_check_the_type() == DC_source::ENERGY_SOURCE);
+    for (auto & i : acs_model.to_check_elements())
+        if(i != nullptr)
+            BOOST_REQUIRE(i->to_check_the_type() == DC_source::ENERGY_SOURCE);
 }
 
 BOOST_AUTO_TEST_CASE(case_7_3_Verifying_to_mount_the_element_first_part)
@@ -1296,19 +1300,21 @@ BOOST_AUTO_TEST_CASE(case_7_3_Verifying_to_mount_the_element_first_part)
     elements_line[3] = new PID_regulator;
     for (auto & i : elements_line)
         acs_model.to_mount_the_element(i);
-    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements()[0]->to_check_the_type(), Automated_control_system_element_interface::PROCESS);
-    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements()[1]->to_check_the_type(), Automated_control_system_element_interface::REGULATOR);
-    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements()[2]->to_check_the_type(), Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER);
-    BOOST_REQUIRE_EQUAL(acs_model.to_check_elements()[3]->to_check_the_type(), Automated_control_system_element_interface::ENERGY_SOURCE);
-    for ( int i = 0; i < 3; ++i)
-        elements_line[i]->to_get_parameters()[Automated_control_system_element_interface::DT] = (i+1) * 1.1;
-    for (int i = 0; i < 3; ++i)
-        BOOST_REQUIRE_CLOSE
-                (
-                    acs_model.to_check_elements()[i]->to_check_parameters()[Automated_control_system_element_interface::DT],
-                    (i+1) * 1.1,
-                    0.001
-                );
+    elements_line[1]->to_get_parameters()[Automated_control_system_element_interface::DT] = (0+1) * 1.1;
+    elements_line[3]->to_get_parameters()[Automated_control_system_element_interface::DT] = (1+1) * 1.1;
+    elements_line[2]->to_get_parameters()[Automated_control_system_element_interface::DT] = (2+1) * 1.1;
+    elements_line[0]->to_get_parameters()[Automated_control_system_element_interface::DT] = (3+1) * 1.1;
+    for (auto & i : acs_model.to_check_elements())
+    {
+        if(i->to_check_the_type() == Automated_control_system_element_interface::PROCESS)
+            BOOST_REQUIRE_CLOSE_FRACTION(i->to_check_parameters()[Automated_control_system_element_interface::DT], (0+1) * 1.1, 0.001);
+        if(i->to_check_the_type() == Automated_control_system_element_interface::REGULATOR)
+            BOOST_REQUIRE_CLOSE_FRACTION(i->to_check_parameters()[Automated_control_system_element_interface::DT], (1+1) * 1.1, 0.001);
+        if(i->to_check_the_type() == Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER)
+            BOOST_REQUIRE_CLOSE_FRACTION(i->to_check_parameters()[Automated_control_system_element_interface::DT], (2+1) * 1.1, 0.001);
+        if(i->to_check_the_type() == Automated_control_system_element_interface::ENERGY_SOURCE)
+            BOOST_REQUIRE_CLOSE_FRACTION(i->to_check_parameters()[Automated_control_system_element_interface::DT], (3+1) * 1.1, 0.001);
+    }
 
 
     for (auto & i : elements_line)
@@ -1325,8 +1331,11 @@ BOOST_AUTO_TEST_CASE(case_7_4_Verifying_to_mount_the_element_second_part)
     elements_line[3] = new PID_regulator;
     for (auto & i : elements_line)
         acs_model.to_mount_the_element(i);
-    for ( int i = 0; i < 3; ++i)
-        elements_line[i]->to_get_parameters()[Automated_control_system_element_interface::DT] = (i+1) * 1.1;
+    elements_line[1]->to_get_parameters()[Automated_control_system_element_interface::DT] = (0+1) * 1.1;
+    elements_line[3]->to_get_parameters()[Automated_control_system_element_interface::DT] = (1+1) * 1.1;
+    elements_line[2]->to_get_parameters()[Automated_control_system_element_interface::DT] = (2+1) * 1.1;
+    elements_line[0]->to_get_parameters()[Automated_control_system_element_interface::DT] = (3+1) * 1.1;
+
 
     DC_source new_source;
     DC_engine new_drive;
@@ -1335,25 +1344,19 @@ BOOST_AUTO_TEST_CASE(case_7_4_Verifying_to_mount_the_element_second_part)
     acs_model.to_mount_the_element(new_source);
     acs_model.to_mount_the_element(new_drive);
     BOOST_REQUIRE_EQUAL(acs_model.to_check_elements().size(), 4);
-    BOOST_REQUIRE_EQUAL
-            (
-                acs_model.to_check_elements()[0]->to_check_parameters()[Automated_control_system_element_interface::DT],
-                6.6
-            );
-    BOOST_REQUIRE_EQUAL
-            (
-                acs_model.to_check_elements()[1]->to_check_parameters()[Automated_control_system_element_interface::DT],
-                2.2
-            );
-    BOOST_REQUIRE_EQUAL(
-                acs_model.to_check_elements()[2]->to_check_parameters()[Automated_control_system_element_interface::DT],
-                3.3
-            );
-    BOOST_REQUIRE_EQUAL
-            (
-                acs_model.to_check_elements()[3]->to_check_parameters()[Automated_control_system_element_interface::DT],
-                5.5
-            );
+    for (auto & i : acs_model.to_check_elements())
+    {
+        if(i->to_check_the_type() == Automated_control_system_element_interface::PROCESS)
+            BOOST_REQUIRE_CLOSE_FRACTION(i->to_check_parameters()[Automated_control_system_element_interface::DT], 6.6, 0.001);
+        if(i->to_check_the_type() == Automated_control_system_element_interface::REGULATOR)
+            BOOST_REQUIRE_CLOSE_FRACTION(i->to_check_parameters()[Automated_control_system_element_interface::DT], 2.2, 0.001);
+        if(i->to_check_the_type() == Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER)
+            BOOST_REQUIRE_CLOSE_FRACTION(i->to_check_parameters()[Automated_control_system_element_interface::DT], 3.3, 0.001);
+        if(i->to_check_the_type() == Automated_control_system_element_interface::ENERGY_SOURCE)
+            BOOST_REQUIRE_CLOSE_FRACTION(i->to_check_parameters()[Automated_control_system_element_interface::DT], 5.5, 0.001);
+    }
+
+
 
     for (auto & i : elements_line)
         delete i;

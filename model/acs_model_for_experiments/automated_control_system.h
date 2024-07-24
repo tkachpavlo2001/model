@@ -10,13 +10,11 @@
 
 class Automated_control_system
 {
-#define AMOUNT_OF_ELEMENTS 4
 private:
-    std::array<bool, AMOUNT_OF_ELEMENTS> command_to_delete;
-    Automated_control_system_element_interface * p_process;
-    Automated_control_system_element_interface * p_regulator;
-    Automated_control_system_element_interface * p_definder;
-    Automated_control_system_element_interface * p_source;
+    DC_engine * p_process;
+    PID_regulator * p_regulator;
+    Reference_signal_definder_static * p_definder;
+    DC_source * p_source;
     std::vector<Automated_control_system_element_interface *> elements;
     void reset_vector_of_elements(Automated_control_system_element_interface * = nullptr);
 public:
