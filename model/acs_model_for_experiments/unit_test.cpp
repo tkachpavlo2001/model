@@ -1380,4 +1380,84 @@ BOOST_AUTO_TEST_CASE(case_7_5_Verifying_to_set_dt)
         BOOST_REQUIRE(i->to_check_parameters()[Automated_control_system_element_interface::DT] == 2);
 }
 
+BOOST_AUTO_TEST_CASE(case_7_6_Verifying_to_check_certain_element_ALL_methods_of_this_kind)
+{
+    Automated_control_system acs_model;
+    std::vector<Automated_control_system_element_interface *> elements_line(4);
+    elements_line[0] = new DC_source;
+    elements_line[1] = new DC_engine;
+    elements_line[2] = new Reference_signal_definder_static;
+    elements_line[3] = new PID_regulator;
+    for (auto & i : elements_line)
+        acs_model.to_mount_the_element(i);
+    elements_line[1]->to_get_parameters()[Automated_control_system_element_interface::DT] = (0+1) * 1.1;
+    elements_line[3]->to_get_parameters()[Automated_control_system_element_interface::DT] = (1+1) * 1.1;
+    elements_line[2]->to_get_parameters()[Automated_control_system_element_interface::DT] = (2+1) * 1.1;
+    elements_line[0]->to_get_parameters()[Automated_control_system_element_interface::DT] = (3+1) * 1.1;
+
+
+    DC_source new_source;
+    DC_engine new_drive;
+    new_source.to_set_dt(5.5);
+    new_drive.to_set_dt(6.6);
+    acs_model.to_mount_the_element(new_source);
+    acs_model.to_mount_the_element(new_drive);
+
+    BOOST_REQUIRE_CLOSE_FRACTION(acs_model.to_check_process()->to_check_parameters()[Automated_control_system_element_interface::DT], 6.6, 0.001);
+    BOOST_REQUIRE_CLOSE_FRACTION(acs_model.to_check_regulator()->to_check_parameters()[Automated_control_system_element_interface::DT], 2.2, 0.001);
+    BOOST_REQUIRE_CLOSE_FRACTION(acs_model.to_check_definder()->to_check_parameters()[Automated_control_system_element_interface::DT], 3.3, 0.001);
+    BOOST_REQUIRE_CLOSE_FRACTION(acs_model.to_check_source()->to_check_parameters()[Automated_control_system_element_interface::DT], 5.5, 0.001);
+
+    BOOST_REQUIRE_CLOSE_FRACTION(acs_model.to_check_certain_element(Automated_control_system_element_interface::PROCESS)->to_check_parameters()[Automated_control_system_element_interface::DT], 6.6, 0.001);
+    BOOST_REQUIRE_CLOSE_FRACTION(acs_model.to_check_certain_element(Automated_control_system_element_interface::REGULATOR)->to_check_parameters()[Automated_control_system_element_interface::DT], 2.2, 0.001);
+    BOOST_REQUIRE_CLOSE_FRACTION(acs_model.to_check_certain_element(Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER)->to_check_parameters()[Automated_control_system_element_interface::DT], 3.3, 0.001);
+    BOOST_REQUIRE_CLOSE_FRACTION(acs_model.to_check_certain_element(Automated_control_system_element_interface::ENERGY_SOURCE)->to_check_parameters()[Automated_control_system_element_interface::DT], 5.5, 0.001);
+
+    Automated_control_system acs_model_2;
+    std::vector<const Automated_control_system_element_interface *> p_elements = acs_model_2.to_check_elements();
+
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_process(), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_regulator(), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_definder(), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_source(), nullptr);
+
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::PROCESS), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::REGULATOR), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::ENERGY_SOURCE), nullptr);
+
+
+    acs_model_2.to_mount_the_element(elements_line[1]);
+
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_regulator(), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_definder(), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_source(), nullptr);
+
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::REGULATOR), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::ENERGY_SOURCE), nullptr);
+
+
+    acs_model_2.to_mount_the_element(elements_line[3]);
+
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_definder(), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_source(), nullptr);
+
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER), nullptr);
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::ENERGY_SOURCE), nullptr);
+
+
+    acs_model_2.to_mount_the_element(elements_line[2]);
+
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_source(), nullptr);
+
+    BOOST_REQUIRE_EQUAL(acs_model_2.to_check_certain_element(Automated_control_system_element_interface::ENERGY_SOURCE), nullptr);
+
+
+
+
+    for (auto & i : elements_line)
+        delete i;
+}
+
 BOOST_AUTO_TEST_SUITE_END()

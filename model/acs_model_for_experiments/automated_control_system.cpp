@@ -61,6 +61,14 @@ void Automated_control_system::reset_vector_of_elements(Automated_control_system
     }
 }
 
+Automated_control_system_element_interface * Automated_control_system::to_get_certain_element(Automated_control_system_element_interface::type_of_element TYPE)
+{
+    for (auto & i : elements)
+        if (i != nullptr)
+            if (i->to_check_the_type() == TYPE) return i;
+    return nullptr;
+}
+
 Automated_control_system::Automated_control_system()
 {
     reset_vector_of_elements();
@@ -124,4 +132,32 @@ void Automated_control_system::to_calculate() // can be paralleled
     if ( p_process!=nullptr && p_source!=nullptr) p_process->to_receive_input_signal(p_source->to_get_output_signal());
 
     for(auto i : elements) i->to_calculate();
+}
+
+const Automated_control_system_element_interface * Automated_control_system::to_check_certain_element(Automated_control_system_element_interface::type_of_element TYPE) const
+{
+    for (auto & i : elements)
+        if (i != nullptr)
+            if (i->to_check_the_type() == TYPE) return i;
+    return nullptr;
+}
+
+const Automated_control_system_element_interface * Automated_control_system::to_check_process() const
+{
+    return to_check_certain_element(Automated_control_system_element_interface::PROCESS);
+}
+
+const Automated_control_system_element_interface * Automated_control_system::to_check_regulator() const
+{
+    return to_check_certain_element(Automated_control_system_element_interface::REGULATOR);
+}
+
+const Automated_control_system_element_interface * Automated_control_system::to_check_definder() const
+{
+    return to_check_certain_element(Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER);
+}
+
+const Automated_control_system_element_interface * Automated_control_system::to_check_source() const
+{
+    return to_check_certain_element(Automated_control_system_element_interface::ENERGY_SOURCE);
 }

@@ -17,13 +17,19 @@ private:
     DC_source * p_source;
     std::vector<Automated_control_system_element_interface *> elements;
     void reset_vector_of_elements(Automated_control_system_element_interface * = nullptr);
+    Automated_control_system_element_interface * to_get_certain_element(Automated_control_system_element_interface::type_of_element);
 public:
     Automated_control_system();
     ~Automated_control_system();
     void to_set_dt(double);
-    const std::vector<const Automated_control_system_element_interface *> to_check_elements() const;
     bool to_mount_the_element(Automated_control_system_element_interface *);
     bool to_mount_the_element(Automated_control_system_element_interface &);
+    const std::vector<const Automated_control_system_element_interface *> to_check_elements() const;
+    const Automated_control_system_element_interface * to_check_certain_element(Automated_control_system_element_interface::type_of_element) const;
+    const Automated_control_system_element_interface * to_check_process() const;
+    const Automated_control_system_element_interface * to_check_regulator() const;
+    const Automated_control_system_element_interface * to_check_definder() const;
+    const Automated_control_system_element_interface * to_check_source() const;
     void to_calculate();
 };
 
