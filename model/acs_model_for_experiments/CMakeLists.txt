@@ -32,7 +32,7 @@ add_library(
 #    ${CMAKE_CURRENT_SOURCE_DIR}
 #s)
 
-add_executable( acs_model_for_experiments main.cpp automated_control_system.h automated_control_system.cpp)
+add_executable( acs_model_for_experiments main.cpp automated_control_system.h automated_control_system.cpp registrator.h registrator.cpp)
 
 add_executable( unit_test unit_test.cpp automated_control_system.h automated_control_system.cpp)
 
