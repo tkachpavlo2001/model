@@ -44,7 +44,7 @@ public:
     }
 };
 
-//ask_tester question(verbose_mode_of_calculations);
+ask_tester question(verbose_mode_of_calculations);
 
 
 double calculation_loop(DC_engine & _drive, double _t_length, double _dt_chosen, bool _show_mode = verbose_mode_of_calculations)

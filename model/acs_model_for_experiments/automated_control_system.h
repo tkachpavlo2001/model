@@ -16,12 +16,18 @@ private:
     Reference_signal_definder_static * p_definder;
     DC_source * p_source;
     std::vector<Automated_control_system_element_interface *> elements;
+    double dt;
+    double t;
+
     void reset_vector_of_elements(Automated_control_system_element_interface * = nullptr);
     Automated_control_system_element_interface * to_get_certain_element(Automated_control_system_element_interface::type_of_element);
 public:
     Automated_control_system();
     ~Automated_control_system();
     void to_set_dt(double);
+    double to_check_dt() const; //not tested
+    void to_set_t(double = 0); //not tested
+    double to_check_t() const; //not tested
     bool to_mount_the_element(Automated_control_system_element_interface *);
     bool to_mount_the_element(Automated_control_system_element_interface &);
     const std::vector<const Automated_control_system_element_interface *> to_check_elements() const;

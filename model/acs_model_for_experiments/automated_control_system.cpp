@@ -74,6 +74,8 @@ Automated_control_system::Automated_control_system()
     reset_vector_of_elements();
     for (auto & i : elements)
         i = nullptr;
+    t = 0;
+    dt = 0;
 }
 
 Automated_control_system::~Automated_control_system()
@@ -82,7 +84,22 @@ Automated_control_system::~Automated_control_system()
 
 void Automated_control_system::to_set_dt(double _dt)
 {
+    dt = _dt;
     for (auto& i : elements) if(i != nullptr) i->to_set_dt(_dt);
+}
+
+double Automated_control_system::to_check_dt() const //not tested
+{
+    return dt;
+}
+
+void Automated_control_system::to_set_t(double _t) //not tested
+{
+    t = _t;
+}
+double Automated_control_system::to_check_t() const //not tested
+{
+    return t;
 }
 
 const std::vector<const Automated_control_system_element_interface *> Automated_control_system::to_check_elements() const
@@ -142,6 +159,8 @@ void Automated_control_system::to_calculate() // can be paralleled
     if ( p_process!=nullptr && p_source!=nullptr) p_process->to_receive_input_signal(p_source->to_get_output_signal());
 
     for(auto i : elements) i->to_calculate();
+
+    t += dt;
 }
 
 const Automated_control_system_element_interface * Automated_control_system::to_check_certain_element(Automated_control_system_element_interface::type_of_element TYPE) const
