@@ -18,6 +18,7 @@ protected:
 public:
     Registrator();
     virtual ~Registrator() = 0;
+
     const char * to_check_name_of_file() const;
     void to_set_name_of_file(std::string);
     Registrator & operator<<(const Automated_control_system&);
@@ -26,13 +27,14 @@ public:
 class Registrator_to_txt_file : public Registrator
 {
 private:
-    std::fstream fout;
+    std::ofstream fout;
     virtual void to_record() override;
 protected:
     bool to_actulize_the_fist_record_commited_status();
 public:
     Registrator_to_txt_file();
     virtual ~Registrator_to_txt_file() override;
+    bool is_open();
 };
 
 #endif // REGISTRATOR_H

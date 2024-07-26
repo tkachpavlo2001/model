@@ -9,12 +9,15 @@
 #include"reference_signal_definder_static.h"
 #include"dc_source.h"
 #include"automated_control_system.h"
+#include"registrator.h"
 
 #include<memory>
 #include<algorithm>
 #include<cmath>
 #include<array>
 #include<sstream>
+#include<fstream>
+#include<cctype>
 
 
 
@@ -41,7 +44,7 @@ public:
     }
 };
 
-ask_tester question(verbose_mode_of_calculations);
+//ask_tester question(verbose_mode_of_calculations);
 
 
 double calculation_loop(DC_engine & _drive, double _t_length, double _dt_chosen, bool _show_mode = verbose_mode_of_calculations)
@@ -1458,6 +1461,128 @@ BOOST_AUTO_TEST_CASE(case_7_6_Verifying_to_check_certain_element_ALL_methods_of_
 
     for (auto & i : elements_line)
         delete i;
+}
+
+BOOST_AUTO_TEST_CASE(case_7_7_Verifying_to_check_ordered_elements)
+{
+    Automated_control_system acs_model;
+    std::vector<Automated_control_system_element_interface *> elements_line(4);
+    elements_line[0] = new DC_source;
+    elements_line[1] = new DC_engine;
+    elements_line[2] = new Reference_signal_definder_static;
+    elements_line[3] = new PID_regulator;
+    for (auto & i : elements_line)
+        acs_model.to_mount_the_element(i);
+    auto out_of_method = acs_model.to_check_ordered_elements();
+    BOOST_REQUIRE_EQUAL(out_of_method[0], elements_line[2]);
+    BOOST_REQUIRE_EQUAL(out_of_method[1], elements_line[3]);
+    BOOST_REQUIRE_EQUAL(out_of_method[2], elements_line[0]);
+    BOOST_REQUIRE_EQUAL(out_of_method[3], elements_line[1]);
+
+    for ( auto & i : elements_line)
+        delete i;
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(Register_testing)
+
+BOOST_AUTO_TEST_CASE(case_8_1_Register_creating_and_the_file_opening)
+{
+    const char * file_name_of_the_case = "unit_test_run_case_8_1";
+
+    {
+        Registrator_to_txt_file * p_fout = nullptr;
+        p_fout = new Registrator_to_txt_file;
+        BOOST_REQUIRE(p_fout != nullptr);
+        delete p_fout;
+    }
+
+    {
+        Registrator_to_txt_file fout;
+        fout.to_set_name_of_file(file_name_of_the_case);
+        BOOST_REQUIRE(!fout.is_open());
+        Automated_control_system acs_model;
+        DC_engine * p_drive = new DC_engine;
+        acs_model.to_mount_the_element(p_drive);
+        fout << acs_model;
+        BOOST_REQUIRE(fout.is_open());
+        delete p_drive;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(case_8_2_Its_function_verifying)
+{
+    const char * file_name_of_the_case = "unit_test_run_case_8_2";
+    Registrator_to_txt_file fout;
+    fout.to_set_name_of_file(file_name_of_the_case);
+
+    Automated_control_system acs_model;
+
+    std::vector<Automated_control_system_element_interface *> elements_line(4);
+    elements_line[0] = new Reference_signal_definder_static;
+    elements_line[1] = new PID_regulator;
+    elements_line[2] = new DC_source;
+    elements_line[3] = new DC_engine;
+
+    unsigned int k = 0;
+    double num_to_multiply = 1.01;
+    double num_to_add = 100.001;
+
+    for(auto & i : elements_line)
+        for(auto & j : i->to_get_parameters())
+        {
+            j = num_to_multiply * k;
+            ++k;
+        }
+
+    for(auto & i : elements_line)
+        acs_model.to_mount_the_element(i);
+
+    fout << acs_model;
+
+    for(auto & i : elements_line)
+        for(auto & j : i->to_get_parameters())
+        {
+            j += num_to_add;
+        }
+
+    fout << acs_model;
+
+    char temp_char = '\0';
+    double temp_num = 0;
+    k = 0;
+    std::fstream fin(file_name_of_the_case + std::string(".txt"));
+    while( temp_char != '\n')
+    {
+        temp_char = fin.peek();
+        if(temp_char == '\n')
+            continue;
+        if(isdigit(temp_char))
+        {
+            fin >> temp_num;
+            BOOST_REQUIRE_CLOSE_FRACTION(temp_num, k * num_to_multiply, 0.001);
+            ++k;
+        }
+        fin.get();
+    }
+    fin.get();
+    while( temp_char != '\n')
+    {
+        temp_char = fin.peek();
+        if(temp_char == '\n')
+            continue;
+        if(isdigit(temp_char))
+        {
+            fin >> temp_num;
+            BOOST_REQUIRE_EQUAL(temp_num, k * num_to_multiply + num_to_add);
+            ++k;
+        }
+        fin.get();
+    }
+    fin.get();
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

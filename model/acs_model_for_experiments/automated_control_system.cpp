@@ -91,6 +91,16 @@ const std::vector<const Automated_control_system_element_interface *> Automated_
     return the_return;
 }
 
+const std::vector<const Automated_control_system_element_interface *> Automated_control_system::to_check_ordered_elements() const
+{
+    std::vector<const Automated_control_system_element_interface *> the_return;
+    the_return.push_back(to_check_definder());
+    the_return.push_back(to_check_regulator());
+    the_return.push_back(to_check_source());
+    the_return.push_back(to_check_process());
+    return the_return;
+}
+
 bool Automated_control_system::to_mount_the_element(Automated_control_system_element_interface * p_element)
 {
     switch (p_element->to_check_the_type())

@@ -34,7 +34,7 @@ add_library(
 
 add_executable( acs_model_for_experiments main.cpp automated_control_system.h automated_control_system.cpp registrator.h registrator.cpp)
 
-add_executable( unit_test unit_test.cpp automated_control_system.h automated_control_system.cpp)
+add_executable( unit_test unit_test.cpp automated_control_system.h automated_control_system.cpp registrator.h registrator.cpp)
 
 target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )
 
