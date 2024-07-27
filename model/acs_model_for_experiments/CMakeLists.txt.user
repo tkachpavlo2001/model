@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 9.0.2, 2024-07-26T15:06:57. -->
+<!-- Written by QtCreator 9.0.2, 2024-07-27T15:29:46. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -123,6 +123,7 @@
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_7_5_Verifying_to_set_dt">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_7_6_Verifying_to_check_certain_element_ALL_methods_of_this_kind">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_7_7_Verifying_to_check_ordered_elements">Checked</value>
+    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_7_8_Verifying_t_functions">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_8_1_Register_creating_and_the_file_opening">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_8_2_Its_function_verifying">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:reference_signal_definder_static_calculation_testing">Checked</value>

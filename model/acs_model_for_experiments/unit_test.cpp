@@ -1483,6 +1483,17 @@ BOOST_AUTO_TEST_CASE(case_7_7_Verifying_to_check_ordered_elements)
         delete i;
 }
 
+BOOST_AUTO_TEST_CASE(case_7_8_Verifying_t_functions)
+{
+    Automated_control_system acs_model;
+    acs_model.to_set_t(2.2);
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_t(), 2.2);
+    acs_model.to_set_dt(3.3);
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_dt(), 3.3);
+    acs_model.to_calculate();
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_t(), 5.5);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 
@@ -1529,6 +1540,11 @@ BOOST_AUTO_TEST_CASE(case_8_2_Its_function_verifying)
     unsigned int k = 0;
     double num_to_multiply = 1.01;
     double num_to_add = 100.001;
+    double t = 1.1;
+    double dt = 2.2;
+
+    acs_model.to_set_t(t);
+    acs_model.to_set_dt(dt);
 
     for(auto & i : elements_line)
         for(auto & j : i->to_get_parameters())
@@ -1552,6 +1568,7 @@ BOOST_AUTO_TEST_CASE(case_8_2_Its_function_verifying)
 
     char temp_char = '\0';
     double temp_num = 0;
+    bool first_time = true;
     k = 0;
     std::fstream fin(file_name_of_the_case + std::string(".txt"));
     while( temp_char != '\n')
@@ -1562,12 +1579,17 @@ BOOST_AUTO_TEST_CASE(case_8_2_Its_function_verifying)
         if(isdigit(temp_char))
         {
             fin >> temp_num;
-            BOOST_REQUIRE_CLOSE_FRACTION(temp_num, k * num_to_multiply, 0.001);
-            ++k;
+            if(first_time) { BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t, 0.001); first_time = false; }
+            else
+            {
+                BOOST_REQUIRE_CLOSE_FRACTION(temp_num, k * num_to_multiply, 0.001);
+                ++k;
+            }
         }
         fin.get();
     }
     fin.get();
+    first_time = true;
     while( temp_char != '\n')
     {
         temp_char = fin.peek();
@@ -1576,8 +1598,12 @@ BOOST_AUTO_TEST_CASE(case_8_2_Its_function_verifying)
         if(isdigit(temp_char))
         {
             fin >> temp_num;
-            BOOST_REQUIRE_EQUAL(temp_num, k * num_to_multiply + num_to_add);
-            ++k;
+            if(first_time) { BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t, 0.001); first_time = false; }
+            else
+            {
+                BOOST_REQUIRE_CLOSE_FRACTION(temp_num, k * num_to_multiply, 0.001);
+                ++k;
+            }
         }
         fin.get();
     }

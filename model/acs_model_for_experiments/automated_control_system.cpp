@@ -97,6 +97,7 @@ void Automated_control_system::to_set_t(double _t) //not tested
 {
     t = _t;
 }
+
 double Automated_control_system::to_check_t() const //not tested
 {
     return t;
@@ -151,14 +152,14 @@ bool Automated_control_system::to_mount_the_element(Automated_control_system_ele
 
 void Automated_control_system::to_calculate() // can be paralleled
 {
-    if ( p_regulator!=nullptr && p_definder!=nullptr) p_regulator->to_receive_reference_signal(p_definder->to_get_output_signal());
-    if ( p_regulator!=nullptr && p_process!=nullptr)  p_regulator->to_receive_input_signal(p_process->to_get_output_signal());
+    if ( to_check_regulator()!=nullptr && to_check_definder()!=nullptr) p_regulator->to_receive_reference_signal(p_definder->to_get_output_signal());
+    if ( to_check_regulator()!=nullptr && to_check_process()!=nullptr)  p_regulator->to_receive_input_signal(p_process->to_get_output_signal());
 
-    if ( p_source!=nullptr && p_regulator!=nullptr) p_source->to_receive_input_signal(p_regulator->to_get_output_signal());
+    if ( to_check_source()!=nullptr && to_check_regulator()!=nullptr) p_source->to_receive_input_signal(p_regulator->to_get_output_signal());
 
-    if ( p_process!=nullptr && p_source!=nullptr) p_process->to_receive_input_signal(p_source->to_get_output_signal());
+    if ( to_check_process()!=nullptr && to_check_source()!=nullptr) p_process->to_receive_input_signal(p_source->to_get_output_signal());
 
-    for(auto i : elements) i->to_calculate();
+    for(auto i : elements) if(i != nullptr) i->to_calculate();
 
     t += dt;
 }

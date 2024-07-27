@@ -62,9 +62,9 @@ void Registrator_to_txt_file::to_record()
 
     const Automated_control_system & acs_model = *to_check_acs_model_status();
 
+    fout << acs_model.to_check_t() << '\t';
     for (auto & i : acs_model.to_check_ordered_elements())
         if (i != nullptr) for (auto & j : i->to_check_parameters())
             fout << j << '\t';
-
     fout << std::endl;
 }
