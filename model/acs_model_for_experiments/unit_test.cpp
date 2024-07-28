@@ -10,6 +10,7 @@
 #include"dc_source.h"
 #include"automated_control_system.h"
 #include"registrator.h"
+#include"experiment_executor.h"
 
 #include<memory>
 #include<algorithm>
@@ -1494,6 +1495,13 @@ BOOST_AUTO_TEST_CASE(case_7_8_Verifying_t_functions)
     BOOST_REQUIRE_EQUAL(acs_model.to_check_t(), 5.5);
 }
 
+BOOST_AUTO_TEST_CASE(case_7_8_Verifying_nullptr_run)
+{
+    Automated_control_system acs_model;
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_dt(), 0);
+    BOOST_REQUIRE_EQUAL(acs_model.to_check_t(), 0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 
@@ -1609,6 +1617,194 @@ BOOST_AUTO_TEST_CASE(case_8_2_Its_function_verifying)
     }
     fin.get();
 
+}
+
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(Experiment_executor_testing)
+
+BOOST_AUTO_TEST_CASE(case_9_1_Experiment_executor_creating)
+{
+    Experiment_executor * experiment = nullptr;
+    experiment = new Experiment_executor;
+    BOOST_REQUIRE(experiment != nullptr);
+    delete experiment;
+}
+
+BOOST_AUTO_TEST_CASE(case_9_2_Verifying_nullptr_run)
+{
+    Experiment_executor experiment;
+    experiment.to_set_result_title("case_9_2_Verifying_nullptr_run");
+    experiment.to_run();
+}
+
+BOOST_AUTO_TEST_CASE(case_9_3_Verifying_interval_initialized)
+{
+    const char * title = "case_9_{3,4,5,6}_Verifying_run";
+    Automated_control_system acs_model;
+    double t_init = 1;
+    acs_model.to_set_t(t_init);
+    acs_model.to_set_dt(0.01);
+    Experiment_executor experiment(&acs_model);
+    Experiment_executor experiment_2;
+    experiment.to_get_model_to_run(&acs_model);
+
+    double length = 2;
+    double interval = 0.5;
+    double fraction = 0.01;
+
+    experiment.to_set_t_length(length);
+    experiment.to_set_time_to_registrate(interval);
+    experiment.to_set_result_title(title);
+    experiment.to_run();
+
+    double temp_num;
+    char temp_char = '\0';
+    std::ifstream fin(std::string(title) + std::string(".txt"));
+    BOOST_REQUIRE(fin.is_open());
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init, 0.0001);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init + interval, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init + interval * 2, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin.close();
+}
+
+BOOST_AUTO_TEST_CASE(case_9_4_Verifying_interval_set)
+{
+    const char * title = "case_9_{3,4,5,6}_Verifying_run";
+    Automated_control_system acs_model;
+    double t_init = 1;
+    acs_model.to_set_t(t_init);
+    acs_model.to_set_dt(0.01);
+    Experiment_executor experiment(&acs_model);
+    Experiment_executor experiment_2;
+    experiment_2.to_get_model_to_run(&acs_model);
+
+    double length = 2;
+    double interval = 0.5;
+    double fraction = 0.01;
+
+    experiment.to_set_t_length(length);
+    experiment.to_set_time_to_registrate(interval);
+    experiment.to_set_result_title(title);
+    experiment.to_run();
+
+    double temp_num;
+    char temp_char = '\0';
+    std::ifstream fin(std::string(title) + std::string(".txt"));
+
+    experiment_2.to_set_t_length(length);
+    experiment_2.to_set_time_to_registrate(interval);
+    experiment_2.to_run();
+
+    temp_char = '\0';
+    BOOST_REQUIRE(fin.is_open());
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init + interval, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init + interval * 2, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin.close();
+}
+
+BOOST_AUTO_TEST_CASE(case_9_5_Verifying_amount_initialized)
+{
+    const char * title = "case_9_{3,4,5,6}_Verifying_run";
+    Automated_control_system acs_model;
+    double t_init = 1;
+    acs_model.to_set_t(t_init);
+    acs_model.to_set_dt(0.01);
+    Experiment_executor experiment(&acs_model);
+    experiment.to_get_model_to_run(&acs_model);
+
+    double length = 2;
+    double interval = 0.5;
+    double fraction = 0.01;
+
+    experiment.to_set_t_length(length);
+    experiment.to_set_time_to_registrate(interval);
+    experiment.to_set_result_title(title);
+    experiment.to_run();
+
+    double temp_num;
+    char temp_char = '\0';
+
+    std::ifstream fin(std::string(title) + std::string(".txt"));
+    temp_char = '\0';
+    BOOST_REQUIRE(fin.is_open());
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init + interval, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init + interval * 2, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin.close();
+}
+
+BOOST_AUTO_TEST_CASE(case_9_6_Verifying_amount_set)
+{
+    const char * title = "case_9_{3,4,5,6}_Verifying_run";
+    Automated_control_system acs_model;
+    double t_init = 1;
+    acs_model.to_set_t(t_init);
+    acs_model.to_set_dt(0.01);
+    Experiment_executor experiment(&acs_model);
+    Experiment_executor experiment_2;
+    experiment_2.to_set_result_title(title);
+    experiment_2.to_get_model_to_run(&acs_model);
+
+    double length = 2;
+    double interval = 0.5;
+    double fraction = 0.01;
+
+
+    double temp_num;
+    char temp_char = '\0';
+
+    experiment_2.to_set_t_length(length);
+    experiment_2.to_set_amount_of_registrations(length / interval);
+    experiment_2.to_set_result_title(title);
+    experiment_2.to_run();
+
+    std::ifstream fin(std::string(title) + std::string(".txt"));
+    temp_char = '\0';
+    BOOST_REQUIRE(fin.is_open());
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init + interval, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin >> temp_num;
+    BOOST_REQUIRE_CLOSE_FRACTION(temp_num, t_init + interval * 2, fraction);
+    while (temp_char != '\n')
+        temp_char = fin.get();
+    fin.close();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
