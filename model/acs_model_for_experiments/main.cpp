@@ -18,7 +18,20 @@ int main()
 
 
 void to_fill_process(std::shared_ptr<DC_engine> drive);
+void to_p_regulate();
+void to_pi_regulate();
+void to_pid_regulate();
 void first_try()
+{
+    to_p_regulate();
+    std::cout << std::endl;
+    to_pi_regulate();
+    std::cout << std::endl;
+    to_pid_regulate();
+    std::cout << std::endl;
+}
+
+void to_p_regulate()
 {
     std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
     std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
@@ -27,7 +40,9 @@ void first_try()
 
     to_fill_process(process);
     definder->to_set_signal(100);
-    regulator->to_set_koefficients(1000,1,1);
+    regulator->to_set_koefficients(1, 0, 0);
+    source->to_set_max_voltage(220);
+    source->to_set_min_voltage(-220);
 
     std::shared_ptr<Automated_control_system> acs_model = std::make_shared<Automated_control_system>();
     acs_model->to_mount_the_element(definder.get());
@@ -39,9 +54,65 @@ void first_try()
     experiment->to_get_model_to_run(acs_model.get());
     experiment->to_set_dt(1e-5);
     experiment->to_set_t_begin(0);
-    experiment->to_set_t_length(5);
+    experiment->to_set_t_length(10);
     experiment->to_set_time_to_registrate(1e-1);
-    experiment->to_set_result_title("The moment of true");
+    experiment->to_set_result_title("The moment of true_P_regulation");
+    experiment->to_run();
+}
+void to_pi_regulate()
+{
+    std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
+    std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
+    std::shared_ptr<DC_source> source = std::make_shared<DC_source>();
+    std::shared_ptr<DC_engine> process = std::make_shared<DC_engine>();
+
+    to_fill_process(process);
+    definder->to_set_signal(100);
+    regulator->to_set_koefficients(1, 1e-3, 0);
+    source->to_set_max_voltage(220);
+    source->to_set_min_voltage(-220);
+
+    std::shared_ptr<Automated_control_system> acs_model = std::make_shared<Automated_control_system>();
+    acs_model->to_mount_the_element(definder.get());
+    acs_model->to_mount_the_element(regulator.get());
+    acs_model->to_mount_the_element(source.get());
+    acs_model->to_mount_the_element(process.get());
+
+    std::shared_ptr<Experiment_executor_short_report> experiment = std::make_shared<Experiment_executor_short_report>();
+    experiment->to_get_model_to_run(acs_model.get());
+    experiment->to_set_dt(1e-5);
+    experiment->to_set_t_begin(0);
+    experiment->to_set_t_length(10);
+    experiment->to_set_time_to_registrate(1e-1);
+    experiment->to_set_result_title("The moment of true_PI_regulation");
+    experiment->to_run();
+}
+void to_pid_regulate()
+{
+    std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
+    std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
+    std::shared_ptr<DC_source> source = std::make_shared<DC_source>();
+    std::shared_ptr<DC_engine> process = std::make_shared<DC_engine>();
+
+    to_fill_process(process);
+    definder->to_set_signal(100); //definder->to_set_signal(100);
+    regulator->to_set_koefficients(1, 1e-1, 1e4); //regulator->to_set_koefficients(1, 1e-3, 0);
+    source->to_set_max_voltage(220);
+    source->to_set_min_voltage(-220);
+
+    std::shared_ptr<Automated_control_system> acs_model = std::make_shared<Automated_control_system>();
+    acs_model->to_mount_the_element(definder.get());
+    acs_model->to_mount_the_element(regulator.get());
+    acs_model->to_mount_the_element(source.get());
+    acs_model->to_mount_the_element(process.get());
+
+    std::shared_ptr<Experiment_executor_short_report> experiment = std::make_shared<Experiment_executor_short_report>();
+    experiment->to_get_model_to_run(acs_model.get());
+    experiment->to_set_dt(1e-5);
+    experiment->to_set_t_begin(0);
+    experiment->to_set_t_length(2); //experiment->to_set_t_length(10);
+    experiment->to_set_time_to_registrate(1e-3); //experiment->to_set_time_to_registrate(1e-1);
+    experiment->to_set_result_title("The moment of true_PID_regulation");
     experiment->to_run();
 }
 
@@ -107,7 +178,7 @@ void to_fill_process(std::shared_ptr<DC_engine> drive)
 
     std::array<double, DC_engine::SIZE> array_of_the_parameters_to_set = {0};
     array_of_the_parameters_to_set[DC_engine::DT] = dt_chosen;
-    array_of_the_parameters_to_set[DC_engine::INPUT_SIGNAL] = voltage_chosen;
+    array_of_the_parameters_to_set[DC_engine::INPUT_SIGNAL] = 0;
     array_of_the_parameters_to_set[DC_engine::KF] = kf_chosen;
     array_of_the_parameters_to_set[DC_engine::RESISTANCE] = resistance_chosen;
     array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_ENGINE] = inertia_chosen;
@@ -119,7 +190,9 @@ void to_fill_process(std::shared_ptr<DC_engine> drive)
 
     drive->to_set_all_parameters({array_of_the_parameters_to_set.begin(), array_of_the_parameters_to_set.end()});
 
-    // process_test_infinitive_run(drive,velocity_nominal_calculated_rad_per_second,torque_nominal_calculated); // do not enabale! only to debug
+    drive->to_receive_input_signal(220);
+
+    //process_test_infinitive_run(drive,velocity_nominal_calculated_rad_per_second,torque_nominal_calculated); // do not enabale! only to debug
 }
 void process_test_infinitive_run(std::shared_ptr<DC_engine> drive, double velocity, double torque)
 {
@@ -131,6 +204,8 @@ void process_test_infinitive_run(std::shared_ptr<DC_engine> drive, double veloci
         for (auto & i : drive->to_check_parameters())
             if (
                     &i == &(drive->to_check_parameters()[DC_engine::VELOCITY])
+                    ||
+                    &i == &(drive->to_check_parameters()[DC_engine::VOLTAGE])
                     ||
                     &i == &(drive->to_check_parameters()[DC_engine::TORQUE])
                     ||
