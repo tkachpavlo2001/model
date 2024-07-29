@@ -27,14 +27,23 @@ public:
 class Registrator_to_txt_file : public Registrator
 {
 private:
-    std::ofstream fout;
     virtual void to_record() override;
 protected:
+    std::ofstream fout;
     bool to_actulize_the_fist_record_commited_status();
 public:
     Registrator_to_txt_file();
     virtual ~Registrator_to_txt_file() override;
     bool is_open();
+};
+
+class Registrator_to_txt_file_short : public Registrator_to_txt_file
+{
+private:
+    virtual void to_record() override;
+public:
+    Registrator_to_txt_file_short();
+    virtual ~Registrator_to_txt_file_short() override;
 };
 
 #endif // REGISTRATOR_H

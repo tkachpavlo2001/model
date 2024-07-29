@@ -68,3 +68,40 @@ void Registrator_to_txt_file::to_record()
             fout << j << '\t';
     fout << std::endl;
 }
+
+void Registrator_to_txt_file_short::to_record()
+{
+    if(!Registrator::to_actulize_the_fist_record_commited_status())
+    {
+        std::string file_txt_name = std::string(to_check_name_of_file()) + std::string(".txt");
+        fout.open(file_txt_name);
+    }
+
+    const Automated_control_system & acs_model = *to_check_acs_model_status();
+
+    if(to_check_acs_model_status() != nullptr) fout << acs_model.to_check_t() << '\t';
+    if(to_check_acs_model_status() != nullptr) for (auto & i : acs_model.to_check_ordered_elements())
+        if (i != nullptr) for (auto & j : i->to_check_parameters())
+        {
+            if (
+                i->to_check_the_type() == Automated_control_system_element_interface::REFERENCE_SIGNAL_DEFINDER && &j == &(i->to_check_parameters()[Reference_signal_definder_static::OUTPUT_SIGNAL])
+                    ||
+                i->to_check_the_type() == Automated_control_system_element_interface::PROCESS && &j == &(i->to_check_parameters()[DC_engine::VELOCITY])
+                    ||
+                i->to_check_the_type() == Automated_control_system_element_interface::PROCESS && &j == &(i->to_check_parameters()[DC_engine::TORQUE_OF_LOAD])
+                    ||
+                i->to_check_the_type() == Automated_control_system_element_interface::PROCESS && &j == &(i->to_check_parameters()[DC_engine::VOLTAGE])
+
+                )
+            fout << j << '\t';
+        }
+    fout << std::endl;
+}
+Registrator_to_txt_file_short::Registrator_to_txt_file_short() : Registrator_to_txt_file()
+{
+    ;
+}
+Registrator_to_txt_file_short::~Registrator_to_txt_file_short()
+{
+    ;
+}

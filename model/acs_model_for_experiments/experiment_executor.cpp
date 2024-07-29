@@ -60,6 +60,31 @@ void Experiment_executor::to_run() const
     delete own_registrator;
 }
 
+
+void Experiment_executor::to_run(Registrator * own_registrator) const
+{
+    double current_time = 0;
+    if (acs_model != nullptr) current_time = acs_model->to_check_t();
+    double last_show_time = current_time;
+
+    Registrator & fout = *own_registrator;
+    fout.to_set_name_of_file(results_title);
+
+    fout << *acs_model;
+    if (acs_model != nullptr) while(current_time <= t_begin + t_length)
+    {
+        acs_model->to_calculate();
+        current_time = acs_model->to_check_t();
+        if (current_time - last_show_time >= time_to_show)
+        {
+            fout << *acs_model;
+            last_show_time = current_time;
+        }
+    }
+    fout << *acs_model;
+
+}
+
 void Experiment_executor::to_set_dt(double _dt)
 {
     dt = _dt;
@@ -91,4 +116,11 @@ void Experiment_executor::to_set_amount_of_registrations(double _amount_of_show)
     amount_of_show = _amount_of_show;
     interval = 0;
     reset_interval();
+}
+
+void Experiment_executor_short_report::to_run() const
+{
+    Registrator * own_registrator = new Registrator_to_txt_file_short;
+    Experiment_executor::to_run(own_registrator);
+    delete own_registrator;
 }
