@@ -150,7 +150,7 @@ bool Automated_control_system::to_mount_the_element(Automated_control_system_ele
     return to_mount_the_element(&r_element);
 }
 
-void Automated_control_system::to_calculate() // can be paralleled
+void Automated_control_system::to_communicate()
 {
     if ( to_check_regulator()!=nullptr && to_check_definder()!=nullptr) p_regulator->to_receive_reference_signal(p_definder->to_get_output_signal());
     if ( to_check_regulator()!=nullptr && to_check_process()!=nullptr)  p_regulator->to_receive_input_signal(p_process->to_get_output_signal());
@@ -158,10 +158,20 @@ void Automated_control_system::to_calculate() // can be paralleled
     if ( to_check_source()!=nullptr && to_check_regulator()!=nullptr) p_source->to_receive_input_signal(p_regulator->to_get_output_signal());
 
     if ( to_check_process()!=nullptr && to_check_source()!=nullptr) p_process->to_receive_input_signal(p_source->to_get_output_signal());
+}
+
+void Automated_control_system::to_plus_dt()
+{
+    t += dt;
+}
+
+void Automated_control_system::to_calculate() // can be paralleled
+{
+    to_communicate();
 
     for(auto i : elements) if(i != nullptr) i->to_calculate();
 
-    t += dt;
+    to_plus_dt();
 }
 
 const Automated_control_system_element_interface * Automated_control_system::to_check_certain_element(Automated_control_system_element_interface::type_of_element TYPE) const
@@ -190,4 +200,16 @@ const Automated_control_system_element_interface * Automated_control_system::to_
 const Automated_control_system_element_interface * Automated_control_system::to_check_source() const
 {
     return to_check_certain_element(Automated_control_system_element_interface::ENERGY_SOURCE);
+}
+
+#include<algorithm>
+#include<execution>
+
+void Automated_control_system_paralleled::to_calculate()
+{
+    to_communicate();
+
+    std::for_each(std::execution::par,elements.begin(), elements.end(), [](auto i) {if(i != nullptr) i->to_calculate(); } );
+
+    to_plus_dt();
 }
