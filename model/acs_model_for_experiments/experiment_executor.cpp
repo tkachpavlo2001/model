@@ -36,26 +36,12 @@ void Experiment_executor::to_set_result_title(const char * _title)
 
 void Experiment_executor::to_run() const
 {
-    double current_time = 0;
-    if (acs_model != nullptr) current_time = acs_model->to_check_t();
-    double last_show_time = current_time;
 
     Registrator * own_registrator = new Registrator_to_txt_file;
     Registrator & fout = *own_registrator;
     fout.to_set_name_of_file(results_title);
 
-    fout << *acs_model;
-    if (acs_model != nullptr) while(current_time <= t_begin + t_length)
-    {
-        acs_model->to_calculate();
-        current_time = acs_model->to_check_t();
-        if (current_time - last_show_time >= time_to_show)
-        {
-            fout << *acs_model;
-            last_show_time = current_time;
-        }
-    }
-    fout << *acs_model;
+    to_run(own_registrator);
 
     delete own_registrator;
 }
@@ -63,23 +49,26 @@ void Experiment_executor::to_run() const
 
 void Experiment_executor::to_run(Registrator * own_registrator) const
 {
-    double current_time = 0;
-    if (acs_model != nullptr) current_time = acs_model->to_check_t();
-    double last_show_time = current_time;
-
     Registrator & fout = *own_registrator;
     fout.to_set_name_of_file(results_title);
 
+    double current_time;
+    if (acs_model != nullptr) current_time = acs_model->to_check_t();
+    double start_time = current_time;
+    double last_show_time = current_time;
+
+    unsigned int show_num = 0;
     fout << *acs_model;
     if (acs_model != nullptr) while(current_time <= t_begin + t_length)
     {
-        acs_model->to_calculate();
-        current_time = acs_model->to_check_t();
         if (current_time - last_show_time >= time_to_show)
         {
             fout << *acs_model;
-            last_show_time = current_time;
+            ++show_num;
+            last_show_time = start_time + show_num * time_to_show;
         }
+        acs_model->to_calculate();
+        current_time = acs_model->to_check_t();
     }
     fout << *acs_model;
 
