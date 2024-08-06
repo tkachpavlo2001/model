@@ -40,6 +40,8 @@ add_executable( acs_model_for_experiments
     registrator.cpp
     experiment_executor.h
     experiment_executor.cpp
+    default_configuration_setter.h
+    default_configuration_setter.cpp
 )
 
 add_executable( unit_test
