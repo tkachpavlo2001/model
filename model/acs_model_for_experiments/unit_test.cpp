@@ -11,6 +11,7 @@
 #include"automated_control_system.h"
 #include"registrator.h"
 #include"experiment_executor.h"
+#include"default_configuration_setter.h"
 
 #include<memory>
 #include<algorithm>
@@ -1505,9 +1506,9 @@ BOOST_AUTO_TEST_CASE(case_7_8_Verifying_nullptr_run)
 BOOST_AUTO_TEST_SUITE_END()
 
 
-BOOST_AUTO_TEST_SUITE(Register_testing)
+BOOST_AUTO_TEST_SUITE(Registrator_testing)
 
-BOOST_AUTO_TEST_CASE(case_8_1_Register_creating_and_the_file_opening)
+BOOST_AUTO_TEST_CASE(case_8_1_Registrator_creating_and_the_file_opening)
 {
     const char * file_name_of_the_case = "unit_test_run_case_8_1";
 
@@ -1619,6 +1620,63 @@ BOOST_AUTO_TEST_CASE(case_8_2_Its_function_verifying)
 
 }
 
+BOOST_AUTO_TEST_CASE(case_8_3_Registrator_to_std_vector_creating)
+{
+    Registrator_to_std_vector * recorder = nullptr;
+    recorder = new Registrator_to_std_vector;
+    BOOST_REQUIRE(recorder != nullptr);
+    Automated_control_system acs_model;
+    Registrator_to_std_vector & r = *recorder;
+    r << acs_model;
+
+    delete recorder;
+}
+
+BOOST_AUTO_TEST_CASE(case_8_4_Registrator_to_std_vector_function_verifying)
+{
+    Default_configuration_setter setter;
+    std::shared_ptr<Automated_control_system_paralleled> p_acs_model = std::make_shared<Automated_control_system_paralleled>();
+    Automated_control_system & r_acs_model = *p_acs_model.get();
+    Registrator_to_std_vector recorder;
+
+    Reference_signal_definder_static * definder = new Reference_signal_definder_static;
+    PID_regulator * regulator = new PID_regulator;
+    DC_source * source = new DC_source;
+    DC_engine * process = new DC_engine;
+
+    setter.to_set_elements_parameters(
+                definder,
+                regulator,
+                source,
+                process
+                );
+
+    p_acs_model->to_mount_the_element(definder);
+    p_acs_model->to_mount_the_element(regulator);
+    p_acs_model->to_mount_the_element(source);
+    p_acs_model->to_mount_the_element(process);
+
+    std::vector<double> records;
+
+    recorder.to_set_vector(records);
+
+    std::shared_ptr<Experiment_executor_short_report> experiment = std::make_shared<Experiment_executor_short_report>();
+    experiment->to_get_model_to_run(p_acs_model.get());
+    experiment->to_set_dt(1e-4);
+
+    definder->to_set_signal(100);
+    recorder << r_acs_model;
+
+
+    for (int i = 0; i < 1000; ++i) r_acs_model.to_calculate();
+    recorder << r_acs_model;
+    for (int i = 0; i < 1000; ++i) r_acs_model.to_calculate();
+    recorder << r_acs_model;
+
+    BOOST_REQUIRE_EQUAL(records.at(0), 0);
+    if (verbose_mode_of_calculations) for (auto i : records) std::cout << i << std::endl;
+
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

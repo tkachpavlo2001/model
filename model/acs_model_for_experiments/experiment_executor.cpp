@@ -113,3 +113,24 @@ void Experiment_executor_short_report::to_run() const
     Experiment_executor::to_run(own_registrator);
     delete own_registrator;
 }
+
+
+void Experiment_executor_for_fitness_function::to_set_vector(std::vector<double>* _vector)
+{
+    records = _vector;
+}
+void Experiment_executor_for_fitness_function::to_set_vector(std::vector<double>& _vector)
+{
+    to_set_vector(&_vector);
+}
+void Experiment_executor_for_fitness_function::to_set_vector(std::shared_ptr<std::vector<double>> _vector)
+{
+    to_set_vector(_vector.get());
+}
+void Experiment_executor_for_fitness_function::to_run() const
+{
+    Registrator_to_std_vector * own_registrator = new Registrator_to_std_vector;
+    own_registrator->to_set_vector(records);
+    Experiment_executor::to_run(own_registrator);
+    delete own_registrator;
+}

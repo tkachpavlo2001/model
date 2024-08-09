@@ -4,6 +4,7 @@
 #include"automated_control_system.h"
 #include<string>
 #include <fstream>
+#include <vector>
 
 class Registrator
 {
@@ -44,6 +45,19 @@ private:
 public:
     Registrator_to_txt_file_short();
     virtual ~Registrator_to_txt_file_short() override;
+};
+
+class Registrator_to_std_vector : public Registrator
+{
+private:
+    std::vector<double> * records = nullptr;
+    void to_record() override;
+public:
+    Registrator_to_std_vector();
+    virtual ~Registrator_to_std_vector();
+    void to_set_vector(std::vector<double>&);
+    void to_set_vector(std::vector<double>*);
+    void to_set_vector(std::shared_ptr<std::vector<double>>);
 };
 
 #endif // REGISTRATOR_H

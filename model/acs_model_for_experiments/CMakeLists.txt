@@ -59,6 +59,7 @@ add_executable( unit_test
     registrator.cpp
     experiment_executor.h
     experiment_executor.cpp
+    default_configuration_setter.cpp
 )
 
 target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )

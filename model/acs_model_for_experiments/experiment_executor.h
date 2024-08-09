@@ -3,7 +3,10 @@
 
 #include"automated_control_system.h"
 #include"registrator.h"
-#include"string"
+
+#include<string>
+#include<vector>
+#include<memory>
 
 class Experiment_executor
 {
@@ -33,6 +36,16 @@ public:
 class Experiment_executor_short_report : public Experiment_executor
 {
 public:
+    virtual void to_run() const override;
+};
+
+class Experiment_executor_for_fitness_function : public Experiment_executor
+{
+    std::vector<double> * records = nullptr;
+public:
+    void to_set_vector(std::vector<double>*);
+    void to_set_vector(std::vector<double>&);
+    void to_set_vector(std::shared_ptr<std::vector<double>>);
     virtual void to_run() const override;
 };
 
