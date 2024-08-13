@@ -1,14 +1,6 @@
 #include "experiment_executor.h"
 #include"registrator.h"
 
-Experiment_executor_interface::Experiment_executor_interface(Automated_control_system * arg)
-    : acs_model(arg), dt(0), t_begin(0), t_length(0), time_to_show(0), interval(0), amount_of_show(0)
-{
-    if (acs_model != nullptr) dt = acs_model->to_check_dt();
-    if (acs_model != nullptr) t_begin = acs_model->to_check_t();
-}
-Experiment_executor_interface::~Experiment_executor_interface()
-{}
 void Experiment_executor_interface::reset_interval()
 {
     if (interval != 0)
@@ -18,15 +10,6 @@ void Experiment_executor_interface::reset_interval()
     if (amount_of_show != 0)
     {
         time_to_show = t_length / amount_of_show;
-    }
-}
-void Experiment_executor_interface::to_get_model_to_run(Automated_control_system * arg)
-{
-    if (arg != acs_model)
-    {
-        acs_model = arg;
-        if (acs_model != nullptr) dt = acs_model->to_check_dt();
-        if (acs_model != nullptr) t_begin = acs_model->to_check_t();
     }
 }
 void Experiment_executor_interface::to_run(Registrator * own_registrator) const
@@ -53,6 +36,35 @@ void Experiment_executor_interface::to_run(Registrator * own_registrator) const
     }
     fout << *acs_model;
 
+}
+double Experiment_executor_interface::to_get_t_length() const
+{
+    return t_length;
+}
+double Experiment_executor_interface::to_get_interval() const
+{
+    return interval;
+}
+Automated_control_system * Experiment_executor_interface::to_get_model() const
+{
+    return acs_model;
+}
+Experiment_executor_interface::Experiment_executor_interface(Automated_control_system * arg)
+    : acs_model(arg), dt(0), t_begin(0), t_length(0), time_to_show(0), interval(0), amount_of_show(0)
+{
+    if (acs_model != nullptr) dt = acs_model->to_check_dt();
+    if (acs_model != nullptr) t_begin = acs_model->to_check_t();
+}
+Experiment_executor_interface::~Experiment_executor_interface()
+{}
+void Experiment_executor_interface::to_get_model_to_run(Automated_control_system * arg)
+{
+    if (arg != acs_model)
+    {
+        acs_model = arg;
+        if (acs_model != nullptr) dt = acs_model->to_check_dt();
+        if (acs_model != nullptr) t_begin = acs_model->to_check_t();
+    }
 }
 void Experiment_executor_interface::to_set_dt(double _dt)
 {
@@ -90,7 +102,7 @@ void Experiment_executor::to_set_result_title(const char * _title)
 {
     results_title = _title;
 }
-void Experiment_executor::to_run() const
+void Experiment_executor::to_run()
 {
 
     Registrator * own_registrator = new Registrator_to_txt_file;
@@ -104,7 +116,7 @@ void Experiment_executor::to_run() const
 
 Experiment_executor_short_report::Experiment_executor_short_report(Automated_control_system * arg) : Experiment_executor(arg), Experiment_executor_interface(arg)
 {}
-void Experiment_executor_short_report::to_run() const
+void Experiment_executor_short_report::to_run()
 {
     Registrator * own_registrator = new Registrator_to_txt_file_short;
     Experiment_executor_interface::to_run(own_registrator);
@@ -125,10 +137,36 @@ void Experiment_executor_for_fitness_function::to_set_vector(std::shared_ptr<std
 {
     to_set_vector(_vector.get());
 }
-void Experiment_executor_for_fitness_function::to_run() const
+void Experiment_executor_for_fitness_function::to_run()
 {
     Registrator_to_std_vector * own_registrator = new Registrator_to_std_vector;
     own_registrator->to_set_vector(records);
     Experiment_executor_interface::to_run(own_registrator);
+    delete own_registrator;
+}
+
+Experiment_executor_for_fitness_function_with_varied_reference_signal::Experiment_executor_for_fitness_function_with_varied_reference_signal(Automated_control_system * arg)
+    : Experiment_executor_interface(arg), Experiment_executor_for_fitness_function(arg)
+{}
+
+void Experiment_executor_for_fitness_function_with_varied_reference_signal::to_set_varied_diapasone_min_max(double _min, double _max)
+{
+    reference_signal_max = _max;
+    reference_signal_min = _min;
+}
+
+void Experiment_executor_for_fitness_function_with_varied_reference_signal::to_run()
+{
+    Registrator_to_std_vector * own_registrator = new Registrator_to_std_vector;
+    own_registrator->to_set_vector(records);
+    double t_length_original = Experiment_executor_interface::to_get_t_length();
+    Experiment_executor_interface::to_set_t_length(t_length_original/2);
+    Automated_control_system_element_interface * p_acs_model_element = Experiment_executor_interface::to_get_model()->to_get_definder();
+    Reference_signal_definder_static * p_definder = (Reference_signal_definder_static*) p_acs_model_element;
+    p_definder->to_set_signal(reference_signal_max);
+    Experiment_executor_interface::to_run(own_registrator);
+    p_definder->to_set_signal(reference_signal_min);
+    Experiment_executor_interface::to_run(own_registrator);
+    Experiment_executor_interface::to_set_t_length(t_length_original);
     delete own_registrator;
 }

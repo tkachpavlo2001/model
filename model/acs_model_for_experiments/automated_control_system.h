@@ -40,6 +40,7 @@ public:
     const Automated_control_system_element_interface * to_check_regulator() const;
     const Automated_control_system_element_interface * to_check_definder() const;
     const Automated_control_system_element_interface * to_check_source() const;
+    Automated_control_system_element_interface * to_get_definder();
     virtual void to_calculate();
 };
 

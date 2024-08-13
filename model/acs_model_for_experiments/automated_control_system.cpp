@@ -202,6 +202,11 @@ const Automated_control_system_element_interface * Automated_control_system::to_
     return to_check_certain_element(Automated_control_system_element_interface::ENERGY_SOURCE);
 }
 
+Automated_control_system_element_interface * Automated_control_system::to_get_definder()
+{
+    return p_definder;
+}
+
 #include<algorithm>
 #include<execution>
 

@@ -16,8 +16,8 @@ void to_check_registrator_to_std_vector();
 int main()
 {
     cout << "Hello World!" << endl;
-    //to_pid_regulate_3();
-    to_check_registrator_to_std_vector();
+    to_pid_regulate_3();
+    //to_check_registrator_to_std_vector();
     return 0;
 }
 
