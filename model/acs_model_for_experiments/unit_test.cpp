@@ -1865,4 +1865,78 @@ BOOST_AUTO_TEST_CASE(case_9_6_Verifying_amount_set)
     fin.close();
 }
 
+BOOST_AUTO_TEST_CASE(case_9_7_Verifying_Experiment_executor_for_fitness_function_with_varied_reference_signal_creating)
+{
+    Experiment_executor_for_fitness_function_with_varied_reference_signal * p_executor = nullptr;
+    p_executor = new Experiment_executor_for_fitness_function_with_varied_reference_signal;
+    BOOST_REQUIRE(p_executor != 0);
+    delete p_executor;
+}
+
+BOOST_AUTO_TEST_CASE(case_9_8_Verifying_Experiment_executor_for_fitness_function_with_varied_reference_signal_functional)
+{
+    std::vector<double> results_0;
+    std::vector<double> results_1;
+    Experiment_executor_for_fitness_function experiment_0;
+    Experiment_executor_for_fitness_function_with_varied_reference_signal experiment_1;
+
+    std::shared_ptr<Reference_signal_definder_static> definder_0 = std::make_shared<Reference_signal_definder_static>();
+    std::shared_ptr<Reference_signal_definder_static> definder_1 = std::make_shared<Reference_signal_definder_static>();
+    std::shared_ptr<PID_regulator> regulator_0 = std::make_shared<PID_regulator>();
+    std::shared_ptr<PID_regulator> regulator_1 = std::make_shared<PID_regulator>();
+    std::shared_ptr<DC_source> source_0 = std::make_shared<DC_source>();
+    std::shared_ptr<DC_source> source_1 = std::make_shared<DC_source>();
+    std::shared_ptr<DC_engine> process_0 = std::make_shared<DC_engine>();
+    std::shared_ptr<DC_engine> process_1 = std::make_shared<DC_engine>();
+
+    Default_configuration_setter default_configuration_setter_obj;
+    default_configuration_setter_obj.to_set_elements_parameters(
+                definder_0,
+                regulator_0,
+                source_0,
+                process_0
+                );
+    default_configuration_setter_obj.to_set_elements_parameters(
+                definder_1,
+                regulator_1,
+                source_1,
+                process_1
+                );
+
+    std::shared_ptr<Automated_control_system_paralleled> acs_model_0 = std::make_shared<Automated_control_system_paralleled>();
+    acs_model_0->to_mount_the_element(definder_0.get());
+    acs_model_0->to_mount_the_element(regulator_0.get());
+    acs_model_0->to_mount_the_element(source_0.get());
+    acs_model_0->to_mount_the_element(process_0.get());
+    std::shared_ptr<Automated_control_system_paralleled> acs_model_1 = std::make_shared<Automated_control_system_paralleled>();
+    acs_model_1->to_mount_the_element(definder_1.get());
+    acs_model_1->to_mount_the_element(regulator_1.get());
+    acs_model_1->to_mount_the_element(source_1.get());
+    acs_model_1->to_mount_the_element(process_1.get());
+
+    experiment_0.to_set_vector(results_0);
+    experiment_0.to_get_model_to_run(acs_model_0.get());
+    experiment_1.to_set_vector(results_1);
+    experiment_1.to_get_model_to_run(acs_model_1.get());
+    default_configuration_setter_obj.to_set_experiment_parameters(&experiment_0);
+    default_configuration_setter_obj.to_set_experiment_parameters(&experiment_1);
+
+    experiment_0.to_set_t_length(10);
+    experiment_1.to_set_t_length(20);
+
+    definder_0->to_set_signal(100);
+    experiment_0.to_run();
+    definder_0->to_set_signal(50);
+    experiment_0.to_run();
+
+    experiment_1.to_set_varied_diapasone_min_max(50, 100);
+    experiment_1.to_run();
+
+    if (verbose_mode_of_calculations)for(unsigned int i = 0; i < results_0.size(); ++i) std::cout << results_0.at(i) << '\t' << results_1.at(i) << std::endl;
+
+    BOOST_REQUIRE_EQUAL(results_0.size(), results_1.size());
+
+    if (verbose_mode_of_calculations)for(unsigned int i = 0; i < results_0.size(); ++i) BOOST_REQUIRE_EQUAL(results_0[i], results_1[i]);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

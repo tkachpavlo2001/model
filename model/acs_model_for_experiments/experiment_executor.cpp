@@ -23,7 +23,7 @@ void Experiment_executor_interface::to_run(Registrator * own_registrator) const
 
     unsigned int show_num = 0;
     fout << *acs_model;
-    if (acs_model != nullptr) while(current_time <= t_begin + t_length)
+    if (acs_model != nullptr) while(current_time <= start_time + t_length)
     {
         if (current_time - last_show_time >= time_to_show)
         {
@@ -50,10 +50,9 @@ Automated_control_system * Experiment_executor_interface::to_get_model() const
     return acs_model;
 }
 Experiment_executor_interface::Experiment_executor_interface(Automated_control_system * arg)
-    : acs_model(arg), dt(0), t_begin(0), t_length(0), time_to_show(0), interval(0), amount_of_show(0)
+    : acs_model(arg), dt(0), t_length(0), time_to_show(0), interval(0), amount_of_show(0)
 {
     if (acs_model != nullptr) dt = acs_model->to_check_dt();
-    if (acs_model != nullptr) t_begin = acs_model->to_check_t();
 }
 Experiment_executor_interface::~Experiment_executor_interface()
 {}
@@ -63,18 +62,12 @@ void Experiment_executor_interface::to_get_model_to_run(Automated_control_system
     {
         acs_model = arg;
         if (acs_model != nullptr) dt = acs_model->to_check_dt();
-        if (acs_model != nullptr) t_begin = acs_model->to_check_t();
     }
 }
 void Experiment_executor_interface::to_set_dt(double _dt)
 {
     dt = _dt;
     if (acs_model != nullptr) acs_model->to_set_dt(dt);
-    reset_interval();
-}
-void Experiment_executor_interface::to_set_t_begin(double _t_begin)
-{
-    t_begin = _t_begin;
     reset_interval();
 }
 void Experiment_executor_interface::to_set_t_length(double _t_length)
