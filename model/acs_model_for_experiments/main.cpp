@@ -73,8 +73,7 @@ void to_check_registrator_to_std_vector()
     std::shared_ptr<Experiment_executor_for_fitness_function> experiment = std::make_shared<Experiment_executor_for_fitness_function>();
     experiment->to_set_vector(records);
     experiment->to_get_model_to_run(acs_model.get());
-    experiment->to_set_result_title("The moment of true_PID_regulation");
-    default_configuration_setter_obj.to_set_experiment_parameters(experiment);
+    default_configuration_setter_obj.to_set_experiment_parameters(experiment.get());
 
     experiment->to_run();
 

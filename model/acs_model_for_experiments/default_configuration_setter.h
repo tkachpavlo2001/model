@@ -16,6 +16,7 @@ public:
     void to_set_elements_parameters(std::shared_ptr<Reference_signal_definder_static>,std::shared_ptr<PID_regulator>,std::shared_ptr<DC_source>,std::shared_ptr<DC_engine>) const;
     void to_set_elements_parameters(Reference_signal_definder_static*,PID_regulator*,DC_source*,DC_engine*) const;
     void to_set_experiment_parameters(std::shared_ptr<Experiment_executor>) const;
+    void to_set_experiment_parameters(Experiment_executor_interface*) const;
 };
 
 #endif // DEFAULT_CONFIGURATION_SETTER_H

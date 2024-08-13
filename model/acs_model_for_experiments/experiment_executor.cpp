@@ -1,7 +1,15 @@
 #include "experiment_executor.h"
 #include"registrator.h"
 
-void Experiment_executor::reset_interval()
+Experiment_executor_interface::Experiment_executor_interface(Automated_control_system * arg)
+    : acs_model(arg), dt(0), t_begin(0), t_length(0), time_to_show(0), interval(0), amount_of_show(0)
+{
+    if (acs_model != nullptr) dt = acs_model->to_check_dt();
+    if (acs_model != nullptr) t_begin = acs_model->to_check_t();
+}
+Experiment_executor_interface::~Experiment_executor_interface()
+{}
+void Experiment_executor_interface::reset_interval()
 {
     if (interval != 0)
     {
@@ -12,14 +20,7 @@ void Experiment_executor::reset_interval()
         time_to_show = t_length / amount_of_show;
     }
 }
-Experiment_executor::Experiment_executor(Automated_control_system * arg)
-    : acs_model(arg), dt(0), t_begin(0), t_length(0), time_to_show(0), interval(0), amount_of_show(0)
-{
-    if (acs_model != nullptr) dt = acs_model->to_check_dt();
-    if (acs_model != nullptr) t_begin = acs_model->to_check_t();
-}
-
-void Experiment_executor::to_get_model_to_run(Automated_control_system * arg)
+void Experiment_executor_interface::to_get_model_to_run(Automated_control_system * arg)
 {
     if (arg != acs_model)
     {
@@ -28,29 +29,9 @@ void Experiment_executor::to_get_model_to_run(Automated_control_system * arg)
         if (acs_model != nullptr) t_begin = acs_model->to_check_t();
     }
 }
-
-void Experiment_executor::to_set_result_title(const char * _title)
-{
-    results_title = _title;
-}
-
-void Experiment_executor::to_run() const
-{
-
-    Registrator * own_registrator = new Registrator_to_txt_file;
-    Registrator & fout = *own_registrator;
-    fout.to_set_name_of_file(results_title);
-
-    to_run(own_registrator);
-
-    delete own_registrator;
-}
-
-
-void Experiment_executor::to_run(Registrator * own_registrator) const
+void Experiment_executor_interface::to_run(Registrator * own_registrator) const
 {
     Registrator & fout = *own_registrator;
-    fout.to_set_name_of_file(results_title);
 
     double current_time;
     if (acs_model != nullptr) current_time = acs_model->to_check_t();
@@ -73,48 +54,65 @@ void Experiment_executor::to_run(Registrator * own_registrator) const
     fout << *acs_model;
 
 }
-
-void Experiment_executor::to_set_dt(double _dt)
+void Experiment_executor_interface::to_set_dt(double _dt)
 {
     dt = _dt;
     if (acs_model != nullptr) acs_model->to_set_dt(dt);
     reset_interval();
 }
-
-void Experiment_executor::to_set_t_begin(double _t_begin)
+void Experiment_executor_interface::to_set_t_begin(double _t_begin)
 {
     t_begin = _t_begin;
     reset_interval();
 }
-
-void Experiment_executor::to_set_t_length(double _t_length)
+void Experiment_executor_interface::to_set_t_length(double _t_length)
 {
     t_length = _t_length;
     reset_interval();
 }
-
-void Experiment_executor::to_set_time_to_registrate(double _interval)
+void Experiment_executor_interface::to_set_time_to_registrate(double _interval)
 {
     interval = _interval;
     amount_of_show = 0;
     reset_interval();
 }
-
-void Experiment_executor::to_set_amount_of_registrations(double _amount_of_show)
+void Experiment_executor_interface::to_set_amount_of_registrations(double _amount_of_show)
 {
     amount_of_show = _amount_of_show;
     interval = 0;
     reset_interval();
 }
 
-void Experiment_executor_short_report::to_run() const
+Experiment_executor::Experiment_executor(Automated_control_system * arg) : Experiment_executor_interface(arg)
 {
-    Registrator * own_registrator = new Registrator_to_txt_file_short;
-    Experiment_executor::to_run(own_registrator);
+}
+void Experiment_executor::to_set_result_title(const char * _title)
+{
+    results_title = _title;
+}
+void Experiment_executor::to_run() const
+{
+
+    Registrator * own_registrator = new Registrator_to_txt_file;
+    Registrator & fout = *own_registrator;
+    fout.to_set_name_of_file(results_title);
+
+    Experiment_executor_interface::to_run(own_registrator);
+
     delete own_registrator;
 }
 
+Experiment_executor_short_report::Experiment_executor_short_report(Automated_control_system * arg) : Experiment_executor(arg), Experiment_executor_interface(arg)
+{}
+void Experiment_executor_short_report::to_run() const
+{
+    Registrator * own_registrator = new Registrator_to_txt_file_short;
+    Experiment_executor_interface::to_run(own_registrator);
+    delete own_registrator;
+}
 
+Experiment_executor_for_fitness_function::Experiment_executor_for_fitness_function(Automated_control_system * arg) : Experiment_executor_interface(arg)
+{}
 void Experiment_executor_for_fitness_function::to_set_vector(std::vector<double>* _vector)
 {
     records = _vector;
@@ -131,6 +129,6 @@ void Experiment_executor_for_fitness_function::to_run() const
 {
     Registrator_to_std_vector * own_registrator = new Registrator_to_std_vector;
     own_registrator->to_set_vector(records);
-    Experiment_executor::to_run(own_registrator);
+    Experiment_executor_interface::to_run(own_registrator);
     delete own_registrator;
 }
