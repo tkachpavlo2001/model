@@ -30,7 +30,7 @@ add_library(
 )
 
 add_library(
-    regulator_tunner SHARED
+    Regulator_tunner SHARED
     regulator_tuner.h
     regulator_tuner.cpp
 )
@@ -60,6 +60,7 @@ add_executable( unit_test
     experiment_executor.h
     experiment_executor.cpp
     default_configuration_setter.cpp
+    regulator_tuner.cpp
 )
 
 target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )
@@ -67,6 +68,8 @@ target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )
 target_link_libraries( acs_model_for_experiments PUBLIC Regulator)
 
 target_link_libraries( acs_model_for_experiments PUBLIC DC_source)
+
+target_link_libraries( acs_model_for_experiments PUBLIC Regulator_tunner)
 
 target_link_libraries( unit_test PRIVATE
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}

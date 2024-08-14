@@ -7,7 +7,8 @@
 #include <memory>
 
 class Regulator_tuner_iterface;
-double fitness_function_varied_reference_signal(Regulator_tuner_iterface*);
+long double fitness_function_varied_reference_signal
+(Regulator_tuner_iterface* _tuner, double _dt, double _length, double _t_registrate, double _times, double _min, double _max);
 class Regulator_tuner_iterface
 {
 private:

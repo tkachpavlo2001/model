@@ -139,3 +139,13 @@ void Registrator_to_std_vector::to_set_vector(std::shared_ptr<std::vector<double
 {
     to_set_vector(_vector.get());
 }
+
+
+void Registrator_to_std_vector_difference::to_record()
+{
+
+    if (records != nullptr) records->push_back(
+                to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::VELOCITY] -
+                to_check_acs_model_status()->to_check_definder()->to_check_parameters()[Automated_control_system_element_interface::OUTPUT_SIGNAL]
+            );
+}

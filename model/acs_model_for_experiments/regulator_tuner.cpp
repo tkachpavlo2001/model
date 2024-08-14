@@ -7,8 +7,8 @@
 #include <gsl/gsl_multimin.h>
 #include <numeric>
 
-double fitness_function_varied_reference_signal
-(Regulator_tuner_iterface* _tuner, Automated_control_system * _acs_model, double _dt, double _length, double _t_registrate, double _min, double _max)
+long double fitness_function_varied_reference_signal
+(Regulator_tuner_iterface* _tuner, double _dt, double _length, double _t_registrate, double _times, double _min, double _max)
 {
     std::shared_ptr<Experiment_executor_for_fitness_function_with_varied_reference_signal> p_experiment =
             std::make_shared<Experiment_executor_for_fitness_function_with_varied_reference_signal>(_tuner->to_get_model());
@@ -20,10 +20,9 @@ double fitness_function_varied_reference_signal
     std::vector<double> records;
     p_experiment->to_set_vector(records);
 
-    p_experiment->to_get_model_to_run(_acs_model);
+    p_experiment->to_get_model_to_run(p_experiment->to_get_model());
 
-    p_experiment->to_run();
-    p_experiment->to_run();
+    for (int i = 0; i < _times; ++i) p_experiment->to_run();
 
     return std::accumulate(records.begin(), records.end(), 0, [&](double acc, double num)->double {return acc + num * num;} );
 }

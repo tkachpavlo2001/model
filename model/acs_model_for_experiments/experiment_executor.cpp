@@ -49,6 +49,10 @@ Automated_control_system * Experiment_executor_interface::to_get_model() const
 {
     return acs_model;
 }
+Automated_control_system * Experiment_executor_interface::to_get_model()
+{
+    return acs_model;
+}
 Experiment_executor_interface::Experiment_executor_interface(Automated_control_system * arg)
     : acs_model(arg), dt(0), t_length(0), time_to_show(0), interval(0), amount_of_show(0)
 {
@@ -132,7 +136,7 @@ void Experiment_executor_for_fitness_function::to_set_vector(std::shared_ptr<std
 }
 void Experiment_executor_for_fitness_function::to_run()
 {
-    Registrator_to_std_vector * own_registrator = new Registrator_to_std_vector;
+    Registrator_to_std_vector_difference * own_registrator = new Registrator_to_std_vector_difference;
     own_registrator->to_set_vector(records);
     Experiment_executor_interface::to_run(own_registrator);
     delete own_registrator;
@@ -150,7 +154,7 @@ void Experiment_executor_for_fitness_function_with_varied_reference_signal::to_s
 
 void Experiment_executor_for_fitness_function_with_varied_reference_signal::to_run()
 {
-    Registrator_to_std_vector * own_registrator = new Registrator_to_std_vector;
+    Registrator_to_std_vector_difference * own_registrator = new Registrator_to_std_vector_difference;
     own_registrator->to_set_vector(records);
     double t_length_original = Experiment_executor_interface::to_get_t_length();
     Experiment_executor_interface::to_set_t_length(t_length_original/2);

@@ -28,6 +28,7 @@ public:
     virtual ~Experiment_executor_interface() = 0;
     virtual void to_run() = 0;
     void to_get_model_to_run(Automated_control_system *);
+    Automated_control_system * to_get_model();
     void to_set_dt(double);
     void to_set_t_length(double);
     void to_set_time_to_registrate(double);

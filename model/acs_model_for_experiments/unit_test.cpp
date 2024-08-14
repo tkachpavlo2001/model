@@ -12,6 +12,7 @@
 #include"registrator.h"
 #include"experiment_executor.h"
 #include"default_configuration_setter.h"
+#include"regulator_tuner.h"
 
 #include<memory>
 #include<algorithm>
@@ -24,6 +25,7 @@
 
 
 bool verbose_mode_of_calculations = false;
+bool ignore_vast_calculations_mode = false;
 
 class ask_tester
 {
@@ -45,8 +47,29 @@ public:
         if (std::tolower(answer) == 'y') _mode_parameter = true;
     }
 };
+class ask_tester_another
+{
+public:
+    ask_tester_another(bool & _mode_parameter)
+    {
+        char answer = '\0';
+        std::cout << "Do you want the calculations to be full? Y/N: " << std::flush;
+        bool to_backspace = false;
+        while (std::tolower(answer) != 'y' && std::tolower(answer) != 'n')
+        {
+            if (to_backspace)
+                std::cout << "Y/N: ";
+            std::cin.get(answer);
+            while ( std::cin.get() != '\n' )
+                continue;
+            to_backspace = true;
+        }
+        if (std::tolower(answer) == 'n') _mode_parameter = true;
+    }
+};
 
-ask_tester question(verbose_mode_of_calculations);
+ask_tester a_question(verbose_mode_of_calculations);
+ask_tester_another question(ignore_vast_calculations_mode);
 
 
 double calculation_loop(DC_engine & _drive, double _t_length, double _dt_chosen, bool _show_mode = verbose_mode_of_calculations)
@@ -1875,6 +1898,11 @@ BOOST_AUTO_TEST_CASE(case_9_7_Verifying_Experiment_executor_for_fitness_function
 
 BOOST_AUTO_TEST_CASE(case_9_8_Verifying_Experiment_executor_for_fitness_function_with_varied_reference_signal_functional)
 {
+    if (ignore_vast_calculations_mode)
+    {
+        std::clog << "IGNORED: case_9_8_Verifying_Experiment_executor_for_fitness_function_with_varied_reference_signal_functional!\n";
+        return;
+    }
     std::vector<double> results_0;
     std::vector<double> results_1;
     Experiment_executor_for_fitness_function experiment_0;
@@ -1937,6 +1965,92 @@ BOOST_AUTO_TEST_CASE(case_9_8_Verifying_Experiment_executor_for_fitness_function
     BOOST_REQUIRE_EQUAL(results_0.size(), results_1.size());
 
     if (verbose_mode_of_calculations)for(unsigned int i = 0; i < results_0.size(); ++i) BOOST_REQUIRE_EQUAL(results_0[i], results_1[i]);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE(Regulator_tuner_testing)
+
+double to_pid_regulate_4(double _signal, int _times)
+{
+    std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
+    std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
+    std::shared_ptr<DC_source> source = std::make_shared<DC_source>();
+    std::shared_ptr<DC_engine> process = std::make_shared<DC_engine>();
+
+    Default_configuration_setter default_configuration_setter_obj;
+
+    default_configuration_setter_obj.to_set_elements_parameters(
+                definder,
+                regulator,
+                source,
+                process
+                );
+
+    std::shared_ptr<Automated_control_system_paralleled> acs_model = std::make_shared<Automated_control_system_paralleled>();
+    acs_model->to_mount_the_element(definder.get());
+    acs_model->to_mount_the_element(regulator.get());
+    acs_model->to_mount_the_element(source.get());
+    acs_model->to_mount_the_element(process.get());
+
+    std::shared_ptr<Experiment_executor_for_fitness_function> experiment = std::make_shared<Experiment_executor_for_fitness_function>();
+    experiment->to_get_model_to_run(acs_model.get());
+    default_configuration_setter_obj.to_set_experiment_parameters(experiment.get());
+
+    std::vector<double> records;
+    experiment->to_set_vector(records);
+
+    definder->to_set_signal(_signal);
+
+    for (int i = 0; i < _times; ++i) experiment->to_run();
+
+    long double result = 0;
+    //for (auto i : records) if (verbose_mode_of_calculations) (verstd::cout << i << '\t' << i * i << std::endl;
+    for (auto i : records) result += i * i;
+    if (verbose_mode_of_calculations) std::cout << result << std::endl;
+    return result;
+}
+double to_check_fitness_f(double _signal, int _times)
+{
+    std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
+    std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
+    std::shared_ptr<DC_source> source = std::make_shared<DC_source>();
+    std::shared_ptr<DC_engine> process = std::make_shared<DC_engine>();
+
+    Default_configuration_setter default_configuration_setter_obj;
+
+    default_configuration_setter_obj.to_set_elements_parameters(
+                definder,
+                regulator,
+                source,
+                process
+                );
+
+    std::shared_ptr<Automated_control_system_paralleled> acs_model = std::make_shared<Automated_control_system_paralleled>();
+    acs_model->to_mount_the_element(definder.get());
+    acs_model->to_mount_the_element(regulator.get());
+    acs_model->to_mount_the_element(source.get());
+    acs_model->to_mount_the_element(process.get());
+
+    std::shared_ptr<Regulator_tuner> tuner = std::make_shared<Regulator_tuner>();
+    tuner->to_set_model_and_regulator(acs_model, regulator);
+    //(Regulator_tuner_iterface* _tuner, double _dt, double _length, double _t_registrate, double _min, double _max)
+    long double result = fitness_function_varied_reference_signal(tuner.get(), 1e-5, 10, 1e-1, _times, _signal, _signal);
+    if (verbose_mode_of_calculations) std::cout << result << std::endl ;
+    return result;
+}
+BOOST_AUTO_TEST_CASE(case_10_1_Verifying_fitness_function_varied_reference_signal)
+{
+    if (ignore_vast_calculations_mode)
+    {
+        std::clog << "IGNORED: case_10_1_Verifying_fitness_function_varied_reference_signal!\n";
+        return;
+    }
+    BOOST_REQUIRE(to_pid_regulate_4(100, 2)/to_check_fitness_f(100, 2) - 1 < 0.01);
+    BOOST_REQUIRE(to_pid_regulate_4(70, 3)/to_check_fitness_f(70, 3) - 1 < 0.01);
+    BOOST_REQUIRE(to_pid_regulate_4(50, 1)/to_check_fitness_f(50, 1) - 1 < 0.01);
+    BOOST_REQUIRE(to_pid_regulate_4(0, 1)/(to_check_fitness_f(0, 1) + 1e-5) - 1 < 0.01);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

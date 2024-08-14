@@ -50,14 +50,20 @@ public:
 class Registrator_to_std_vector : public Registrator
 {
 private:
-    std::vector<double> * records = nullptr;
     void to_record() override;
+protected:
+    std::vector<double> * records = nullptr;
 public:
     Registrator_to_std_vector();
     virtual ~Registrator_to_std_vector();
     void to_set_vector(std::vector<double>&);
     void to_set_vector(std::vector<double>*);
     void to_set_vector(std::shared_ptr<std::vector<double>>);
+};
+
+class Registrator_to_std_vector_difference : public Registrator_to_std_vector
+{
+    void to_record() override;
 };
 
 #endif // REGISTRATOR_H
