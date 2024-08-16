@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+find_package(GSL REQUIRED)
 
 add_library(
     Controlled_process SHARED
@@ -34,6 +35,8 @@ add_library(
     regulator_tuner.h
     regulator_tuner.cpp
 )
+target_link_libraries(Regulator_tunner GSL::gsl GSL::gslcblas)
+
 #target_include_directories(
 #    Controlled_process PUBLIC
 #    ${CMAKE_CURRENT_SOURCE_DIR}
