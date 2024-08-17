@@ -78,8 +78,18 @@ void my_functions_f_and_gradient(const gsl_vector * _p_vector, void * _p_user_pa
 Regulator_tuner_iterface::Regulator_tuner_iterface(Automated_control_system * _m, PID_regulator * _r)
 {
     to_set_model_and_regulator(_m, _r);
+    to_reset_to_null();
+    to_initialize();
+
 }
-Regulator_tuner_iterface::~Regulator_tuner_iterface(){}
+Regulator_tuner_iterface::~Regulator_tuner_iterface()
+{
+    if (command_to_delete)
+    {
+        if (x != nullptr) gsl_vector_free(x);
+        if (my_minimizer_structure != nullptr) delete my_minimizer_structure;
+    }
+}
 void Regulator_tuner_iterface::to_set_model_and_regulator(Automated_control_system * _m, PID_regulator * _c)
 {
     acs_model = _m;
@@ -97,13 +107,70 @@ PID_regulator * Regulator_tuner_iterface::to_get_regulator()
 {
     return regulator;
 }
-
-Regulator_tuner_gradient_method::Regulator_tuner_gradient_method(Automated_control_system * _m, PID_regulator * _r) : Regulator_tuner_iterface(_m, _r)
+void Regulator_tuner_iterface::to_reset_to_null()
 {
+    command_to_delete = false;
+    is_ready = false;
+
+    x = nullptr;
+    my_minimizer_structure = nullptr;
+    parameters = nullptr;
+    iteration = 0;
+    status = 0;
+    s = nullptr;
+}
+void Regulator_tuner_iterface::to_initialize()
+{
+    command_to_delete = true;
+    x = gsl_vector_alloc(3);
+    gsl_vector_set(x, 0, 1);
+    gsl_vector_set(x, 1, 1);
+    gsl_vector_set(x, 2, 1);
+
+    my_minimizer_structure = new gsl_multimin_function_fdf;
+
+    to_set_configurations(parameters);
+
+    s = nullptr;
+
+    parameters = nullptr;
+    iteration = 0;
+    status = 0;
 
 }
+void Regulator_tuner_iterface::to_set_configurations(user_parameters_for_gsl_optimizer* _parameters)
+{
+    if (parameters != _parameters) parameters = _parameters;
+    if (my_minimizer_structure != nullptr)
+    {
+        my_minimizer_structure->n = 3;
+        my_minimizer_structure->f = my_function;
+        my_minimizer_structure->df = my_function_gradient;
+        my_minimizer_structure->fdf = my_functions_f_and_gradient;
+        my_minimizer_structure->params = parameters;
+    }
+}
+
+Regulator_tuner_gradient_method::Regulator_tuner_gradient_method(Automated_control_system * _m, PID_regulator * _r)
+    : Regulator_tuner_iterface(_m, _r), T(gsl_multimin_fdfminimizer_conjugate_fr)
+{
+    s = gsl_multimin_fdfminimizer_alloc(T, 3);
+}
 Regulator_tuner_gradient_method::~Regulator_tuner_gradient_method()
-{}
+{
+    if (s != nullptr) gsl_multimin_fdfminimizer_free(s);
+}
+void Regulator_tuner_gradient_method::to_resolve()
+{
+    if (is_ready) for(; iteration < 10; ++iteration)
+    {
+        status = gsl_multimin_fdfminimizer_iterate(s);
+        if (status) break;
+        status = gsl_multimin_test_gradient(s->gradient, 1e-3);
+    }
+    else
+        ;//here is messege
+}
 
 Regulator_tuner::Regulator_tuner()
 {

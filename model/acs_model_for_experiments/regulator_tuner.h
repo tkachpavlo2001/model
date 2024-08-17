@@ -36,6 +36,15 @@ class Regulator_tuner_iterface
 private:
     Automated_control_system * acs_model;
     PID_regulator * regulator;
+protected:
+    bool is_ready = false;
+    bool command_to_delete = false;
+    gsl_vector * x = nullptr;
+    gsl_multimin_function_fdf * my_minimizer_structure;
+    user_parameters_for_gsl_optimizer * parameters;
+    unsigned int iteration = 0;
+    int status = 0;
+    gsl_multimin_fdfminimizer * s = nullptr;
 public:
     Regulator_tuner_iterface(Automated_control_system * = nullptr, PID_regulator * = nullptr);
     virtual ~Regulator_tuner_iterface() = 0;
@@ -43,18 +52,19 @@ public:
     void to_set_model_and_regulator(Automated_control_system *, PID_regulator *);
     Automated_control_system * to_get_model();
     PID_regulator * to_get_regulator();
+    void to_reset_to_null();
+    void to_initialize();
+    void to_set_configurations(user_parameters_for_gsl_optimizer*);
 };
 
 class Regulator_tuner_gradient_method : virtual public Regulator_tuner_iterface
 {
 private:
     const gsl_multimin_fdfminimizer_type * T;
-    gsl_multimin_fdfminimizer * s = nullptr;
-    gsl_vector * x;
-    gsl_multimin_function_fdf my_function;
 public:
     Regulator_tuner_gradient_method(Automated_control_system * = nullptr, PID_regulator * = nullptr);
     virtual ~Regulator_tuner_gradient_method();
+    void to_resolve();
 };
 
 class Regulator_tuner : public Regulator_tuner_iterface
