@@ -7,6 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 find_package(GSL REQUIRED)
+if(NOT GSL_FOUND)
+    message(SEND_ERROR "Failed to find GSL")
+else()
+    include_directories(${GSL_INCLUDE_DIR})
+endif()
+
 
 add_library(
     Controlled_process SHARED
@@ -35,7 +41,7 @@ add_library(
     regulator_tuner.h
     regulator_tuner.cpp
 )
-target_link_libraries(Regulator_tunner GSL::gsl GSL::gslcblas)
+
 
 #target_include_directories(
 #    Controlled_process PUBLIC
@@ -67,24 +73,23 @@ add_executable( unit_test
 )
 
 target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )
-
 target_link_libraries( acs_model_for_experiments PUBLIC Regulator)
-
 target_link_libraries( acs_model_for_experiments PUBLIC DC_source)
-
 target_link_libraries( acs_model_for_experiments PUBLIC Regulator_tunner)
+target_link_libraries( acs_model_for_experiments PUBLIC ${GSL_LIBRARY})
 
 target_link_libraries( unit_test PRIVATE
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
-    Controlled_process )
+    ${GSL_LIBRARY}
+    Controlled_process
+    Regulator
+    DC_source
+    Regulator_tunner
+)
 
-target_link_libraries( unit_test PRIVATE
-    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
-    Regulator )
+#target_link_libraries(acs_model_for_experiments GSL::gsl GSL::gslcblas)
+#target_link_libraries(unit_test GSL::gsl GSL::gslcblas)
 
-target_link_libraries( unit_test PRIVATE
-    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
-    DC_source )
 
 #install(TARGETS acs_model_for_experiments
 #    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
