@@ -116,6 +116,8 @@ Experiment_executor_short_report::Experiment_executor_short_report(Automated_con
 void Experiment_executor_short_report::to_run()
 {
     Registrator * own_registrator = new Registrator_to_txt_file_short;
+    Registrator & fout = *own_registrator;
+    fout.to_set_name_of_file(results_title);
     Experiment_executor_interface::to_run(own_registrator);
     delete own_registrator;
 }

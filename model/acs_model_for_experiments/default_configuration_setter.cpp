@@ -197,3 +197,34 @@ void Default_configuration_setter::to_set_experiment_parameters(Experiment_execu
     _experiment->to_set_t_length(10); //experiment->to_set_t_length(10);
     _experiment->to_set_time_to_registrate(1e-1); //experiment->to_set_time_to_registrate(1e-1);
 }
+
+
+void Default_configuration_setter::to_set_configurations_in_user_parameters_for_gsl_optimizer(user_parameters_for_gsl_optimizer* _p_struct) const
+{
+    if (_p_struct != nullptr)
+    {
+        _p_struct->dt = 1e-5;
+        _p_struct->length = 5;
+        _p_struct->t_registrate = 1e-1;
+        _p_struct->times = 2;
+        _p_struct->min = 50;
+        _p_struct->max = 100;
+        _p_struct->last_value_f = 1e10;
+        _p_struct->h = 1e-6;
+    }
+}
+
+void Default_configuration_setter::to_set_objects_in_user_parameters_for_gsl_optimizer(
+        user_parameters_for_gsl_optimizer* _p_struct,
+        Regulator_tuner_interface* _p_tuner,
+        Automated_control_system* _p_acs_model,
+        PID_regulator* _p_regulator
+        ) const
+{
+    if (_p_struct != nullptr)
+    {
+        if (_p_tuner != nullptr) _p_struct->p_tuner = _p_tuner;
+        if (_p_acs_model != nullptr) _p_struct->p_acs_model = _p_acs_model;
+        if (_p_regulator != nullptr) _p_struct->p_regulator = _p_regulator;
+    }
+}

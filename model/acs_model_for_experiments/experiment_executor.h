@@ -37,6 +37,7 @@ public:
 
 class Experiment_executor : virtual public Experiment_executor_interface // for txt-file report
 {
+protected:
     std::string results_title;
 public:
     Experiment_executor(Automated_control_system * = nullptr);

@@ -4,6 +4,7 @@
 #include"controlled_process.h"
 #include "automated_control_system.h"
 #include "experiment_executor.h"
+#include "regulator_tuner.h"
 
 #include<memory>
 
@@ -17,6 +18,8 @@ public:
     void to_set_elements_parameters(Reference_signal_definder_static*,PID_regulator*,DC_source*,DC_engine*) const;
     void to_set_experiment_parameters(std::shared_ptr<Experiment_executor>) const;
     void to_set_experiment_parameters(Experiment_executor_interface*) const;
+    void to_set_configurations_in_user_parameters_for_gsl_optimizer(user_parameters_for_gsl_optimizer*) const;
+    void to_set_objects_in_user_parameters_for_gsl_optimizer(user_parameters_for_gsl_optimizer*, Regulator_tuner_interface*,Automated_control_system*,PID_regulator*) const;
 };
 
 #endif // DEFAULT_CONFIGURATION_SETTER_H
