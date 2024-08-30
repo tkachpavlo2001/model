@@ -14,17 +14,17 @@ long double fitness_function_varied_reference_signal
 (Regulator_tuner_interface* _tuner, double _dt, double _length, double _t_registrate, double _times, double _min, double _max);
 struct user_parameters_for_gsl_optimizer
 {
-    Regulator_tuner_interface * p_tuner;
-    Automated_control_system * p_acs_model;
-    PID_regulator * p_regulator;
-    double dt;
-    double length;
-    double t_registrate;
-    double times;
-    double min;
-    double max;
-    double last_value_f;
-    double h;
+    Regulator_tuner_interface * p_tuner = nullptr;
+    Automated_control_system * p_acs_model = nullptr;
+    PID_regulator * p_regulator = nullptr;
+    double dt = 0;
+    double length = 0;
+    double t_registrate = 0;
+    double times = 0;
+    double min = 0;
+    double max = 0;
+    double last_value_f = 0;
+    double h = 0;
 };
 long double fitness_function_varied_reference_signal
 (user_parameters_for_gsl_optimizer*);
@@ -41,8 +41,8 @@ protected:
     bool is_ready = false;
     bool command_to_delete = false;
     gsl_vector * x = nullptr;
-    gsl_multimin_function_fdf * my_minimizer_structure;
-    user_parameters_for_gsl_optimizer * parameters;
+    gsl_multimin_function_fdf * my_minimizer_structure = nullptr;
+    user_parameters_for_gsl_optimizer * parameters = nullptr;
     unsigned int iteration = 0;
     int status = 0;
     gsl_multimin_fdfminimizer * s = nullptr;

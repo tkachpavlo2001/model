@@ -75,7 +75,7 @@ void my_functions_f_and_gradient(const gsl_vector * _p_vector, void * _p_user_pa
     my_function_gradient(_p_vector, _p_user_parameters, _p_gradient_vector);
 }
 
-Regulator_tuner_interface::Regulator_tuner_interface(Automated_control_system * _m, PID_regulator * _r)
+Regulator_tuner_interface::Regulator_tuner_interface(Automated_control_system * _m, PID_regulator * _r) : parameters(nullptr)
 {
     to_set_model_and_regulator(_m, _r);
     to_reset_to_null();
