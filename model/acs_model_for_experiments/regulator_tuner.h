@@ -34,12 +34,27 @@ void my_functions_f_and_gradient(const gsl_vector*, void*, double*, gsl_vector*)
 
 class Regulator_tuner_interface
 {
-private:
+protected:
     Automated_control_system * acs_model;
     PID_regulator * regulator;
+    virtual bool is_ready() = 0;
+    std::array<double, 3> answer;
+public:
+    Automated_control_system * to_get_model();
+    PID_regulator * to_get_regulator();
+    void to_set_model_and_regulator(std::shared_ptr<Automated_control_system>, std::shared_ptr<PID_regulator>);
+    void to_set_model_and_regulator(Automated_control_system *, PID_regulator *);
+    virtual std::array<double, 3> to_get_solution() const;
+};
+
+class Regulator_tuner_with_side_library_interface : virtual public Regulator_tuner_interface {};
+class Regulator_tuner_on_my_on_interface : virtual public Regulator_tuner_interface {};
+
+class Regulator_tuner_with_GSL_interface : public Regulator_tuner_with_side_library_interface
+{
+private:
 protected:
-    bool is_ready = false;
-    bool command_to_delete = false;
+    virtual bool is_ready() override;
     gsl_vector * x = nullptr;
     gsl_multimin_function_fdf * my_minimizer_structure = nullptr;
     user_parameters_for_gsl_optimizer * parameters = nullptr;
@@ -47,19 +62,14 @@ protected:
     int status = 0;
     gsl_multimin_fdfminimizer * s = nullptr;
 public:
-    Regulator_tuner_interface(Automated_control_system * = nullptr, PID_regulator * = nullptr);
-    virtual ~Regulator_tuner_interface() = 0;
-    void to_set_model_and_regulator(std::shared_ptr<Automated_control_system>, std::shared_ptr<PID_regulator>);
-    void to_set_model_and_regulator(Automated_control_system *, PID_regulator *);
-    Automated_control_system * to_get_model();
-    PID_regulator * to_get_regulator();
+    Regulator_tuner_with_GSL_interface(Automated_control_system * = nullptr, PID_regulator * = nullptr);
+    virtual ~Regulator_tuner_with_GSL_interface() = 0;
     virtual void to_reset_to_null();
     virtual void to_initialize();
     void to_set_configurations(user_parameters_for_gsl_optimizer*);
-    std::array<double, 3> to_get_solution() const;
 };
 
-class Regulator_tuner_gradient_method : virtual public Regulator_tuner_interface
+class Regulator_tuner_gradient_method : virtual public Regulator_tuner_with_GSL_interface
 {
 private:
     const gsl_multimin_fdfminimizer_type * T;
@@ -71,7 +81,16 @@ public:
     void to_tune();
 };
 
-class Regulator_tuner : public Regulator_tuner_interface
+class Regulator_tuner_my_generic_algorithm
+{
+    ;
+};
+class Regulator_tuner_my_gradient
+{
+    ;
+};
+
+class Regulator_tuner : public Regulator_tuner_with_GSL_interface
 {
 private:
 public:

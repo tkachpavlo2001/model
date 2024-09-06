@@ -75,19 +75,13 @@ void my_functions_f_and_gradient(const gsl_vector * _p_vector, void * _p_user_pa
     my_function_gradient(_p_vector, _p_user_parameters, _p_gradient_vector);
 }
 
-Regulator_tuner_interface::Regulator_tuner_interface(Automated_control_system * _m, PID_regulator * _r) : parameters(nullptr)
+Automated_control_system * Regulator_tuner_interface::to_get_model()
 {
-    to_set_model_and_regulator(_m, _r);
-    to_reset_to_null();
-    to_initialize();
+    return acs_model;
 }
-Regulator_tuner_interface::~Regulator_tuner_interface()
+PID_regulator * Regulator_tuner_interface::to_get_regulator()
 {
-    if (command_to_delete)
-    {
-        if (x != nullptr) gsl_vector_free(x);
-        if (my_minimizer_structure != nullptr) delete my_minimizer_structure;
-    }
+    return regulator;
 }
 void Regulator_tuner_interface::to_set_model_and_regulator(Automated_control_system * _m, PID_regulator * _c)
 {
@@ -98,17 +92,33 @@ void Regulator_tuner_interface::to_set_model_and_regulator(std::shared_ptr<Autom
 {
     to_set_model_and_regulator(_m.get(), _c.get());
 }
-Automated_control_system * Regulator_tuner_interface::to_get_model()
+std::array<double, 3> Regulator_tuner_interface::to_get_solution() const
 {
-    return acs_model;
+    return answer;
 }
-PID_regulator * Regulator_tuner_interface::to_get_regulator()
+
+Regulator_tuner_with_GSL_interface::Regulator_tuner_with_GSL_interface(Automated_control_system * _m, PID_regulator * _r) : parameters(nullptr)
 {
-    return regulator;
+    to_set_model_and_regulator(_m, _r);
+    to_reset_to_null();
+    to_initialize();
 }
-void Regulator_tuner_interface::to_reset_to_null()
+Regulator_tuner_with_GSL_interface::~Regulator_tuner_with_GSL_interface()
 {
-    if (command_to_delete)
+    {
+        if (x != nullptr) gsl_vector_free(x);
+        if (my_minimizer_structure != nullptr) delete my_minimizer_structure;
+    }
+}
+bool Regulator_tuner_with_GSL_interface::is_ready()
+{
+    if (parameters != nullptr) if (parameters->p_tuner != nullptr && parameters->p_acs_model != nullptr && parameters->p_regulator != nullptr && my_minimizer_structure != nullptr)
+        return true;
+    return false;
+}
+
+void Regulator_tuner_with_GSL_interface::to_reset_to_null()
+{
     {
         if (x != nullptr) gsl_vector_free(x);
         if (my_minimizer_structure != nullptr) delete my_minimizer_structure;
@@ -120,9 +130,6 @@ void Regulator_tuner_interface::to_reset_to_null()
         if (parameters->p_regulator != nullptr) parameters->p_regulator = nullptr;
     }
 
-    command_to_delete = false;
-    is_ready = false;
-
     x = nullptr;
     my_minimizer_structure = nullptr;
     parameters = nullptr;
@@ -130,9 +137,8 @@ void Regulator_tuner_interface::to_reset_to_null()
     status = 0;
     s = nullptr;
 }
-void Regulator_tuner_interface::to_initialize()
+void Regulator_tuner_with_GSL_interface::to_initialize()
 {
-    command_to_delete = true;
     x = gsl_vector_alloc(3);
     if(regulator != nullptr)
     {
@@ -150,7 +156,7 @@ void Regulator_tuner_interface::to_initialize()
     status = 0;
 
 }
-void Regulator_tuner_interface::to_set_configurations(user_parameters_for_gsl_optimizer* _parameters)
+void Regulator_tuner_with_GSL_interface::to_set_configurations(user_parameters_for_gsl_optimizer* _parameters)
 {
     if (parameters != _parameters) parameters = _parameters;
     if (parameters != nullptr)
@@ -167,18 +173,10 @@ void Regulator_tuner_interface::to_set_configurations(user_parameters_for_gsl_op
         my_minimizer_structure->fdf = my_functions_f_and_gradient;
         my_minimizer_structure->params = parameters;
     }
-    if (parameters != nullptr) if (parameters->p_tuner != nullptr && parameters->p_acs_model != nullptr && parameters->p_regulator != nullptr && my_minimizer_structure != nullptr)
-        is_ready = true;
-    else is_ready = false;
-}
-std::array<double, 3> Regulator_tuner_interface::to_get_solution() const
-{
-    std::array<double, 3> arr {gsl_vector_get(x,0), gsl_vector_get(x,1), gsl_vector_get(x,2)};
-    return arr;
 }
 
 Regulator_tuner_gradient_method::Regulator_tuner_gradient_method(Automated_control_system * _m, PID_regulator * _r)
-    : Regulator_tuner_interface(_m, _r), T(gsl_multimin_fdfminimizer_conjugate_fr)
+    : Regulator_tuner_with_GSL_interface(_m, _r), T(gsl_multimin_fdfminimizer_conjugate_fr)
 {
     s = gsl_multimin_fdfminimizer_alloc(T, 3);
 }
@@ -192,14 +190,14 @@ void Regulator_tuner_gradient_method::to_reset_to_null()
 }
 void Regulator_tuner_gradient_method::to_initialize()
 {
-    Regulator_tuner_interface::to_initialize();
+    Regulator_tuner_with_GSL_interface::to_initialize();
 
     if (s != nullptr) s = gsl_multimin_fdfminimizer_alloc(T, 3);
 }
 #include <iostream>
 void Regulator_tuner_gradient_method::to_tune()
 {
-    if (is_ready) for(; iteration < 10; ++iteration)
+    if (is_ready()) for(; iteration < 10; ++iteration)
     {
         status = gsl_multimin_fdfminimizer_iterate(s);
         std::cout << "iteration pre-break\n" << status << "\n";
@@ -210,6 +208,9 @@ void Regulator_tuner_gradient_method::to_tune()
     else
         std::cout << "NOT iteration\n";
     std::cout << "WTF?\n";
+
+    std::array<double, 3> arr {gsl_vector_get(x,0), gsl_vector_get(x,1), gsl_vector_get(x,2)};
+    answer = arr;
 }
 
 Regulator_tuner::Regulator_tuner()
