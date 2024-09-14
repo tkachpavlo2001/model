@@ -29,7 +29,7 @@ add_library(
     regulator.h
     reference_signal_definder_static.h
     reference_signal_definder_static.cpp
-    generative_alg.cpp
+    generative_algorithm.h
 )
 
 add_library(
@@ -42,6 +42,7 @@ add_library(
     regulator_tuner.h
     regulator_tuner.cpp
     generative_algorithm.h
+    gradient_method.h
 )
 
 
