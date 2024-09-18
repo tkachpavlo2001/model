@@ -12,6 +12,7 @@ if(NOT GSL_FOUND)
 else()
     include_directories(${GSL_INCLUDE_DIR})
 endif()
+include_directories(tkachpavlo2001lib)
 
 
 add_library(
@@ -61,6 +62,7 @@ add_executable( acs_model_for_experiments
     experiment_executor.cpp
     default_configuration_setter.h
     default_configuration_setter.cpp
+    tkachpavlo2001lib/tkachpavlo2001lib.hpp
 )
 
 add_executable( unit_test

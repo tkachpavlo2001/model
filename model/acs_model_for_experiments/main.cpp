@@ -200,7 +200,7 @@ void to_check_regulator_tunner()
     for(int i = 0; i < 3; ++i) std::cout << gsl_vector_get(gradient, i) << '\t';
     std::cout << std::endl;
 
-    return;
+    //return;
 
     std::array<double, 3> k = optimizer->to_get_solution();
 

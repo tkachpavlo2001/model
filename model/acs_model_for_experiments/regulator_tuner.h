@@ -39,12 +39,26 @@ protected:
     PID_regulator * regulator;
     virtual bool is_ready() = 0;
     std::array<double, 3> answer;
+    double length = 0;
+    double t_registrate = 0;
+    double times = 0;
+    double min = 0;
+    double max = 0;
+    double h = 0;
 public:
     Automated_control_system * to_get_model();
     PID_regulator * to_get_regulator();
     void to_set_model_and_regulator(std::shared_ptr<Automated_control_system>, std::shared_ptr<PID_regulator>);
     void to_set_model_and_regulator(Automated_control_system *, PID_regulator *);
     virtual std::array<double, 3> to_get_solution() const;
+    virtual void to_tune() = 0;
+
+    void to_set_length(double _num) {length = _num;}
+    void to_set_t_registrate(double _num) {t_registrate = _num;}
+    void to_set_times(double _num) {times = _num;}
+    void to_set_min(double _num) {min = _num;}
+    void to_set_max(double _num) {max = _num;}
+    void to_set_h(double _num) {h = _num;}
 };
 
 class Regulator_tuner_with_side_library_interface : virtual public Regulator_tuner_interface {};
@@ -78,7 +92,7 @@ public:
     virtual ~Regulator_tuner_gradient_method();
     virtual void to_initialize() override;
     virtual void to_reset_to_null() override;
-    void to_tune();
+    void to_tune() override;
 };
 
 class Regulator_tuner_my_generic_algorithm
@@ -96,6 +110,7 @@ private:
 public:
     Regulator_tuner();
     virtual ~Regulator_tuner();
+    void to_tune() override;
 };
 
 #endif // REGULATOR_TUNER_H

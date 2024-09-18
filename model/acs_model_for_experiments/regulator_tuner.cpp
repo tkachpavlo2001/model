@@ -164,6 +164,14 @@ void Regulator_tuner_with_GSL_interface::to_set_configurations(user_parameters_f
         parameters->p_tuner = this;
         if (acs_model != nullptr) parameters->p_acs_model = acs_model;
         if (regulator != nullptr) parameters->p_regulator = regulator;
+        if (acs_model != nullptr) parameters->dt = acs_model->to_check_dt();
+        parameters->length = length;
+        parameters->t_registrate = t_registrate;
+        parameters->times = times;
+        parameters->min = min;
+        parameters->max = max;
+        parameters->last_value_f = 0;
+        parameters->h = h;
     }
     if (my_minimizer_structure != nullptr)
     {
@@ -211,6 +219,9 @@ void Regulator_tuner_gradient_method::to_tune()
 
     std::array<double, 3> arr {gsl_vector_get(x,0), gsl_vector_get(x,1), gsl_vector_get(x,2)};
     answer = arr;
+
+    std::array<double, 3> k = arr;
+    regulator->to_set_koefficients(k[0],k[1],k[2]);
 }
 
 Regulator_tuner::Regulator_tuner()
@@ -222,3 +233,5 @@ Regulator_tuner::~Regulator_tuner()
 
 }
 
+void Regulator_tuner::to_tune()
+{}

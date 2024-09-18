@@ -9,10 +9,11 @@
 #include<map>
 #include<array>
 
+#include"tkachpavlo2001lib/tkachpavlo2001lib.hpp"
 
 /// work things
 
-inline double myrand() { return double(rand() % 101) / 100; }
+//inline double myrand() { return double(rand() % 101) / 100; }
 
 int main_0();
 

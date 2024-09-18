@@ -6,10 +6,11 @@
 #include<map>
 #include<random>
 #include<time.h>
-#include"generative_algorithm.h"
 
 
-//inline double myrand() { return double(rand() % 101) / 100; }
+#include"tkachpavlo2001lib/myRand.h"
+
+
 
 template <int POLYNOM>
 class gradient_method_step_based
