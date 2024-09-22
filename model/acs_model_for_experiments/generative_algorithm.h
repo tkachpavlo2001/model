@@ -11,21 +11,6 @@
 
 #include"tkachpavlo2001lib/tkachpavlo2001lib.hpp"
 
-/// work things
-
-//inline double myrand() { return double(rand() % 101) / 100; }
-
-int main_0();
-
-
-
-//#define MUTATION_PROBABILITY 0.1
-//#define MUTATION_STEP 0.1
-//#define MAX_INIT 1.0
-//#define MIN_INIT 0.0
-
-
-
 template <int POLYNOM>
 class generative_algorithm
 {
@@ -49,7 +34,7 @@ private:
     double NEW_AGENTS = 3000;
     double ITERATIONS = 100;
     double (*fitnes_function) (double * answer, void *) = nullptr;
-    void * fitness_function_parameters;
+    void * fitness_function_parameters = nullptr;
 
 public:
     generative_algorithm();
@@ -75,8 +60,6 @@ generative_algorithm<POLYNOM>::generative_algorithm()
     to_set_mutation_step();
     to_set_mutation_propability();
 }
-/// alg
-// settings ///public
 
 template <int POLYNOM>
 void generative_algorithm<POLYNOM>::to_initialize(std::multimap<double, std::array<double,POLYNOM>> & _answer_rating)
@@ -92,7 +75,6 @@ void generative_algorithm<POLYNOM>::to_initialize(std::multimap<double, std::arr
     }
 }
 
-// private
 template <int POLYNOM>
 void generative_algorithm<POLYNOM>::add_answer(std::multimap<double, std::array<double,POLYNOM>> & _rating, const std::array<double,POLYNOM> & _answer)
 {
@@ -190,9 +172,8 @@ void generative_algorithm<POLYNOM>::to_show_iteration_status(const std::pair<dou
 template <int POLYNOM>
 void generative_algorithm<POLYNOM>::to_solve_record_mode()
 {
-    //if (input == nullptr) return 1;
-    //if (input != nullptr) if (input->fitnes_function == nullptr) return 2;
-    if (fitnes_function == nullptr) { std::cerr << "fitnes_function is NULL\n"; return; }
+    if (fitnes_function == nullptr) { std::cerr << "fitness_function is NULL\n"; return; }
+    if (fitness_function_parameters == nullptr) { std::cerr << "fitness_function_parameters is NULL\n"; return; }
     std::vector<std::array<double,POLYNOM>> answer_array;
     std::multimap<double, std::array<double,POLYNOM>> answer_rating;
     std::pair<double, std::array<double,POLYNOM>> answer;
@@ -224,6 +205,7 @@ template <int POLYNOM>
 std::pair<double, std::array<double,POLYNOM>> generative_algorithm<POLYNOM>::to_solve()
 {
     if (fitnes_function == nullptr) { std::cerr << "fitnes_function is NULL\n"; std::abort(); }
+    if (fitness_function_parameters == nullptr) { std::cerr << "fitness_function_parameters is NULL\n"; std::abort(); }
     std::vector<std::array<double,POLYNOM>> answer_array;
     std::multimap<double, std::array<double,POLYNOM>> answer_rating;
     std::pair<double, std::array<double,POLYNOM>> answer;
@@ -231,9 +213,6 @@ std::pair<double, std::array<double,POLYNOM>> generative_algorithm<POLYNOM>::to_
     srand(time(0));
     to_initialize(answer_rating);
     answer = *std::begin(answer_rating);
-    //std::cout << "Initializing:\n";
-    //to_show(answer);
-    //std::cout << '\n';
     best_answer = answer;
     for ( int i = 0 ; i < ITERATIONS; ++i)
     {
@@ -243,19 +222,13 @@ std::pair<double, std::array<double,POLYNOM>> generative_algorithm<POLYNOM>::to_
         to_cut(answer_rating);
         answer = *(std::begin(answer_rating));
         if (best_answer.first > answer.first) best_answer = answer;
-        //to_show_iteration_status(best_answer, answer, i);
-        //std::cout << std::endl;
     }
-    //std::cout << "\n\nFinal answer: ";
-    //to_show(best_answer);
-    //std::cout << std::endl;
     return best_answer;
 }
 
 template <int POLYNOM>
 std::array<double,POLYNOM> generative_algorithm<POLYNOM>::to_solve_array_out()
 {
-    if (fitnes_function == nullptr) { std::cerr << "fitnes_function is NULL\n"; std::abort(); }
     auto answer = this->to_solve();
     return answer.second;
 }
