@@ -75,8 +75,13 @@ void Default_configuration_setter::to_fill_process(std::shared_ptr<DC_engine> dr
     array_of_the_parameters_to_set[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = inertia_load_chosen;
     array_of_the_parameters_to_set[DC_engine::INDUCTIVITY] = inductivity_chosen;
 
+    //OR
     array_of_the_parameters_to_set[DC_engine::LOAD_K_EXP_CURVATURE] = kL_exp_1;
     array_of_the_parameters_to_set[DC_engine::LOAD_K_EXP_LIMIT] = kL_exp_2;
+    //OR
+    //array_of_the_parameters_to_set[DC_engine::LOAD_K_0] = torque_nominal_calculated;
+    //array_of_the_parameters_to_set[DC_engine::LOAD_K_1] = torque_nominal_calculated * 0.2;
+    //ENDofOR
 
     drive->to_set_all_parameters({array_of_the_parameters_to_set.begin(), array_of_the_parameters_to_set.end()});
 
@@ -206,11 +211,11 @@ void Default_configuration_setter::to_set_configurations_in_user_parameters_for_
         _p_struct->dt = 1e-5;
         _p_struct->length = 5;
         _p_struct->t_registrate = 1e-1;
-        _p_struct->times = 2;
+        _p_struct->times = 5;
         _p_struct->min = 50;
         _p_struct->max = 100;
         _p_struct->last_value_f = 1e10;
-        _p_struct->h = 1e-6;
+        _p_struct->h = 1;
     }
 }
 
@@ -227,4 +232,15 @@ void Default_configuration_setter::to_set_objects_in_user_parameters_for_gsl_opt
         if (_p_acs_model != nullptr) _p_struct->p_acs_model = _p_acs_model;
         if (_p_regulator != nullptr) _p_struct->p_regulator = _p_regulator;
     }
+}
+
+void Default_configuration_setter::to_set_configurations_in_my_tuner(std::shared_ptr<Regulator_tuner_my_generic_algorithm> optimizer) const
+{
+    optimizer->to_set_iterations(10);
+    optimizer->to_set_h(10e-3);
+    optimizer->to_set_length(5);
+    optimizer->to_set_max(100);
+    optimizer->to_set_min(50);
+    optimizer->to_set_t_registrate(1e-1);
+
 }

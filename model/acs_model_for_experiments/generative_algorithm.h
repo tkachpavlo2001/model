@@ -48,7 +48,8 @@ private:
     double AGENTS = 1000;
     double NEW_AGENTS = 3000;
     double ITERATIONS = 100;
-    double (*fitnes_function) (double * answer) = nullptr;
+    double (*fitnes_function) (double * answer, void *) = nullptr;
+    void * fitness_function_parameters;
 
 public:
     generative_algorithm();
@@ -62,7 +63,8 @@ public:
     void to_set_agents(double = 1000);
     void to_set_new_agents(double = 3000);
     void to_set_iterations(double = 100);
-    void to_set_fitnes_function( double (*) (double*) = nullptr);
+    void to_set_fitnes_function( double (*f) (double*,void*));
+    void to_set_fitness_function_parameters (void*);
 };
 
 template <int POLYNOM>
@@ -97,7 +99,7 @@ void generative_algorithm<POLYNOM>::add_answer(std::multimap<double, std::array<
     double array[POLYNOM];
     for (int i = 0; i < POLYNOM; ++i)
         array[i] = _answer[i];
-    double fi = fitnes_function(array);
+    double fi = fitnes_function(array, fitness_function_parameters);
     _rating.insert(std::pair(fi, _answer));
 }
 
@@ -301,8 +303,15 @@ void generative_algorithm<POLYNOM>::to_set_iterations(double num)
 }
 
 template <int POLYNOM>
-void generative_algorithm<POLYNOM>::to_set_fitnes_function( double (*f) (double*))
+void generative_algorithm<POLYNOM>::to_set_fitnes_function( double (*f) (double*,void*))
 {
     fitnes_function = f;
 }
+
+template <int POLYNOM>
+void generative_algorithm<POLYNOM>::to_set_fitness_function_parameters(void* _parameters)
+{
+    fitness_function_parameters = _parameters;
+}
+
 #endif // GENERATIVE_ALGORITHM_H
