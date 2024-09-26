@@ -2,30 +2,11 @@
 #include "experiment_executor.h"
 
 
-//#include <memory.h>
-//#include <vector>
-//#include <gsl/gsl_multimin.h>
-//#include <numeric>
+#include <memory.h>
+#include <vector>
+#include <gsl/gsl_multimin.h>
+#include <numeric>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
 long double fitness_function_varied_reference_signal
 (Regulator_tuner_interface* _tuner, double _dt, double _length, double _t_registrate, double _times, double _min, double _max)
 {
@@ -328,4 +309,3 @@ Regulator_tuner::~Regulator_tuner()
 
 void Regulator_tuner::to_tune()
 {}
-*/

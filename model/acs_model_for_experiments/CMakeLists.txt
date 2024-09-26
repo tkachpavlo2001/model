@@ -44,6 +44,7 @@ add_library(
     regulator_tuner.cpp
     generative_algorithm.h
     gradient_method.h
+    fitness_function.cpp
 )
 
 
