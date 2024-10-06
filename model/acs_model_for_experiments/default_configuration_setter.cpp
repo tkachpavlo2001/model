@@ -203,7 +203,7 @@ void Default_configuration_setter::to_set_experiment_parameters(Experiment_execu
     _experiment->to_set_time_to_registrate(1e-1); //experiment->to_set_time_to_registrate(1e-1);
 }
 
-
+/*
 void Default_configuration_setter::to_set_configurations_in_user_parameters_for_gsl_optimizer(user_parameters_for_gsl_optimizer* _p_struct) const
 {
     if (_p_struct != nullptr)
@@ -243,4 +243,43 @@ void Default_configuration_setter::to_set_configurations_in_my_tuner(std::shared
     optimizer->to_set_min(50);
     optimizer->to_set_t_registrate(1e-1);
 
+}
+
+/// Started BUT NOT FINISHED:
+void Default_configuration_setter::to_set_generative_algorithm_configurations(generative_algorithm<3> & generative_algorithm_obj)
+{
+    generative_algorithm_obj.to_set_min_init(0);
+    generative_algorithm_obj.to_set_max_init(1);
+    generative_algorithm_obj.to_set_mutation_step(0.1);
+    generative_algorithm_obj.to_set_mutation_propability(0.1);
+    generative_algorithm_obj.to_set_agents(1000);
+    generative_algorithm_obj.to_set_new_agents(double = 3000);
+    generative_algorithm_obj.to_set_iterations(double = 100);
+    generative_algorithm_obj.to_set_fitnes_function( double (*f) (double*,void*) );
+    generative_algorithm_obj.to_set_fitness_function_parameters (void*);
+}
+
+*/
+void Default_configuration_setter::to_set_configurations_in_parameters_for_optimizer(parameters_for_optimizer& _arg) const
+{
+
+    _arg.parameters_for_fitness_function_obj.t_registrate = 1e-1;
+    _arg.parameters_for_fitness_function_obj.dt = 1e-5;
+    _arg.parameters_for_fitness_function_obj.length = 5;
+
+    _arg.parameters_for_gradient_obj.dx = 10e-3;
+    _arg.parameters_for_gradient_obj.last_value_f;
+    _arg.parameters_for_gradient_obj.learn_step = 1;
+
+    _arg.parameters_for_varied_fitness_function_obj.min = 50;
+    _arg.parameters_for_varied_fitness_function_obj.max = 100;
+    _arg.parameters_for_varied_fitness_function_obj.times = 5;
+
+    _arg.parameters_configurations_for_optimizer_obj.iterations = 10;
+    _arg.parameters_configurations_for_optimizer_obj.agents = 3;
+    _arg.parameters_configurations_for_optimizer_obj.new_agents = 10;
+    _arg.parameters_configurations_for_optimizer_obj.mutation_step = 0.1;
+    _arg.parameters_configurations_for_optimizer_obj.mutation_propability = 0.1;
+    _arg.parameters_configurations_for_optimizer_obj.min_init = 0;
+    _arg.parameters_configurations_for_optimizer_obj.max_init = 1;
 }

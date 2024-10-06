@@ -17,6 +17,7 @@ void to_check_registrator_to_std_vector();
 void to_check_fitness_f();
 void to_check_regulator_tunner();
 void to_check_my_regulator_tunner();
+void to_check_my_regulator_tunner_in_new_shell();
 
 int main()
 {
@@ -26,7 +27,8 @@ int main()
     //to_check_fitness_f();
     //to_check_registrator_to_std_vector();
     //to_check_regulator_tunner();
-    to_check_my_regulator_tunner();
+    //to_check_my_regulator_tunner();
+    to_check_my_regulator_tunner_in_new_shell();
     return 0;
 }
 
@@ -126,7 +128,7 @@ void to_check_registrator_to_std_vector()
 
     for(auto i : records) std::cout << i << std::endl;
 }
-
+/*
 void to_check_fitness_f()
 {
     std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
@@ -293,6 +295,87 @@ void to_check_my_regulator_tunner()
     //return;
 
     std::array<double, 3> k = optimizer->to_get_solution();
+
+    // optimized
+    std::shared_ptr<Reference_signal_definder_static> definder_1 = std::make_shared<Reference_signal_definder_static>();
+    std::shared_ptr<PID_regulator> regulator_1 = std::make_shared<PID_regulator>();
+    std::shared_ptr<DC_source> source_1 = std::make_shared<DC_source>();
+    std::shared_ptr<DC_engine> process_1 = std::make_shared<DC_engine>();
+
+    default_configuration_setter_obj.to_set_elements_parameters(
+                definder_1,
+                regulator_1,
+                source_1,
+                process_1
+                );
+
+    std::shared_ptr<Automated_control_system_paralleled> acs_model_1 = std::make_shared<Automated_control_system_paralleled>();
+    acs_model_1->to_mount_the_element(definder_1.get());
+    acs_model_1->to_mount_the_element(regulator_1.get());
+    acs_model_1->to_mount_the_element(source_1.get());
+    acs_model_1->to_mount_the_element(process_1.get());
+    std::shared_ptr<Experiment_executor_short_report> experiment_1 = std::make_shared<Experiment_executor_short_report>();
+    experiment_1->to_get_model_to_run(acs_model_1.get());
+    experiment_1->to_set_result_title("After the regulator tuning");
+    default_configuration_setter_obj.to_set_experiment_parameters(experiment_1);
+
+    regulator_1->to_set_koefficients(k[0],k[1],k[2]);
+    experiment_1->to_run();
+
+
+
+    for (auto i : k) std::cout << i << '\t';
+    std::cout << std::endl;
+}
+*/
+
+void to_check_my_regulator_tunner_in_new_shell()
+{
+    // reference case
+    std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
+    std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
+    std::shared_ptr<DC_source> source = std::make_shared<DC_source>();
+    std::shared_ptr<DC_engine> process = std::make_shared<DC_engine>();
+
+    default_configuration_setter_obj.to_set_elements_parameters(
+                definder,
+                regulator,
+                source,
+                process
+                );
+
+    process->to_set_calculation_mode(DC_engine::EULER);
+
+    std::shared_ptr<Automated_control_system_paralleled> acs_model = std::make_shared<Automated_control_system_paralleled>();
+    acs_model->to_mount_the_element(definder.get());
+    acs_model->to_mount_the_element(regulator.get());
+    acs_model->to_mount_the_element(source.get());
+    acs_model->to_mount_the_element(process.get());
+
+
+    std::shared_ptr<Experiment_executor_short_report> experiment = std::make_shared<Experiment_executor_short_report>();
+    experiment->to_get_model_to_run(acs_model.get());
+    experiment->to_set_result_title("Before the regulator tuning");
+    default_configuration_setter_obj.to_set_experiment_parameters(experiment);
+
+    regulator->to_set_koefficients(0.5,0.5,0.5);
+    experiment->to_run();
+
+
+    // optimize
+    parameters_for_optimizer parameters_for_optimizer_obj;
+    default_configuration_setter_obj.to_set_configurations_in_parameters_for_optimizer(parameters_for_optimizer_obj);
+    parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_acs_model = acs_model.get();
+    parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_regulator = regulator.get();
+    process->to_set_calculation_mode(DC_engine::EULER);
+
+    std::shared_ptr<Regulator_tuner_my_generative_algorithm> optimizer = std::make_shared<Regulator_tuner_my_generative_algorithm>(parameters_for_optimizer_obj);
+
+    optimizer->to_tune();
+
+    //return;
+
+    std::array<double, 3> k = optimizer->to_check_answer();
 
     // optimized
     std::shared_ptr<Reference_signal_definder_static> definder_1 = std::make_shared<Reference_signal_definder_static>();

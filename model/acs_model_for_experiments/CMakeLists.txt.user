@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 9.0.2, 2024-09-22T19:57:40. -->
+<!-- Written by QtCreator 9.0.2, 2024-10-06T23:56:23. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -77,8 +77,6 @@
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:PID_regulator_calculation_testing">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:PID_regulator_interface_testing">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:Registrator_testing">Checked</value>
-    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:Regulator_tuner_testing">Checked</value>
-    <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_10_1_Verifying_fitness_function_varied_reference_signal">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_10_Verifying_to_check_the_type">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_1_DC_engine_object_creating">Checked</value>
     <value type="Qt::CheckState" key="1@/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments/unit_test.cpp:case_1_2_Verifying_to_set_dt_inherited">Checked</value>

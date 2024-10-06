@@ -2011,6 +2011,7 @@ double to_pid_regulate_4(double _signal, int _times)
     if (verbose_mode_of_calculations) std::cout << result << std::endl;
     return result;
 }
+
 double to_check_fitness_f(double _signal, int _times)
 {
     std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
@@ -2033,10 +2034,18 @@ double to_check_fitness_f(double _signal, int _times)
     acs_model->to_mount_the_element(source.get());
     acs_model->to_mount_the_element(process.get());
 
-    std::shared_ptr<Regulator_tuner> tuner = std::make_shared<Regulator_tuner>();
-    tuner->to_set_model_and_regulator(acs_model, regulator);
+    parameters_for_optimizer parameters_for_optimizer_obj;
+    default_configuration_setter_obj.to_set_configurations_in_parameters_for_optimizer(parameters_for_optimizer_obj);
+    parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_acs_model = acs_model.get();
+    parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_regulator = regulator.get();
+
+    std::array<double, 3> pre_ans {1, 1, 1};
+
+    std::shared_ptr<Regulator_tuner_my_generative_algorithm> tuner = std::make_shared<Regulator_tuner_my_generative_algorithm>();
+
+    // set the param to tuner
     //(Regulator_tuner_iterface* _tuner, double _dt, double _length, double _t_registrate, double _min, double _max)
-    long double result = fitness_function_varied_reference_signal(tuner.get(), 1e-5, 10, 1e-1, _times, _signal, _signal);
+    long double result = fitness_function_varied_reference_signal(pre_ans.begin(), &parameters_for_optimizer_obj);
     if (verbose_mode_of_calculations) std::cout << result << std::endl ;
     return result;
 }
