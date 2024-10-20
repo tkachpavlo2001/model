@@ -1,4 +1,5 @@
 #include "dc_source.h"
+#include "cmath"
 
 DC_source::DC_source() : Automated_control_system_element_interface()
 {
@@ -65,4 +66,26 @@ void DC_source::to_calculate()
                     parameters[MIN_VOLTAGE]
                 :
                     parameters[INPUT_SIGNAL];
+}
+
+double DC_source_inerted::change_step()
+{
+    double extremum = ( std::abs(parameters[MAX_VOLTAGE]) > std::abs(parameters[MIN_VOLTAGE]) ) ? parameters[MAX_VOLTAGE] : parameters[MIN_VOLTAGE];
+    extremum = std::abs(extremum);
+    static const double frequency = 60;
+    static const double time_of_max_to_null = (1/frequency) / 4;
+    return (parameters[DT]/time_of_max_to_null) * extremum;
+}
+void DC_source_inerted::to_calculate()
+{
+    double temp = parameters[OUTPUT_SIGNAL];
+    double step = change_step();
+    DC_source::to_calculate();
+    if( std::abs( parameters[OUTPUT_SIGNAL] - temp ) > step )
+    {
+        if(parameters[OUTPUT_SIGNAL] - temp >= 0)
+            parameters[OUTPUT_SIGNAL] = temp + step;
+        else
+            parameters[OUTPUT_SIGNAL] = temp - step;
+    }
 }

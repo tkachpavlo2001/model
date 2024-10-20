@@ -16,7 +16,7 @@ template <int POLYNOM>
 class gradient_method_step_based
 {
 private:
-    double (*fitness_function) (double*) = nullptr;
+    double (*fitness_function) (double*,void*) = nullptr;
     double h = 0;
     double ITERATION = 0;
 protected:
@@ -30,7 +30,8 @@ public:
     void to_initiate_answer(double*);
     void to_set_step(double);
     void to_set_iteration(double);
-    void to_set_fitness_function(double(*)(double*)=nullptr);
+    void to_set_fitness_function(double(*)(double*,void*)=nullptr);
+    //void to_set_gradient_function(double(*)(double*,void*)=nullptr);
     double to_get_fitness_function_value();
 };
 
@@ -62,16 +63,18 @@ gradient_method_step_based<POLYNOM>::gradient_method_step_based()
 template <int POLYNOM>
 std::array<double, POLYNOM> gradient_method_step_based<POLYNOM>::to_gradient(std::array<double,POLYNOM> _ans) const
 {
+    std::cerr << "MANUAL CRASH";
+    std::abort();
     std::array<double, POLYNOM> answer;
     double temp = 0;
     double fx = 0;
     double fxh = 0;
     for (int i = 0; i < POLYNOM; ++i)
     {
-        fx = fitness_function(_ans.begin());
+        //fx = fitness_function(_ans.begin(),nullptr); // THERE IS CRASH
         temp = _ans[i];
         _ans[i] += h;
-        fxh = fitness_function(_ans.begin());
+        //fxh = fitness_function(_ans.begin(),nullptr); // THERE IS CRASH
         answer[i] = fxh-fx;
         _ans[i] = temp;
     }
@@ -137,7 +140,7 @@ void gradient_method_step_based<POLYNOM>::to_set_iteration(double _iteration)
 }
 
 template <int POLYNOM>
-void gradient_method_step_based<POLYNOM>::to_set_fitness_function(double(*_f)(double*))
+void gradient_method_step_based<POLYNOM>::to_set_fitness_function(double(*_f)(double*,void*))
 {
     fitness_function = _f;
 }
@@ -145,7 +148,9 @@ void gradient_method_step_based<POLYNOM>::to_set_fitness_function(double(*_f)(do
 template <int POLYNOM>
 double gradient_method_step_based<POLYNOM>::to_get_fitness_function_value()
 {
-    return fitness_function(answer.begin());
+    std::cerr << "MANUAL CRASH";
+    std::abort();
+    //return fitness_function(answer.begin(),nullptr);// THERE IS CRASH
 }
 
 template <int POLYNOM>

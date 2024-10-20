@@ -143,9 +143,21 @@ void Registrator_to_std_vector::to_set_vector(std::shared_ptr<std::vector<double
 
 void Registrator_to_std_vector_difference::to_record()
 {
-
-    if (records != nullptr) records->push_back(
-                to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::VELOCITY] -
-                to_check_acs_model_status()->to_check_definder()->to_check_parameters()[Automated_control_system_element_interface::OUTPUT_SIGNAL]
+    bool COEFITIENT_LIMITING_MODE = true;
+    double a = to_check_acs_model_status()->to_check_regulator()->to_check_parameters()[PID_regulator::OUTPUT_SIGNAL] ;
+    double b = to_check_acs_model_status()->to_check_source()->to_check_parameters()[DC_source::MAX_VOLTAGE];
+    double c = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::VELOCITY];
+    double d = to_check_acs_model_status()->to_check_definder()->to_check_parameters()[Automated_control_system_element_interface::OUTPUT_SIGNAL];
+    if (records == nullptr) { std::cerr << "to_record() error"; return; }
+    if (COEFITIENT_LIMITING_MODE)
+    {
+        records->push_back(
+                (a>b) ?
+                (a/b) : (1)
+                *
+                (d-c)
             );
+    }
+    else records->push_back(d-c);
+
 }

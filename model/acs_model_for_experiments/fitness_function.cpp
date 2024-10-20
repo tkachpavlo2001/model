@@ -54,6 +54,10 @@ double fitness_function_varied_reference_signal(double*ans,void*param)
 
         p_experiment->to_get_model_to_run(p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_acs_model);
 
+        p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_regulator->to_get_parameters()[PID_regulator::K_P] = ans[0];
+        p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_regulator->to_get_parameters()[PID_regulator::K_I] = ans[1];
+        p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_regulator->to_get_parameters()[PID_regulator::K_D] = ans[2];
+
         for (int i = 0; i < p_parameters_for_optimizer->parameters_for_varied_fitness_function_obj.times; ++i) p_experiment->to_run();
 
         status = 0;

@@ -28,4 +28,12 @@ public:
     virtual void to_calculate() override;
 };
 
+class DC_source_inerted : public DC_source
+{
+private:
+    double change_step();
+public:
+    virtual void to_calculate() override;
+};
+
 #endif // DC_SOURCE_H

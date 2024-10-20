@@ -17,7 +17,7 @@ double PID_regulator::P()
 
 double PID_regulator::I()
 {
-    return parameters[INTEGRAL_SIGNAL] += parameters[K_I] * parameters[ERROR_SIGNAL];
+    return parameters[INTEGRAL_SIGNAL] += parameters[K_I] * parameters[ERROR_SIGNAL] * parameters[DT];
 }
 
 double PID_regulator::D() // can be paralleled

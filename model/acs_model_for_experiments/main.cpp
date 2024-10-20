@@ -334,7 +334,7 @@ void to_check_my_regulator_tunner_in_new_shell()
     // reference case
     std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
     std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
-    std::shared_ptr<DC_source> source = std::make_shared<DC_source>();
+    std::shared_ptr<DC_source_inerted> source = std::make_shared<DC_source_inerted>();
     std::shared_ptr<DC_engine> process = std::make_shared<DC_engine>();
 
     default_configuration_setter_obj.to_set_elements_parameters(
@@ -358,7 +358,8 @@ void to_check_my_regulator_tunner_in_new_shell()
     experiment->to_set_result_title("Before the regulator tuning");
     default_configuration_setter_obj.to_set_experiment_parameters(experiment);
 
-    regulator->to_set_koefficients(0.5,0.5,0.5);
+    regulator->to_set_koefficients(5,5,5);
+    definder->to_set_signal(20);
     experiment->to_run();
 
 
@@ -380,7 +381,7 @@ void to_check_my_regulator_tunner_in_new_shell()
     // optimized
     std::shared_ptr<Reference_signal_definder_static> definder_1 = std::make_shared<Reference_signal_definder_static>();
     std::shared_ptr<PID_regulator> regulator_1 = std::make_shared<PID_regulator>();
-    std::shared_ptr<DC_source> source_1 = std::make_shared<DC_source>();
+    std::shared_ptr<DC_source_inerted> source_1 = std::make_shared<DC_source_inerted>();
     std::shared_ptr<DC_engine> process_1 = std::make_shared<DC_engine>();
 
     default_configuration_setter_obj.to_set_elements_parameters(
@@ -401,6 +402,7 @@ void to_check_my_regulator_tunner_in_new_shell()
     default_configuration_setter_obj.to_set_experiment_parameters(experiment_1);
 
     regulator_1->to_set_koefficients(k[0],k[1],k[2]);
+    definder_1->to_set_signal(20);
     experiment_1->to_run();
 
 

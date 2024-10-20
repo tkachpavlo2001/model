@@ -9,6 +9,7 @@
 //#include <array>
 
 #include "generative_algorithm.h"
+#include "gradient_method.h"
 
 struct parameters_for_fitness_function
 {
@@ -121,6 +122,18 @@ public:
     Regulator_tuner_my_generative_algorithm(parameters_for_optimizer& _parameters_to_set) : Regulator_tuner_interface(_parameters_to_set) {}
     Regulator_tuner_my_generative_algorithm() {}
     virtual ~Regulator_tuner_my_generative_algorithm() {}
+
+    void to_tune() override;
+};
+
+class Regulator_tuner_my_gradient_algorithm : public Regulator_tuner_my_optimizer_interface
+{
+private:
+    stochastic_gradient_method_step_based<3> stochastic_gradient_method_step_based_obj;
+public:
+    Regulator_tuner_my_gradient_algorithm(parameters_for_optimizer& _parameters_to_set) : Regulator_tuner_interface(_parameters_to_set) {}
+    Regulator_tuner_my_gradient_algorithm() {}
+    virtual ~Regulator_tuner_my_gradient_algorithm() {}
 
     void to_tune() override;
 };

@@ -265,21 +265,22 @@ void Default_configuration_setter::to_set_configurations_in_parameters_for_optim
 
     _arg.parameters_for_fitness_function_obj.t_registrate = 1e-1;
     _arg.parameters_for_fitness_function_obj.dt = 1e-5;
-    _arg.parameters_for_fitness_function_obj.length = 5;
+    _arg.parameters_for_fitness_function_obj.length = 10;
 
     _arg.parameters_for_gradient_obj.dx = 10e-3;
     _arg.parameters_for_gradient_obj.last_value_f;
     _arg.parameters_for_gradient_obj.learn_step = 1;
 
-    _arg.parameters_for_varied_fitness_function_obj.min = 50;
-    _arg.parameters_for_varied_fitness_function_obj.max = 100;
+    _arg.parameters_for_varied_fitness_function_obj.min = 20;
+    _arg.parameters_for_varied_fitness_function_obj.max = 20;
     _arg.parameters_for_varied_fitness_function_obj.times = 5;
 
+    double scale = 100;
     _arg.parameters_configurations_for_optimizer_obj.iterations = 10;
     _arg.parameters_configurations_for_optimizer_obj.agents = 3;
     _arg.parameters_configurations_for_optimizer_obj.new_agents = 10;
-    _arg.parameters_configurations_for_optimizer_obj.mutation_step = 0.1;
-    _arg.parameters_configurations_for_optimizer_obj.mutation_propability = 0.1;
+    _arg.parameters_configurations_for_optimizer_obj.mutation_step = 0.1 * scale;
+    _arg.parameters_configurations_for_optimizer_obj.mutation_propability = 0.5;
     _arg.parameters_configurations_for_optimizer_obj.min_init = 0;
-    _arg.parameters_configurations_for_optimizer_obj.max_init = 1;
+    _arg.parameters_configurations_for_optimizer_obj.max_init = 1 * scale;
 }
