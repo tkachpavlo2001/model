@@ -1003,7 +1003,8 @@ BOOST_AUTO_TEST_CASE(case_4_2_verifying_of_the_I_regulation)
 {
     PID_regulator controller;
     double reference_signal = 10;
-    controller.to_set_dt(2);
+    double dt = 2;
+    controller.to_set_dt(dt);
     controller.to_receive_reference_signal(reference_signal);
     controller.to_receive_input_signal(0);
     controller.to_set_koefficients(0, 1.5);
@@ -1017,7 +1018,7 @@ BOOST_AUTO_TEST_CASE(case_4_2_verifying_of_the_I_regulation)
     for (auto selected_signal : y_of_t)
     {
         sum_of_errors += reference_signal - selected_signal;
-        u_of_t_reference.push_back( sum_of_errors * controller.to_check_parameters()[PID_regulator::K_I] );
+        u_of_t_reference.push_back( sum_of_errors * controller.to_check_parameters()[PID_regulator::K_I] * dt);
     }
     for(
         int i = 0;
@@ -1031,7 +1032,8 @@ BOOST_AUTO_TEST_CASE(case_4_3_verifying_of_the_the_whole_PID_regulator_calculati
 {
     PID_regulator controller;
     double reference_signal = 10;
-    controller.to_set_dt(2);
+    double dt = 2;
+    controller.to_set_dt(dt);
     controller.to_receive_reference_signal(reference_signal);
     controller.to_receive_input_signal(0);
     controller.to_set_koefficients(2, 1, 0.5);
@@ -1052,7 +1054,7 @@ BOOST_AUTO_TEST_CASE(case_4_3_verifying_of_the_the_whole_PID_regulator_calculati
         derror_dt = (error - previous_error) / controller.to_check_parameters()[PID_regulator::DT];
 
         double p_of_t = controller.to_check_parameters()[PID_regulator::K_P] * error;
-        double i_of_t = controller.to_check_parameters()[PID_regulator::K_I] * sum_of_errors;
+        double i_of_t = controller.to_check_parameters()[PID_regulator::K_I] * sum_of_errors * dt;
         double d_of_t = controller.to_check_parameters()[PID_regulator::K_D] * derror_dt;
 
         u_of_t_reference.push_back( p_of_t + i_of_t + d_of_t );
