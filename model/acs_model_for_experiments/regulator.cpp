@@ -35,9 +35,9 @@ PID_regulator::PID_regulator() : Automated_control_system_element_interface()
 
 void PID_regulator::to_set_koefficients(double kp, double ki, double kd)
 {
-    parameters[K_P] = kp;
-    parameters[K_I] = ki;
-    parameters[K_D] = kd;
+    parameters[K_P] = kp > 0 ? kp : 0;
+    parameters[K_I] = ki > 0 ? ki : 0;
+    parameters[K_D] = kd > 0 ? kd : 0;
 }
 
 void PID_regulator::to_receive_reference_signal(double r)
