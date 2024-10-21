@@ -71,11 +71,11 @@ double fitness_function_varied_reference_signal(double*ans,void*param)
 
 }
 
-std::array<long double, 3> gradient_by_step(double*ans,void*param)
+std::array<double, 3> gradient_by_step(double*ans,void*param)
 {
     int status = -1;
     parameters_for_optimizer * p_parameters_for_optimizer;
-    std::array<long double, 3> gradient {0};
+    std::array<double, 3> gradient {0};
     try
     {
         if (param == nullptr)
@@ -92,21 +92,37 @@ std::array<long double, 3> gradient_by_step(double*ans,void*param)
 
         PID_regulator * p_regulator = p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_regulator;
         double temp;
+        double stepped_value;
 
         temp = p_regulator->to_get_parameters()[PID_regulator::K_P];
-        p_regulator->to_get_parameters()[PID_regulator::K_P] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        //p_regulator->to_get_parameters()[PID_regulator::K_P] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        stepped_value = ans[0] + p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        stepped_value = stepped_value < 0 ? 0 : stepped_value;
+        ans[0] = stepped_value;
         gradient[0] = fitness_function_varied_reference_signal(ans, param);
         p_regulator->to_get_parameters()[PID_regulator::K_P] = temp;
+        if (temp < gradient[0] * p_parameters_for_optimizer->parameters_for_gradient_obj.learn_step) { gradient[0] = 0; temp = 0; }
+        ans[0] = temp;
 
         temp = p_regulator->to_get_parameters()[PID_regulator::K_I];
-        p_regulator->to_get_parameters()[PID_regulator::K_I] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        //p_regulator->to_get_parameters()[PID_regulator::K_I] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        stepped_value = ans[1] + p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        stepped_value = stepped_value < 0 ? 0 : stepped_value;
+        ans[1] = stepped_value;
         gradient[1] = fitness_function_varied_reference_signal(ans, param);
         p_regulator->to_get_parameters()[PID_regulator::K_I] = temp;
+        if (temp < gradient[1] * p_parameters_for_optimizer->parameters_for_gradient_obj.learn_step) { gradient[1] = 0; temp = 0; }
+        ans[1] = temp;
 
         temp = p_regulator->to_get_parameters()[PID_regulator::K_D];
-        p_regulator->to_get_parameters()[PID_regulator::K_D] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        //p_regulator->to_get_parameters()[PID_regulator::K_D] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        stepped_value = ans[2] + p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
+        stepped_value = stepped_value < 0 ? 0 : stepped_value;
+        ans[2] = stepped_value;
         gradient[2] = fitness_function_varied_reference_signal(ans, param);
         p_regulator->to_get_parameters()[PID_regulator::K_D] = temp;
+        if (temp < gradient[2] * p_parameters_for_optimizer->parameters_for_gradient_obj.learn_step) { gradient[2] = 0; temp = 0; }
+        ans[2] = temp;
 
         status = 0;
         return gradient;

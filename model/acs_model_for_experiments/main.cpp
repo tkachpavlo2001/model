@@ -370,7 +370,7 @@ void to_check_my_regulator_tunner_in_new_shell()
     parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_regulator = regulator.get();
     process->to_set_calculation_mode(DC_engine::EULER);
 
-    std::shared_ptr<Regulator_tuner_my_generative_algorithm> optimizer = std::make_shared<Regulator_tuner_my_generative_algorithm>(parameters_for_optimizer_obj);
+    std::shared_ptr<Regulator_tuner_my_gradient_algorithm> optimizer = std::make_shared<Regulator_tuner_my_gradient_algorithm>(parameters_for_optimizer_obj);
 
     optimizer->to_tune();
 

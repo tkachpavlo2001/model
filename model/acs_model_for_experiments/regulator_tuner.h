@@ -30,6 +30,11 @@ struct parameters_for_gradient
     double last_value_f = 0;
     double dx = 0;
     double learn_step = 0;
+
+    int tries = 1;
+
+    double learn_step_distortion = 1;
+    double learn_step_distortion_velocity = 0;
 };
 
 struct parameters_p_objects
@@ -77,7 +82,7 @@ inline void to_copy_parameters_for_optimizer(parameters_for_optimizer& _receiver
 
 double fitness_function_varied_reference_signal(double*,void*);
 
-std::array<long double, 3> gradient_by_step(double*,void*);
+std::array<double, 3> gradient_by_step(double*,void*);
 
 class Regulator_tuner_interface
 {
@@ -130,6 +135,8 @@ class Regulator_tuner_my_gradient_algorithm : public Regulator_tuner_my_optimize
 {
 private:
     stochastic_gradient_method_step_based<3> stochastic_gradient_method_step_based_obj;
+    double learn_step_change = 1;
+    double learn_step_change_velocity = 1;
 public:
     Regulator_tuner_my_gradient_algorithm(parameters_for_optimizer& _parameters_to_set) : Regulator_tuner_interface(_parameters_to_set) {}
     Regulator_tuner_my_gradient_algorithm() {}

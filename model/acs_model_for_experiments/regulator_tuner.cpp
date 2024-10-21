@@ -1,5 +1,4 @@
 #include "regulator_tuner.h"
-#include "experiment_executor.h"
 
 
 //#include <memory.h>
@@ -55,6 +54,7 @@ void Regulator_tuner_my_generative_algorithm::to_tune()
 
     generative_algorithm_obj.to_set_fitnes_function(fitness_function_varied_reference_signal);
     generative_algorithm_obj.to_set_fitness_function_parameters(p_parameters);
+
     to_set_answer( generative_algorithm_obj.to_solve_array_out() );
 
     auto k = to_check_answer();
@@ -63,38 +63,27 @@ void Regulator_tuner_my_generative_algorithm::to_tune()
 
 void Regulator_tuner_my_gradient_algorithm::to_tune()
 {
-    /*
-    stochastic_gradient_method_step_based_obj.to_set_min_init(p_parameters->parameters_configurations_for_optimizer_obj.min_init);
-    stochastic_gradient_method_step_based_obj.to_set_max_init(p_parameters->parameters_configurations_for_optimizer_obj.max_init);
-    stochastic_gradient_method_step_based_obj.to_set_mutation_step(p_parameters->parameters_configurations_for_optimizer_obj.mutation_step);
-    stochastic_gradient_method_step_based_obj.to_set_mutation_propability(p_parameters->parameters_configurations_for_optimizer_obj.mutation_propability);
-    stochastic_gradient_method_step_based_obj.to_set_agents(p_parameters->parameters_configurations_for_optimizer_obj.agents);
-    stochastic_gradient_method_step_based_obj.to_set_new_agents(p_parameters->parameters_configurations_for_optimizer_obj.new_agents);
-    stochastic_gradient_method_step_based_obj.to_set_iterations(p_parameters->parameters_configurations_for_optimizer_obj.iterations);
-
-    stochastic_gradient_method_step_based_obj.to_set_fitnes_function(fitness_function_varied_reference_signal);
-    stochastic_gradient_method_step_based_obj.to_set_fitness_function_parameters(p_parameters);
-    */
 
 
-    stochastic_gradient_method_step_based_obj.to_set_tries_amount(3);
-    stochastic_gradient_method_step_based_obj.to_set_initiation_minimum(0);
-    stochastic_gradient_method_step_based_obj.to_set_initiation_maximum(10);
+    stochastic_gradient_method_step_based_obj.to_set_tries_amount(p_parameters->parameters_for_gradient_obj.tries);
+    stochastic_gradient_method_step_based_obj.to_set_initiation_minimum(p_parameters->parameters_configurations_for_optimizer_obj.min_init);
+    stochastic_gradient_method_step_based_obj.to_set_initiation_maximum(p_parameters->parameters_configurations_for_optimizer_obj.max_init);
     stochastic_gradient_method_step_based_obj.to_set_initiation_function(nullptr);
 
-
-    stochastic_gradient_method_step_based_obj.to_initiate_answer(nullptr);
     stochastic_gradient_method_step_based_obj.to_set_step(p_parameters->parameters_for_gradient_obj.dx);
+    stochastic_gradient_method_step_based_obj.to_set_learn_coefficient(p_parameters->parameters_for_gradient_obj.learn_step);
+
     stochastic_gradient_method_step_based_obj.to_set_iteration(p_parameters->parameters_configurations_for_optimizer_obj.iterations);
     stochastic_gradient_method_step_based_obj.to_set_fitness_function(fitness_function_varied_reference_signal);
-    stochastic_gradient_method_step_based_obj.to_get_fitness_function_value();
+    stochastic_gradient_method_step_based_obj.to_set_gradient_function(gradient_by_step);
+    //stochastic_gradient_method_step_based_obj.to_get_fitness_function_value();
 
-
-
-
-    to_set_answer( stochastic_gradient_method_step_based_obj.to_solve_array_out() );
+    to_set_answer( stochastic_gradient_method_step_based_obj.to_solve_array_out(p_parameters) );
 
     auto k = to_check_answer();
+
+    //for ( auto & i : k ) if (1) i = 0;
+
     p_parameters->parameters_p_objects_parameters_obj.p_regulator->to_set_koefficients(k[0], k[1], k[2]);
 }
 

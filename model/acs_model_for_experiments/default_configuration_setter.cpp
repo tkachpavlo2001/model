@@ -267,15 +267,18 @@ void Default_configuration_setter::to_set_configurations_in_parameters_for_optim
     _arg.parameters_for_fitness_function_obj.dt = 1e-5;
     _arg.parameters_for_fitness_function_obj.length = 10;
 
-    _arg.parameters_for_gradient_obj.dx = 10e-3;
+    _arg.parameters_for_gradient_obj.dx = 5e-2;
     _arg.parameters_for_gradient_obj.last_value_f;
-    _arg.parameters_for_gradient_obj.learn_step = 1;
+    _arg.parameters_for_gradient_obj.learn_step = 1e-5;
+    _arg.parameters_for_gradient_obj.tries = 1;
+    _arg.parameters_for_gradient_obj.learn_step_distortion;
+    _arg.parameters_for_gradient_obj.learn_step_distortion_velocity;
 
-    _arg.parameters_for_varied_fitness_function_obj.min = 20;
-    _arg.parameters_for_varied_fitness_function_obj.max = 20;
+    _arg.parameters_for_varied_fitness_function_obj.min = 50;
+    _arg.parameters_for_varied_fitness_function_obj.max = 100;
     _arg.parameters_for_varied_fitness_function_obj.times = 5;
 
-    double scale = 100;
+    double scale = 10;
     _arg.parameters_configurations_for_optimizer_obj.iterations = 10;
     _arg.parameters_configurations_for_optimizer_obj.agents = 3;
     _arg.parameters_configurations_for_optimizer_obj.new_agents = 10;

@@ -17,22 +17,26 @@ class gradient_method_step_based
 {
 private:
     double (*fitness_function) (double*,void*) = nullptr;
+    std::array<double, POLYNOM> (*gradient_function) (double*,void*) = nullptr;
     double h = 0;
+    double learn_coefficient = 0;
     double ITERATION = 0;
+    void to_initiate_answer(double*);
 protected:
     std::array<double,POLYNOM> answer;
 public:
     gradient_method_step_based();
-    virtual std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > to_solve();
-    std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > to_solve_and_record();
-    std::array<double,POLYNOM> to_solve_array_out();
-    std::array<double, POLYNOM> to_gradient(std::array<double,POLYNOM>) const;
-    void to_initiate_answer(double*);
+    virtual std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > to_solve(void*);
+    std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > to_solve_and_record(void * param);
+    std::array<double,POLYNOM> to_solve_array_out(void * param);
+    std::array<double, POLYNOM> to_gradient(std::array<double,POLYNOM>, void*);
     void to_set_step(double);
     void to_set_iteration(double);
     void to_set_fitness_function(double(*)(double*,void*)=nullptr);
+    void to_set_gradient_function(std::array<double, POLYNOM>(*)(double*,void*)=nullptr);
     //void to_set_gradient_function(double(*)(double*,void*)=nullptr);
-    double to_get_fitness_function_value();
+    double to_get_fitness_function_value(void*);
+    void to_set_learn_coefficient(double _arg) { learn_coefficient = _arg; }
 };
 
 template <int POLYNOM>
@@ -51,7 +55,7 @@ public:
     void to_set_initiation_minimum(double);
     void to_set_initiation_maximum(double);
     void to_set_initiation_function(std::array<double, POLYNOM> (*) ());
-    std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > to_solve() override;
+    std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > to_solve(void*) override;
 };
 
 template <int POLYNOM>
@@ -61,43 +65,36 @@ gradient_method_step_based<POLYNOM>::gradient_method_step_based()
 }
 
 template <int POLYNOM>
-std::array<double, POLYNOM> gradient_method_step_based<POLYNOM>::to_gradient(std::array<double,POLYNOM> _ans) const
+std::array<double, POLYNOM> gradient_method_step_based<POLYNOM>::to_gradient(std::array<double,POLYNOM> _ans, void * param)
 {
-    std::cerr << "MANUAL CRASH";
-    std::abort();
-    std::array<double, POLYNOM> answer;
-    double temp = 0;
-    double fx = 0;
-    double fxh = 0;
-    for (int i = 0; i < POLYNOM; ++i)
-    {
-        //fx = fitness_function(_ans.begin(),nullptr); // THERE IS CRASH
-        temp = _ans[i];
-        _ans[i] += h;
-        //fxh = fitness_function(_ans.begin(),nullptr); // THERE IS CRASH
-        answer[i] = fxh-fx;
-        _ans[i] = temp;
-    }
+    std::array<double, POLYNOM> answer = gradient_function(_ans.begin(), param);
     return answer;
 }
 
 template <int POLYNOM>
-std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > gradient_method_step_based<POLYNOM>::to_solve()
+std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > gradient_method_step_based<POLYNOM>::to_solve(void * param)
 {
+    to_initiate_answer(answer.begin());
+    for (auto i : answer) std::cout << i << "\t";       // REDUNDANCE
+    std::cout << std::endl << std::flush;               // REDUNDANCE
     if (fitness_function == nullptr) { std::cerr << "fitnes_function is NULL\n"; abort(); }
     std::array<double, POLYNOM> gradient;
     for (int i = 0; i < ITERATION; ++i)
     {
-        gradient = to_gradient(answer);
+        gradient = this->to_gradient(answer, param);
         for(int j = 0; j < POLYNOM; ++j)
-            answer[j] += gradient[j];
+            answer[j] -= gradient[j] * learn_coefficient;
+        for (auto i : gradient) std::cout << i << "\t";     // REDUNDANCE
+        for (auto i : answer) std::cout << i << "\t";       // REDUNDANCE
+        std::cout << std::endl << std::flush;               // REDUNDANCE
     }
     return std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM>> (gradient,answer);;
 }
 
 template <int POLYNOM>
-std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > gradient_method_step_based<POLYNOM>::to_solve_and_record()
+std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > gradient_method_step_based<POLYNOM>::to_solve_and_record(void * param)
 {
+    to_initiate_answer(answer.begin());
     if (fitness_function == nullptr) { std::cerr << "fitnes_function is NULL\n"; abort(); }
     std::array<double, POLYNOM> gradient;
     for (int i = 0; i < ITERATION; ++i)
@@ -115,9 +112,9 @@ std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > gradient_meth
 }
 
 template <int POLYNOM>
-std::array<double,POLYNOM> gradient_method_step_based<POLYNOM>::to_solve_array_out()
+std::array<double,POLYNOM> gradient_method_step_based<POLYNOM>::to_solve_array_out(void * param)
 {
-    std::pair<double, std::array<double,POLYNOM> > ans = this->to_solve();
+    std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > ans = this->to_solve(param);
     return ans.second;
 }
 
@@ -145,12 +142,18 @@ void gradient_method_step_based<POLYNOM>::to_set_fitness_function(double(*_f)(do
     fitness_function = _f;
 }
 
+
 template <int POLYNOM>
-double gradient_method_step_based<POLYNOM>::to_get_fitness_function_value()
+void gradient_method_step_based<POLYNOM>::to_set_gradient_function(std::array<double, POLYNOM>(*_f)(double*,void*))
 {
-    std::cerr << "MANUAL CRASH";
-    std::abort();
-    //return fitness_function(answer.begin(),nullptr);// THERE IS CRASH
+    gradient_function = _f;
+}
+
+
+template <int POLYNOM>
+double gradient_method_step_based<POLYNOM>::to_get_fitness_function_value(void* param)
+{
+    return fitness_function(answer.begin(), param);
 }
 
 template <int POLYNOM>
@@ -165,6 +168,7 @@ std::array<double, POLYNOM> stochastic_gradient_method_step_based<POLYNOM>::init
 {
     for (int i = 0; i < POLYNOM; ++i)
         this->answer[i] = myrand() * (init_max - init_min) + init_min;
+    return this->answer;
 }
 
 template <int POLYNOM>
@@ -199,15 +203,15 @@ void stochastic_gradient_method_step_based<POLYNOM>::to_set_initiation_function(
 }
 
 template <int POLYNOM>
-std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > stochastic_gradient_method_step_based<POLYNOM>::to_solve()
+std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > stochastic_gradient_method_step_based<POLYNOM>::to_solve(void*param)
 {
     std::multimap<double, std::pair<std::array<double, POLYNOM>, std::array<double, POLYNOM> > > rating;
     std::pair<std::array<double, POLYNOM>, std::array<double, POLYNOM> > result;
     for (int i = 0; i < tries_amount; ++i)
     {
         call_init_funct();
-        result = gradient_method_step_based<POLYNOM>::to_solve();
-        rating.insert(std::pair<double, std::pair<std::array<double, POLYNOM>, std::array<double, POLYNOM> > > (this->to_get_fitness_function_value(), result) );
+        result = gradient_method_step_based<POLYNOM>::to_solve(param);
+        rating.insert(std::pair<double, std::pair<std::array<double, POLYNOM>, std::array<double, POLYNOM> > > (this->to_get_fitness_function_value(param), result) );
     }
     this->answer = rating.begin()->second.second;
     return rating.begin()->second;
