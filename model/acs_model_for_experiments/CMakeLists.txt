@@ -45,6 +45,7 @@ add_library(
     generative_algorithm.h
     gradient_method.h
     fitness_function.cpp
+    container_analyzer.h
 )
 
 

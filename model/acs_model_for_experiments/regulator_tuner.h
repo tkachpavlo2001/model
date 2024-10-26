@@ -145,6 +145,24 @@ public:
     void to_tune() override;
 };
 
+class Regulator_tuner_my_ziegler_nichols_method : public Regulator_tuner_automated_manual_algorithm_interface
+{
+private:
+    double k_start = 0.1;
+    double k_crit_prev = 0;
+protected:
+    double to_check_k_crit_prev() { return k_crit_prev; }
+public:
+    Regulator_tuner_my_ziegler_nichols_method(parameters_for_optimizer&);
+    Regulator_tuner_my_ziegler_nichols_method();
+    virtual ~Regulator_tuner_my_ziegler_nichols_method();
+    void to_set_start_k(double _k = 0.1) { k_start = _k; }
+
+    void to_tune() override;
+
+    virtual void first_step();
+};
+
 class Regulator_tuner
 {};
 #endif // REGULATOR_TUNER_H
