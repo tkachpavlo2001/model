@@ -160,7 +160,11 @@ public:
 
     void to_tune() override;
 
-    virtual void first_step();
+    virtual void to_do_first_step();
+    virtual bool to_do_aproximating_step_Is_aproximated();
+    virtual void to_do_second_step();
+    virtual void to_do_third_step();
+    virtual void to_do_final_step();
 };
 
 class Regulator_tuner

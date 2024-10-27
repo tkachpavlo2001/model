@@ -13,8 +13,9 @@ protected:
     bool is_increasing() const { return increasing; }
 public:
     container_analyzer();
-    bool is_oscillating(std::vector<double>&);
-    type* to_detect_extremum(type * _element_begin, type * _element_end);
+    bool is_oscillating(std::vector<double>&);                              // to_edit
+    double to_calculate_period_Get_r(std::vector<double>&) { return 0; }    // to_edit
+    type* to_detect_extremum(type * _element_begin, type * _element_end);   // to_edit
 };
 
 template <typename type>

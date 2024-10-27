@@ -86,48 +86,124 @@ void Regulator_tuner_my_ziegler_nichols_method::to_tune()
     PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
     Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
 
-    first_step();
-
-    //p_regulator->to_set_koefficients(to_check_answer()[0], to_check_answer()[1], to_check_answer()[2]);
+    to_do_first_step();
+    while (!to_do_aproximating_step_Is_aproximated()) continue;
+    to_do_second_step();
+    to_do_third_step();
+    to_do_final_step();
 }
 
 #include "experiment_executor.h"
 #include "default_configuration_setter.h"
 #include "container_analyzer.h"
 
-void Regulator_tuner_my_ziegler_nichols_method::first_step()
+void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
 {
-    bool cycle_must_proceed = true;
-    std::vector<double> output;
+    //data
     PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
     Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
 
+    //data setting
     std::shared_ptr<Experiment_executor_for_fitness_function> p_experiment = std::make_shared<Experiment_executor_for_fitness_function>();
     Default_configuration_setter setter;
     setter.to_set_experiment_parameters(p_experiment.get());
-    p_experiment->to_set_vector(output);
     p_experiment->to_set_t_length(p_parameters->parameters_for_fitness_function_obj.length);
     p_experiment->to_get_model_to_run(p_acs_model);
 
+    //alg
+    bool cycle_must_proceed = true;
+    std::vector<double> output;
+    p_experiment->to_set_vector(output);
     container_analyzer<double> analyzer;
-    std::array<double, 3> & temp = to_check_answer();
-    temp[0] += k_start;
-    temp[1] = 0;
-    temp[2] = 0;
-    to_set_answer(temp);
+    std::array<double, 3> & ans = to_check_answer();
+    ans[0] += k_start / 2;
+    ans[1] = 0;
+    ans[2] = 0;
     while(cycle_must_proceed)
     {
-        std::array<double, 3> ans = to_check_answer();
         k_crit_prev = ans[0];
         ans[0] *= 2;
-        p_regulator->to_set_koefficients(ans[0], ans[1], ans[2]);
+        p_regulator->to_set_koefficients(ans[0]);
         p_experiment->to_run();
         if (analyzer.is_oscillating(output)) cycle_must_proceed = false;
+
+        output.clear();
     }
-    cycle_must_proceed = true;
-    temp = to_check_answer();
-    temp[0] *= 1.5;
-    to_set_answer(temp);
-    if (analyzer.is_oscillating(output)) return;
-    else temp[0] /= 1.5;
+}
+
+bool Regulator_tuner_my_ziegler_nichols_method::to_do_aproximating_step_Is_aproximated()
+{
+    //data
+    PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
+    Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
+    std::array<double, 3> & ans = to_check_answer();
+    std::shared_ptr<Experiment_executor_for_fitness_function> p_experiment = std::make_shared<Experiment_executor_for_fitness_function>();
+    container_analyzer<double> analyzer;
+    std::vector<double> output;
+
+    //data setting
+    Default_configuration_setter setter;
+    setter.to_set_experiment_parameters(p_experiment.get());
+    p_experiment->to_set_t_length(p_parameters->parameters_for_fitness_function_obj.length);
+    p_experiment->to_get_model_to_run(p_acs_model);
+    p_experiment->to_set_vector(output);
+
+    //alg
+    ans[0] *= 0.75;
+    p_regulator->to_set_koefficients(ans[0]);
+    p_experiment->to_run();
+
+    if (analyzer.is_oscillating(output)) return false;
+
+    else
+    {
+        output.clear();
+        k_crit_prev = ans[0];
+
+        ans[0] /= 0.75;
+        ans[0] *= 0.875;
+        p_regulator->to_set_koefficients(ans[0]);
+        p_experiment->to_run();
+
+        if (!analyzer.is_oscillating(output)) ans[0] /= 0.875;
+    }
+
+    return true;
+}
+
+void Regulator_tuner_my_ziegler_nichols_method::to_do_second_step()
+{
+    //data
+    PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
+    Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
+
+    //data setting
+    std::shared_ptr<Experiment_executor_for_fitness_function> p_experiment = std::make_shared<Experiment_executor_for_fitness_function>();
+    Default_configuration_setter setter;
+    setter.to_set_experiment_parameters(p_experiment.get());
+    p_experiment->to_set_t_length(p_parameters->parameters_for_fitness_function_obj.length);
+    p_experiment->to_get_model_to_run(p_acs_model);
+
+    //alg
+    std::array<double, 3> & ans = to_check_answer();
+    std::vector<double> output;
+    p_experiment->to_set_vector(output);
+    p_experiment->to_run();
+
+    container_analyzer<double> analyzer;
+    ans[1] = analyzer.to_calculate_period_Get_r(output);
+}
+
+void Regulator_tuner_my_ziegler_nichols_method::to_do_third_step()
+{
+    std::array<double, 3> results = to_check_answer();
+    to_set_answer( std::array<double, 3> { 0.6 * results[0] , 1.2 * results[0] / results[1], 0.125 * results[0] * results[1]} );
+}
+
+void Regulator_tuner_my_ziegler_nichols_method::to_do_final_step()
+{
+    PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
+
+    auto ans = to_check_answer();
+    p_regulator->to_set_koefficients(ans[0], ans[1], ans[2]);
 }
