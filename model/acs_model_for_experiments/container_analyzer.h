@@ -3,32 +3,153 @@
 
 #include <algorithm>
 #include <functional>
+#include <numeric>
 
-template <typename type>
 class container_analyzer
 {
 private:
     bool increasing = true;
 protected:
     bool is_increasing() const { return increasing; }
+    void to_change_increasing_status() { increasing = !increasing; }
+    std::vector<double>::iterator to_detect_extremum_Get_p(const std::vector<double>::iterator&, const std::vector<double>::iterator&);
+    bool is_stable_the_oscilations(const std::vector<int>&);
+    bool is_stable_the_amplitude(const std::vector<double>&);
+    std::vector<int> to_calculate_periods_Get(const std::vector<int>&);
+    std::vector<double> to_calculate_amplitudes_Get(const std::vector<double>&);
+    void to_calculate_extremums_and_seconds_Put_in(std::vector<double>& r_vector_obj, std::vector<double>& extremums,std::vector<int>& seconds);
 public:
-    container_analyzer();
-    bool is_oscillating(std::vector<double>&);                              // to_edit
-    double to_calculate_period_Get_r(std::vector<double>&) { return 0; }    // to_edit
-    type* to_detect_extremum(type * _element_begin, type * _element_end);   // to_edit
+    container_analyzer() {}
+    bool is_oscillating(std::vector<double>&);
+    double to_calculate_period_in_Get(std::vector<double>&,double);
 };
 
-template <typename type>
-type* container_analyzer<type>::to_detect_extremum(type * _element_begin, type * _element_end)
+std::vector<double>::iterator container_analyzer::to_detect_extremum_Get_p(const std::vector<double>::iterator& it_begin, const std::vector<double>::iterator& it_end)
 {
-    auto ans_1 = std::adjacent_find(_element_begin, _element_end, std::greater());
-    auto ans_0 = std::adjacent_find(_element_begin, _element_end, std::less());
+    //data
+    auto ans = it_begin;
+    //alg
+    if (is_increasing())
+    {
+        ans = std::adjacent_find(it_begin, it_end, std::greater());
+    }
+    else
+    {
+        ans = std::adjacent_find(it_begin, it_end, std::less());
+    }
+
+    if (ans != it_end) to_change_increasing_status();
+
+    return ans;
 }
 
-template <typename type>
-bool container_analyzer<type>::is_oscillating(std::vector<double>& p_arr)
+bool container_analyzer::is_oscillating(std::vector<double>& r_vector_obj)
 {
-    return true;
+    //data
+    std::vector<double> extremums;
+    std::vector<int> seconds;
+    bool isStable_last_check = false;
+    //alg
+    to_calculate_extremums_and_seconds_Put_in(r_vector_obj, extremums, seconds);
+    isStable_last_check = is_stable_the_oscilations(seconds);
+    isStable_last_check *= is_stable_the_amplitude(extremums);
+
+    return isStable_last_check;
+}
+
+void container_analyzer::to_calculate_extremums_and_seconds_Put_in(std::vector<double>& r_vector_obj, std::vector<double>& extremums,std::vector<int>& seconds)
+{
+    //data
+    std::vector<double>::iterator p_extremum;
+    std::vector<double>::iterator p_extremum_prev;
+    //alg
+    p_extremum = to_detect_extremum_Get_p(r_vector_obj.begin(), r_vector_obj.end());
+    while( p_extremum != r_vector_obj.end() )
+    {
+        p_extremum_prev = p_extremum;
+        extremums.push_back(*p_extremum);
+        if ( p_extremum != p_extremum_prev ) seconds.push_back(p_extremum - p_extremum_prev);
+
+        p_extremum = to_detect_extremum_Get_p(r_vector_obj.begin(), r_vector_obj.end());
+    }
+}
+
+bool container_analyzer::is_stable_the_oscilations(const std::vector<int>& seconds)
+{
+    //data
+    std::vector<int> periods;
+    double average_period = 0;
+    bool ans = true;
+    //alg
+    periods = to_calculate_periods_Get(seconds);
+    average_period = double( std::accumulate(periods.begin(), periods.end(), 0) ) / double(periods.size());
+    for (auto i : periods)
+        ans *= (average_period * 0.9 < i && i < average_period * 1.1) ;
+    return ans;
+}
+
+std::vector<int> container_analyzer::to_calculate_periods_Get(const std::vector<int>& seconds)
+{
+    //data
+    std::vector<int> periods;
+    int period = 0;
+    //alg
+    auto i_prev = seconds.begin();
+    for(auto i = seconds.begin(); i >= seconds.end(); ++i)
+    {
+        period += *i;
+        if (i - i_prev != 0)
+        {
+            periods.push_back(period);
+            i_prev = i;
+        }
+    }
+    return periods;
+}
+
+bool container_analyzer::is_stable_the_amplitude(const std::vector<double>& extremums)
+{
+    //data
+    std::vector<double> amplitudes;
+    double average_amplitude;
+    bool ans = true;
+    //alg
+    amplitudes = to_calculate_amplitudes_Get(extremums);
+    average_amplitude = std::accumulate(amplitudes.begin(), amplitudes.end(), 0) / double(amplitudes.size());
+    for (auto i : amplitudes)
+        ans *= (average_amplitude * 0.9 < i && i < average_amplitude * 1.1) ;
+    return ans;
+}
+
+std::vector<double> container_analyzer::to_calculate_amplitudes_Get(const std::vector<double>& extremums)
+{
+    //data
+    std::vector<double> amplitudes;
+    //alg
+    auto i_prev = extremums.begin();
+    for(auto i = extremums.begin() + 1; i >= extremums.end(); ++i)
+    {
+        amplitudes.push_back( std::abs(*i - *i_prev) / 2 );
+        i_prev = i;
+    }
+    return amplitudes;
+}
+
+double container_analyzer::to_calculate_period_in_Get(std::vector<double>& r_vector_obj, double dt)
+{
+    //data
+    std::vector<double> extremums;
+    std::vector<int> seconds;
+    std::vector<int> periods;
+    double average_period;
+    //alg
+    to_calculate_extremums_and_seconds_Put_in(r_vector_obj, extremums, seconds);
+    periods = to_calculate_periods_Get(seconds);
+    average_period = double( std::accumulate(periods.begin(), periods.end(), 0) ) / double(periods.size());
+    std::vector<double> seconds_real;
+    for (auto & i : seconds)
+        i *= dt;
+    return average_period;
 }
 
 #endif // CONTAINER_ALANYZER_H

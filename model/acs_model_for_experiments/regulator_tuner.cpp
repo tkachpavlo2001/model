@@ -102,6 +102,7 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
     //data
     PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
     Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
+    double t_registrare = p_parameters->parameters_for_fitness_function_obj.t_registrate;
 
     //data setting
     std::shared_ptr<Experiment_executor_for_fitness_function> p_experiment = std::make_shared<Experiment_executor_for_fitness_function>();
@@ -114,7 +115,7 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
     bool cycle_must_proceed = true;
     std::vector<double> output;
     p_experiment->to_set_vector(output);
-    container_analyzer<double> analyzer;
+    container_analyzer analyzer;
     std::array<double, 3> & ans = to_check_answer();
     ans[0] += k_start / 2;
     ans[1] = 0;
@@ -125,7 +126,7 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
         ans[0] *= 2;
         p_regulator->to_set_koefficients(ans[0]);
         p_experiment->to_run();
-        if (analyzer.is_oscillating(output)) cycle_must_proceed = false;
+        if ( analyzer.is_oscillating(output) ) cycle_must_proceed = false;
 
         output.clear();
     }
@@ -138,8 +139,9 @@ bool Regulator_tuner_my_ziegler_nichols_method::to_do_aproximating_step_Is_aprox
     Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
     std::array<double, 3> & ans = to_check_answer();
     std::shared_ptr<Experiment_executor_for_fitness_function> p_experiment = std::make_shared<Experiment_executor_for_fitness_function>();
-    container_analyzer<double> analyzer;
+    container_analyzer analyzer;
     std::vector<double> output;
+    double t_registrare = p_parameters->parameters_for_fitness_function_obj.t_registrate;
 
     //data setting
     Default_configuration_setter setter;
@@ -153,7 +155,7 @@ bool Regulator_tuner_my_ziegler_nichols_method::to_do_aproximating_step_Is_aprox
     p_regulator->to_set_koefficients(ans[0]);
     p_experiment->to_run();
 
-    if (analyzer.is_oscillating(output)) return false;
+    if ( analyzer.is_oscillating(output) ) return false;
 
     else
     {
@@ -165,7 +167,7 @@ bool Regulator_tuner_my_ziegler_nichols_method::to_do_aproximating_step_Is_aprox
         p_regulator->to_set_koefficients(ans[0]);
         p_experiment->to_run();
 
-        if (!analyzer.is_oscillating(output)) ans[0] /= 0.875;
+        if ( !analyzer.is_oscillating(output) ) ans[0] /= 0.875;
     }
 
     return true;
@@ -176,6 +178,7 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_second_step()
     //data
     PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
     Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
+    double t_registrare = p_parameters->parameters_for_fitness_function_obj.t_registrate;
 
     //data setting
     std::shared_ptr<Experiment_executor_for_fitness_function> p_experiment = std::make_shared<Experiment_executor_for_fitness_function>();
@@ -190,8 +193,8 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_second_step()
     p_experiment->to_set_vector(output);
     p_experiment->to_run();
 
-    container_analyzer<double> analyzer;
-    ans[1] = analyzer.to_calculate_period_Get_r(output);
+    container_analyzer analyzer;
+    ans[1] = analyzer.to_calculate_period_in_Get(output, t_registrare);
 }
 
 void Regulator_tuner_my_ziegler_nichols_method::to_do_third_step()
