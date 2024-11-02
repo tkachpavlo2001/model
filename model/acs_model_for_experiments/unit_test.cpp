@@ -13,6 +13,7 @@
 #include"experiment_executor.h"
 #include"default_configuration_setter.h"
 #include"regulator_tuner.h"
+#include"container_analyzer.h"
 
 #include<memory>
 #include<algorithm>
@@ -1974,6 +1975,128 @@ BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(Regulator_tuner_testing)
 
+
+BOOST_AUTO_TEST_SUITE(Container_analyzer_testing)
+
+BOOST_AUTO_TEST_CASE(case_11_1_Period)
+{
+    container_analyzer analyzer_obj;
+    std::vector<double> arr {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    std::vector<double> temp;
+    double dt = 0.5;
+
+    //alg1
+    temp = arr;
+    arr.insert(arr.end(), temp.begin(), temp.end());
+    arr.insert(arr.end(), temp.begin(), temp.end());
+    arr.insert(arr.end(), temp.begin(), temp.end());
+    arr.insert(arr.end(), temp.begin(), temp.end());
+    arr.insert(arr.end(), temp.begin(), temp.end());
+
+    BOOST_REQUIRE_EQUAL( analyzer_obj.to_calculate_period_in_Get(arr, dt) , 12 * dt );
+
+    dt = 1;
+    BOOST_REQUIRE_EQUAL( analyzer_obj.to_calculate_period_in_Get(arr, dt) , 12 * dt );
+
+    dt = 2;
+    BOOST_REQUIRE_EQUAL( analyzer_obj.to_calculate_period_in_Get(arr, dt) , 12 * dt );
+
+
+    //data2
+    std::vector<double> arr1 {0, 1, 1.5, 1.5, 1, 0, -1, -1.5, -1.5, -1};
+    dt = 1;
+    //alg2
+    temp = arr1;
+    arr1.insert(arr1.end(), temp.begin(), temp.end());
+    arr1.insert(arr1.end(), temp.begin(), temp.end());
+    BOOST_REQUIRE_EQUAL( analyzer_obj.to_calculate_period_in_Get(arr1, dt) , 10 * dt );
+}
+
+
+BOOST_AUTO_TEST_CASE(case_11_2_is_oscillating_by_amplitude)
+{
+    container_analyzer analyzer_obj;
+    std::vector<double> arr {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    double dt = 0.5;
+    std::vector<double> temp;
+
+    //alg1
+    temp = arr;
+    arr.insert(arr.end(), temp.begin(), temp.end());
+    arr.insert(arr.end(), temp.begin(), temp.end());
+    BOOST_REQUIRE(analyzer_obj.is_oscillating(arr));
+
+    //data2
+    std::vector<double> arr1 {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    std::vector<double> arr2 {0, 1, 1.5, 2.1, 1.5, 1, 0, -1, -1.5, -2.1, -1.5, -1};
+    std::vector<double> arr3 {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    std::vector<double> arr4 {0, 1, 1.5, 2.1, 1.5, 1, 0, -1, -1.5, -2.1, -1.5, -1};
+    dt = 1;
+    //alg2
+    temp = arr2;
+    arr1.insert(arr1.end(), temp.begin(), temp.end());
+    temp = arr3;
+    arr1.insert(arr1.end(), temp.begin(), temp.end());
+    temp = arr4;
+    arr1.insert(arr1.end(), temp.begin(), temp.end());
+    BOOST_REQUIRE(analyzer_obj.is_oscillating(arr1));
+
+    //data3
+    std::vector<double> arr11 {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    std::vector<double> arr12 {0, 1, 1.5, 2.25, 1.5, 1, 0, -1, -1.5, -2.25, -1.5, -1};
+    std::vector<double> arr13 {0, 1, 1.5, 2.75, 1.5, 1, 0, -1, -1.5, -2.75, -1.5, -1};
+    std::vector<double> arr14 {0, 1, 1.5, 3, 1.5, 1, 0, -1, -1.5, -3, -1.5, -1};
+    dt = 1;
+    //alg3
+    temp = arr12;
+    arr11.insert(arr11.end(), temp.begin(), temp.end());
+    temp = arr13;
+    arr11.insert(arr11.end(), temp.begin(), temp.end());
+    temp = arr14;
+    arr11.insert(arr11.end(), temp.begin(), temp.end());
+    BOOST_REQUIRE(!analyzer_obj.is_oscillating(arr11));
+}
+
+BOOST_AUTO_TEST_CASE(case_11_3_is_oscillating_by_period)
+{
+    container_analyzer analyzer_obj;
+    std::vector<double> arr {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    double dt = 0.5;
+    std::vector<double> temp;
+
+    //data2
+    std::vector<double> arr1 {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    std::vector<double> arr2 {0, 1, 1.5, 2.1, 1.5, 1, 0, -1, -1.5, -2.1, -1.5, -1};
+    std::vector<double> arr3 {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    std::vector<double> arr4 {0, 1, 1.5, 2.1, 1.5, 1, 0, -1, -1.5, -2.1, -1.5, -1};
+    dt = 1;
+    //alg2
+    temp = arr2;
+    arr1.insert(arr1.end(), temp.begin(), temp.end());
+    temp = arr3;
+    arr1.insert(arr1.end(), temp.begin(), temp.end());
+    temp = arr4;
+    arr1.insert(arr1.end(), temp.begin(), temp.end());
+    BOOST_REQUIRE(analyzer_obj.is_oscillating(arr1));
+
+    //data3
+    std::vector<double> arr11 {0, 2, 0, -2};
+    std::vector<double> arr12 {0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5};
+    std::vector<double> arr13 {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    std::vector<double> arr14 {0, 1, 1.5, 2, 1.5, 1, 0, -1, -1.5, -2, -1.5, -1};
+    dt = 1;
+    //alg3
+    temp = arr12;
+    arr11.insert(arr11.end(), temp.begin(), temp.end());
+    temp = arr13;
+    arr11.insert(arr11.end(), temp.begin(), temp.end());
+    temp = arr14;
+    arr11.insert(arr11.end(), temp.begin(), temp.end());
+    BOOST_REQUIRE(!analyzer_obj.is_oscillating(arr11));
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
 double to_pid_regulate_4(double _signal, int _times)
 {
     std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
@@ -2065,3 +2188,4 @@ BOOST_AUTO_TEST_CASE(case_10_1_Verifying_fitness_function_varied_reference_signa
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+

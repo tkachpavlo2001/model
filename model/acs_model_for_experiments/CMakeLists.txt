@@ -46,6 +46,7 @@ add_library(
     gradient_method.h
     fitness_function.cpp
     container_analyzer.h
+    container_analyzer.cpp
 )
 
 
