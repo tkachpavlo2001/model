@@ -81,6 +81,12 @@ void Regulator_tuner_my_gradient_algorithm::to_tune()
     p_parameters->parameters_p_objects_parameters_obj.p_regulator->to_set_koefficients(k[0], k[1], k[2]);
 }
 
+Regulator_tuner_automated_manual_algorithm_interface::Regulator_tuner_automated_manual_algorithm_interface(parameters_for_optimizer& _parameters_to_set)
+{
+    p_parameters = new parameters_for_optimizer;
+    to_copy_parameters_for_optimizer(*p_parameters, _parameters_to_set);
+}
+
 void Regulator_tuner_my_ziegler_nichols_method::to_tune()
 {
     PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
@@ -97,8 +103,13 @@ void Regulator_tuner_my_ziegler_nichols_method::to_tune()
 #include "default_configuration_setter.h"
 #include "container_analyzer.h"
 
+Regulator_tuner_automated_manual_algorithm_interface::~Regulator_tuner_automated_manual_algorithm_interface() {}
+
 void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
 {
+    // DELETE
+    std::cout << "firstStep_start\n" << std::flush;
+    // END_DELETE
     //data
     PID_regulator * p_regulator = p_parameters->parameters_p_objects_parameters_obj.p_regulator;
     Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
@@ -127,6 +138,10 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
         p_regulator->to_set_koefficients(ans[0]);
         p_experiment->to_run();
         if ( analyzer.is_oscillating(output) ) cycle_must_proceed = false;
+
+        // DELETE
+        std::cout << "firstStep_cycle\t" << ans[0] << "\n"<< std::flush;
+        // END_DELETE
 
         output.clear();
     }
@@ -167,8 +182,12 @@ bool Regulator_tuner_my_ziegler_nichols_method::to_do_aproximating_step_Is_aprox
         p_regulator->to_set_koefficients(ans[0]);
         p_experiment->to_run();
 
+
         if ( !analyzer.is_oscillating(output) ) ans[0] /= 0.875;
     }
+    // DELETE
+    std::cout << "aproximateStep_cycle\t" << ans[0] << "\n" << std::flush;
+    // END_DELETE
 
     return true;
 }
