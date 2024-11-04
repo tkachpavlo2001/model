@@ -54,7 +54,7 @@ void container_analyzer::to_calculate_extremums_and_seconds_Put_in(std::vector<d
 bool container_analyzer::is_stable_the_oscilations(const std::vector<int>& seconds)
 {
     //data
-    std::vector<int> amplitudes;       // must be amplitudes
+    std::vector<int> amplitudes;
     double average_amplitude = 0;
     bool ans = true;
     //alg
@@ -96,6 +96,7 @@ bool container_analyzer::is_stable_the_amplitude(const std::vector<double>& extr
     average_amplitude = std::accumulate(amplitudes.begin(), amplitudes.end(), 0) / double(amplitudes.size());
     for (auto i : amplitudes)
         ans *= (average_amplitude * 0.9 < i && i < average_amplitude * 1.1) ;
+    if (amplitudes.size() < 2) ans = false;
     return ans;
 }
 
