@@ -64,6 +64,12 @@ public:
     virtual void to_run() override;
 };
 
+class Experiment_executor_velocity_record : public Experiment_executor_for_fitness_function
+{
+public:
+    void to_run() override;
+};
+
 class Experiment_executor_for_fitness_function_with_varied_reference_signal : public Experiment_executor_for_fitness_function
 {
     double reference_signal_max;

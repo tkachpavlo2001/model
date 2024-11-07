@@ -115,8 +115,9 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
     Automated_control_system * p_acs_model = p_parameters->parameters_p_objects_parameters_obj.p_acs_model;
     double t_registrare = p_parameters->parameters_for_fitness_function_obj.t_registrate;
 
-    //data setting
-    std::shared_ptr<Experiment_executor_for_fitness_function> p_experiment = std::make_shared<Experiment_executor_for_fitness_function>();
+    //data setting //Experiment_executor_velocity_record
+    //std::shared_ptr<Experiment_executor_for_fitness_function> p_experiment = std::make_shared<Experiment_executor_for_fitness_function>();
+    std::shared_ptr<Experiment_executor_velocity_record> p_experiment = std::make_shared<Experiment_executor_velocity_record>();
     Default_configuration_setter setter;
     setter.to_set_experiment_parameters(p_experiment.get());
     p_experiment->to_set_t_length(p_parameters->parameters_for_fitness_function_obj.length);

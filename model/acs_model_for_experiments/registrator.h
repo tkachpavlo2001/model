@@ -49,7 +49,7 @@ public:
 
 class Registrator_to_std_vector : public Registrator
 {
-private:
+public:
     void to_record() override;
 protected:
     std::vector<double> * records = nullptr;

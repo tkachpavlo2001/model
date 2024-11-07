@@ -144,6 +144,14 @@ void Experiment_executor_for_fitness_function::to_run()
     delete own_registrator;
 }
 
+void Experiment_executor_velocity_record::to_run()
+{
+    Registrator_to_std_vector * own_registrator = new Registrator_to_std_vector;
+    own_registrator->to_set_vector(records);
+    Experiment_executor_interface::to_run(own_registrator);
+    delete own_registrator;
+}
+
 Experiment_executor_for_fitness_function_with_varied_reference_signal::Experiment_executor_for_fitness_function_with_varied_reference_signal(Automated_control_system * arg)
     : Experiment_executor_interface(arg), Experiment_executor_for_fitness_function(arg)
 {}

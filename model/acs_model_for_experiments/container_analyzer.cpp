@@ -19,6 +19,7 @@ std::vector<double>::iterator container_analyzer::to_detect_extremum_Get_p(const
     return ans;
 }
 
+#include<iostream>
 bool container_analyzer::is_oscillating(std::vector<double>& r_vector_obj)
 {
     //data
@@ -29,6 +30,9 @@ bool container_analyzer::is_oscillating(std::vector<double>& r_vector_obj)
     to_calculate_extremums_and_seconds_Put_in(r_vector_obj, extremums, seconds);
     isStable_last_check = is_stable_the_oscilations(seconds);
     isStable_last_check *= is_stable_the_amplitude(extremums);
+    //std::cout << "vel:"; for (auto i : r_vector_obj) std::cout << i << "\t"; std::cout << std::endl << std::flush;
+    //std::cout << "sec:"; for (auto i : seconds) std::cout << i << "\t"; std::cout << std::endl << std::flush;
+    //std::cout << "amp:"; for (auto i : extremums) std::cout << i << "\t"; std::cout << std::endl << std::flush;
 
     return isStable_last_check;
 }
@@ -61,7 +65,7 @@ bool container_analyzer::is_stable_the_oscilations(const std::vector<int>& secon
     amplitudes = to_calculate_periods_Get(seconds);
     average_amplitude = double( std::accumulate(amplitudes.begin(), amplitudes.end(), 0) ) / double(amplitudes.size());
     for (auto i : amplitudes)
-        ans *= (average_amplitude * 0.9 < i && i < average_amplitude * 1.1) ;
+        ans *= (double(average_amplitude) * 0.5 < i && i < double(average_amplitude) * 2) ;
     return ans;
 }
 
@@ -93,9 +97,9 @@ bool container_analyzer::is_stable_the_amplitude(const std::vector<double>& extr
     bool ans = true;
     //alg
     amplitudes = to_calculate_amplitudes_Get(extremums);
-    average_amplitude = std::accumulate(amplitudes.begin(), amplitudes.end(), 0) / double(amplitudes.size());
+    average_amplitude = std::accumulate(amplitudes.begin(), amplitudes.end(), 0.0) / double(amplitudes.size());
     for (auto i : amplitudes)
-        ans *= (average_amplitude * 0.9 < i && i < average_amplitude * 1.1) ;
+        ans *= (average_amplitude * 0.3 < i && i < average_amplitude * 3) ;
     if (amplitudes.size() < 2) ans = false;
     return ans;
 }
@@ -124,6 +128,6 @@ double container_analyzer::to_calculate_period_in_Get(std::vector<double>& r_vec
     //alg
     to_calculate_extremums_and_seconds_Put_in(r_vector_obj, extremums, seconds);
     periods = to_calculate_periods_Get(seconds);
-    average_period = double( std::accumulate(periods.begin(), periods.end(), 0) ) / double(periods.size());
+    average_period = double( std::accumulate(periods.begin(), periods.end(), 0.0) ) / double(periods.size());
     return average_period * dt;
 }
