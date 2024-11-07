@@ -92,7 +92,7 @@ void Registrator_to_txt_file_short::to_record()
                     ||
                 i->to_check_the_type() == Automated_control_system_element_interface::ENERGY_SOURCE && &j == &(i->to_check_parameters()[DC_source::OUTPUT_SIGNAL])
                     ||
-                i->to_check_the_type() == Automated_control_system_element_interface::PROCESS && &j == &(i->to_check_parameters()[DC_engine::VELOCITY])
+                i->to_check_the_type() == Automated_control_system_element_interface::PROCESS && &j == &(i->to_check_parameters()[DC_engine::THETA])
                     ||
                 i->to_check_the_type() == Automated_control_system_element_interface::PROCESS && &j == &(i->to_check_parameters()[DC_engine::TORQUE_OF_LOAD])
                     ||
@@ -119,7 +119,7 @@ Registrator_to_txt_file_short::~Registrator_to_txt_file_short()
 
 void Registrator_to_std_vector::to_record()
 {
-    if (records != nullptr) records->push_back(to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::VELOCITY]);
+    if (records != nullptr) records->push_back(to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::THETA]);
 }
 Registrator_to_std_vector::Registrator_to_std_vector()
 {}
@@ -146,7 +146,7 @@ void Registrator_to_std_vector_difference::to_record()
     bool COEFITIENT_LIMITING_MODE = true;
     double a = to_check_acs_model_status()->to_check_regulator()->to_check_parameters()[PID_regulator::OUTPUT_SIGNAL] ;
     double b = to_check_acs_model_status()->to_check_source()->to_check_parameters()[DC_source::MAX_VOLTAGE];
-    double c = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::VELOCITY];
+    double c = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::THETA];
     double d = to_check_acs_model_status()->to_check_definder()->to_check_parameters()[Automated_control_system_element_interface::OUTPUT_SIGNAL];
     if (records == nullptr) { std::cerr << "to_record() error"; return; }
     if (COEFITIENT_LIMITING_MODE)
