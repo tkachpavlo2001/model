@@ -139,7 +139,9 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
         p_regulator->to_set_koefficients(ans[0]);
         p_experiment->to_run();
         if ( analyzer.is_oscillating(output) ) cycle_must_proceed = false;
-
+        //set
+        static_cast<DC_engine*>(p_parameters->parameters_p_objects_parameters_obj.p_acs_model->to_check_process())->to_null();
+        //alg
         // DELETE
         std::cout << "firstStep_cycle\t" << ans[0] << "\n"<< std::flush;
         // END_DELETE

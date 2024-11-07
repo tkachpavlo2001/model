@@ -182,9 +182,9 @@ const Automated_control_system_element_interface * Automated_control_system::to_
     return nullptr;
 }
 
-const Automated_control_system_element_interface * Automated_control_system::to_check_process() const
+DC_engine * Automated_control_system::to_check_process() const
 {
-    return to_check_certain_element(Automated_control_system_element_interface::PROCESS);
+    return p_process;
 }
 
 const Automated_control_system_element_interface * Automated_control_system::to_check_regulator() const

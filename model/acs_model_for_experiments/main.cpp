@@ -30,8 +30,8 @@ int main()
     //to_check_registrator_to_std_vector();
     //to_check_regulator_tunner();
     //to_check_my_regulator_tunner();
-    //to_check_my_regulator_tunner_in_new_shell();
-    to_check_my_regulator_tunner_automated_manual();
+    to_check_my_regulator_tunner_in_new_shell();
+    //to_check_my_regulator_tunner_automated_manual();
     //to_run_reference_instance();
     return 0;
 }
@@ -161,10 +161,27 @@ void to_check_my_regulator_tunner_in_new_shell()
     experiment->to_get_model_to_run(acs_model.get());
     experiment->to_set_result_title("Before the regulator tuning");
     default_configuration_setter_obj.to_set_experiment_parameters(experiment);
+    //set
+    double load = 20;
+    double inertia = 0.05;
 
+    double k_0 = 1 * load;
+    double k_1 = 0 * load;
+    double k_exp = 0 * load;
+    double k_lim = 0 * load;
+    double set_inert = 999 * inertia;
+
+    auto arr = process->to_get_parameters();
+    arr[DC_engine::LOAD_K_0] = k_0;
+    arr[DC_engine::LOAD_K_1] = k_1;
+    arr[DC_engine::LOAD_K_EXP_CURVATURE] = k_exp;
+    arr[DC_engine::LOAD_K_EXP_LIMIT] = k_lim;
+    arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = set_inert;
+    process->to_set_all_parameters(arr);
     regulator->to_set_koefficients(5,5,5);
     definder->to_set_signal(20);
     experiment->to_run();
+    process->to_null();
 
 
     // optimize
@@ -174,7 +191,7 @@ void to_check_my_regulator_tunner_in_new_shell()
     parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_regulator = regulator.get();
     process->to_set_calculation_mode(DC_engine::EULER);
 
-    std::shared_ptr<Regulator_tuner_my_gradient_algorithm> optimizer = std::make_shared<Regulator_tuner_my_gradient_algorithm>(parameters_for_optimizer_obj);
+    std::shared_ptr<Regulator_tuner_my_generative_algorithm> optimizer = std::make_shared<Regulator_tuner_my_generative_algorithm>(parameters_for_optimizer_obj);
 
     optimizer->to_tune();
 
@@ -204,9 +221,18 @@ void to_check_my_regulator_tunner_in_new_shell()
     experiment_1->to_get_model_to_run(acs_model_1.get());
     experiment_1->to_set_result_title("After the regulator tuning");
     default_configuration_setter_obj.to_set_experiment_parameters(experiment_1);
+    //set
+    arr = process_1->to_get_parameters();
+    arr[DC_engine::LOAD_K_0] = k_0;
+    arr[DC_engine::LOAD_K_1] = k_1;
+    arr[DC_engine::LOAD_K_EXP_CURVATURE] = k_exp;
+    arr[DC_engine::LOAD_K_EXP_LIMIT] = k_lim;
+    arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = set_inert;
+    process_1->to_set_all_parameters(arr);
 
     regulator_1->to_set_koefficients(k[0],k[1],k[2]);
     definder_1->to_set_signal(20);
+    experiment_1->to_set_t_length(360);
     experiment_1->to_run();
 
 
@@ -246,18 +272,27 @@ void to_check_my_regulator_tunner_automated_manual()
     //set
     double load = 20;
     double inertia = 0.05;
-    auto arr = process->to_get_parameters();
-    arr[DC_engine::LOAD_K_0] = 1 * load;
-    arr[DC_engine::LOAD_K_1] = 0 * load;
-    arr[DC_engine::LOAD_K_EXP_CURVATURE] = 0 * load;
-    arr[DC_engine::LOAD_K_EXP_LIMIT] = 0 * load;
 
-    arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = 999 * inertia;
+    double k_0 = 1 * load;
+    double k_1 = 0 * load;
+    double k_exp = 0 * load;
+    double k_lim = 0 * load;
+    double set_inert = 999 * inertia;
+
+    auto arr = process->to_get_parameters();
+    arr[DC_engine::LOAD_K_0] = k_0;
+    arr[DC_engine::LOAD_K_1] = k_1;
+    arr[DC_engine::LOAD_K_EXP_CURVATURE] = k_exp;
+    arr[DC_engine::LOAD_K_EXP_LIMIT] = k_lim;
+    arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = set_inert;
     process->to_set_all_parameters(arr);
+
+    experiment->to_set_t_length(30);
     //alg
     regulator->to_set_koefficients(0.4);
     definder->to_set_signal(20);
     experiment->to_run();
+    process->to_null();
 
 
     // optimize
@@ -297,9 +332,19 @@ void to_check_my_regulator_tunner_automated_manual()
     experiment_1->to_get_model_to_run(acs_model_1.get());
     experiment_1->to_set_result_title("After the regulator tuning");
     default_configuration_setter_obj.to_set_experiment_parameters(experiment_1);
+    //set
+    arr = process_1->to_get_parameters();
+    arr[DC_engine::LOAD_K_0] = k_0;
+    arr[DC_engine::LOAD_K_1] = k_1;
+    arr[DC_engine::LOAD_K_EXP_CURVATURE] = k_exp;
+    arr[DC_engine::LOAD_K_EXP_LIMIT] = k_lim;
+    arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = set_inert;
+    process_1->to_set_all_parameters(arr);
 
+    experiment->to_set_t_length(30);
     regulator_1->to_set_koefficients(k[0],k[1],k[2]);
     definder_1->to_set_signal(20);
+    experiment_1->to_set_t_length(360);
     experiment_1->to_run();
 
     for (auto i : k) std::cout << i << '\t';

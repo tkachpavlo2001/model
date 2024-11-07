@@ -33,6 +33,7 @@ private:
 public:
     void to_set_calculation_mode(calculation_mode_states);
     const calculation_mode_states to_check_calculation_mode();
+    void to_null();
 
 
     // BEGIN OF THE STATIC PARAMETERS

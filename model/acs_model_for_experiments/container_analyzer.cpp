@@ -30,9 +30,9 @@ bool container_analyzer::is_oscillating(std::vector<double>& r_vector_obj)
     to_calculate_extremums_and_seconds_Put_in(r_vector_obj, extremums, seconds);
     isStable_last_check = is_stable_the_oscilations(seconds);
     isStable_last_check *= is_stable_the_amplitude(extremums);
-    //std::cout << "vel:"; for (auto i : r_vector_obj) std::cout << i << "\t"; std::cout << std::endl << std::flush;
-    //std::cout << "sec:"; for (auto i : seconds) std::cout << i << "\t"; std::cout << std::endl << std::flush;
-    //std::cout << "amp:"; for (auto i : extremums) std::cout << i << "\t"; std::cout << std::endl << std::flush;
+    std::cout << "vel:"; for (auto i : r_vector_obj) std::cout << i << "\t"; std::cout << std::endl << std::flush;
+    std::cout << "sec:"; for (auto i : seconds) std::cout << i << "\t"; std::cout << std::endl << std::flush;
+    std::cout << "amp:"; for (auto i : extremums) std::cout << i << "\t"; std::cout << std::endl << std::flush;
 
     return isStable_last_check;
 }

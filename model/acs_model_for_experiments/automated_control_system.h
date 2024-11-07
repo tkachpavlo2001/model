@@ -36,7 +36,7 @@ public:
     const std::vector<const Automated_control_system_element_interface *> to_check_elements() const;
     const std::vector<const Automated_control_system_element_interface *> to_check_ordered_elements() const;
     const Automated_control_system_element_interface * to_check_certain_element(Automated_control_system_element_interface::type_of_element) const;
-    const Automated_control_system_element_interface * to_check_process() const;
+    DC_engine * to_check_process() const;
     const Automated_control_system_element_interface * to_check_regulator() const;
     const Automated_control_system_element_interface * to_check_definder() const;
     const Automated_control_system_element_interface * to_check_source() const;

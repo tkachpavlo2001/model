@@ -60,6 +60,12 @@ double fitness_function_varied_reference_signal(double*ans,void*param)
 
         for (int i = 0; i < p_parameters_for_optimizer->parameters_for_varied_fitness_function_obj.times; ++i) p_experiment->to_run();
 
+        for (auto & i : records) i = std::abs(i);
+
+
+        DC_engine * p_process = p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_acs_model->to_check_process();
+        p_process->to_null();
+
         status = 0;
         return std::accumulate(records.begin(), records.end(), 0, [&](double acc, double num)->double {return acc + num * num;} );
     }
@@ -91,23 +97,28 @@ std::array<double, 3> gradient_by_step(double*ans,void*param)
         }
 
         PID_regulator * p_regulator = p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_regulator;
+        DC_engine * p_process = p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_acs_model->to_check_process();
         double temp;
         double stepped_value;
 
+        p_process->to_null();
         double fitness_value = fitness_function_varied_reference_signal(ans,param);
 
+        p_process->to_null();
         temp = p_regulator->to_get_parameters()[PID_regulator::K_P];
         //p_regulator->to_get_parameters()[PID_regulator::K_P] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
         ans[0] = ans[0] + p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
         gradient[0] = fitness_function_varied_reference_signal(ans, param) - fitness_value;
         p_regulator->to_get_parameters()[PID_regulator::K_P] = ans[0] = temp;
 
+        p_process->to_null();
         temp = p_regulator->to_get_parameters()[PID_regulator::K_I];
         //p_regulator->to_get_parameters()[PID_regulator::K_I] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
         ans[1] = ans[1] + p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
         gradient[1] = fitness_function_varied_reference_signal(ans, param) - fitness_value;
         p_regulator->to_get_parameters()[PID_regulator::K_I] = ans[1] = temp;
 
+        p_process->to_null();
         temp = p_regulator->to_get_parameters()[PID_regulator::K_D];
         //p_regulator->to_get_parameters()[PID_regulator::K_D] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
         ans[2] = ans[2] + p_parameters_for_optimizer->parameters_for_gradient_obj.dx;

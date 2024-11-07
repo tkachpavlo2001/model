@@ -12,6 +12,12 @@ DC_engine::DC_engine() : Automated_control_system_element_interface()
 
 DC_engine::~DC_engine(){}
 
+void DC_engine::to_null()
+{
+    for (int i = BEGIN_NONSTATIC; i < END_NONSTATIC; ++i)
+        parameters[i] = 0;
+}
+
 void DC_engine::to_set_calculation_mode(DC_engine::calculation_mode_states _calculation_mode_state)
 {
     calculation_mode_state = _calculation_mode_state;
