@@ -28,11 +28,11 @@ bool container_analyzer::is_oscillating(std::vector<double>& r_vector_obj)
     bool isStable_last_check = false;
     //alg
     to_calculate_extremums_and_seconds_Put_in(r_vector_obj, extremums, seconds);
+    std::cout << "vel:\t"; for (auto i : r_vector_obj) std::cout << i << "\t"; std::cout << std::endl << std::flush;
+    std::cout << "sec:\t"; for (auto i : seconds) std::cout << i << "\t"; std::cout << std::endl << std::flush;
+    std::cout << "ext:\t"; for (auto i : extremums) std::cout << i << "\t"; std::cout << std::endl << std::flush;
     isStable_last_check = is_stable_the_oscilations(seconds);
     isStable_last_check *= is_stable_the_amplitude(extremums);
-    //std::cout << "vel:"; for (auto i : r_vector_obj) std::cout << i << "\t"; std::cout << std::endl << std::flush;
-    //std::cout << "sec:"; for (auto i : seconds) std::cout << i << "\t"; std::cout << std::endl << std::flush;
-    //std::cout << "amp:"; for (auto i : extremums) std::cout << i << "\t"; std::cout << std::endl << std::flush;
 
     return isStable_last_check;
 }
@@ -101,6 +101,9 @@ bool container_analyzer::is_stable_the_amplitude(const std::vector<double>& extr
     for (auto i : amplitudes)
         ans *= (average_amplitude * 0.3 < i && i < average_amplitude * 3) ;
     if (amplitudes.size() < 2) ans = false;
+
+    std::cout << "amp:\t"; for (auto i : amplitudes) std::cout << i << "\t"; std::cout << std::endl << std::flush;
+
     return ans;
 }
 

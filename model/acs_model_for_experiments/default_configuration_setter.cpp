@@ -265,7 +265,7 @@ void Default_configuration_setter::to_set_configurations_in_parameters_for_optim
 
     _arg.parameters_for_fitness_function_obj.t_registrate = 1e-1;
     _arg.parameters_for_fitness_function_obj.dt = 1e-5;
-    _arg.parameters_for_fitness_function_obj.length = 10;
+    _arg.parameters_for_fitness_function_obj.length = 30;
 
     _arg.parameters_for_gradient_obj.dx = 5e-2;
     _arg.parameters_for_gradient_obj.last_value_f;

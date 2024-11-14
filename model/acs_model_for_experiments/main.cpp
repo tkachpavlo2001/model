@@ -252,7 +252,7 @@ void to_check_my_regulator_tunner_automated_manual()
     arr[DC_engine::LOAD_K_EXP_CURVATURE] = 0 * load;
     arr[DC_engine::LOAD_K_EXP_LIMIT] = 0 * load;
 
-    arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = 999 * inertia;
+    arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = 99 * inertia;
     process->to_set_all_parameters(arr);
     //alg
     regulator->to_set_koefficients(0.4);
@@ -269,6 +269,7 @@ void to_check_my_regulator_tunner_automated_manual()
 
     std::shared_ptr<Regulator_tuner_my_ziegler_nichols_method> optimizer = std::make_shared<Regulator_tuner_my_ziegler_nichols_method>(parameters_for_optimizer_obj);
 
+    optimizer->to_set_start_k(0.5);
     optimizer->to_tune();
 
     //return;

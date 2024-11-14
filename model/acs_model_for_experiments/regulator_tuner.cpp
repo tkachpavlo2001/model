@@ -129,13 +129,13 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_first_step()
     p_experiment->to_set_vector(output);
     container_analyzer analyzer;
     std::array<double, 3> & ans = to_check_answer();
-    ans[0] += k_start / 2;
+    ans[0] += k_start;
     ans[1] = 0;
     ans[2] = 0;
     while(cycle_must_proceed)
     {
         k_crit_prev = ans[0];
-        ans[0] *= 2;
+        ans[0] += k_start;
         p_regulator->to_set_koefficients(ans[0]);
         p_experiment->to_run();
         if ( analyzer.is_oscillating(output) ) cycle_must_proceed = false;

@@ -74,7 +74,7 @@ void DC_engine::to_calculate()
     if (calculation_mode_state == DC_engine::RUNGE_KUTTA)
         to_solve_with_runge_kutta();
 
-    parameters[OUTPUT_SIGNAL] = parameters[VELOCITY];
+    parameters[OUTPUT_SIGNAL] = parameters[THETA];
 }
 void DC_engine::to_solve_with_euler()
 {
