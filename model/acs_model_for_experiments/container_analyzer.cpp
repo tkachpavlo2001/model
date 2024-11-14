@@ -99,7 +99,7 @@ bool container_analyzer::is_stable_the_amplitude(const std::vector<double>& extr
     amplitudes = to_calculate_amplitudes_Get(extremums);
     average_amplitude = std::accumulate(amplitudes.begin(), amplitudes.end(), 0.0) / double(amplitudes.size());
     for (auto i : amplitudes)
-        ans *= (average_amplitude * 0.3 < i && i < average_amplitude * 3) ;
+        ans *= (average_amplitude * 0.5 < i && i < average_amplitude * 2) ;
     if (amplitudes.size() < 2) ans = false;
 
     std::cout << "amp:\t"; for (auto i : amplitudes) std::cout << i << "\t"; std::cout << std::endl << std::flush;

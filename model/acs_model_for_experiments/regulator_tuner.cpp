@@ -220,7 +220,8 @@ void Regulator_tuner_my_ziegler_nichols_method::to_do_second_step()
 void Regulator_tuner_my_ziegler_nichols_method::to_do_third_step()
 {
     std::array<double, 3> results = to_check_answer();
-    to_set_answer( std::array<double, 3> { 0.6 * results[0] , 1.2 * results[0] / results[1], 0.125 * results[0] * results[1]} );
+    //to_set_answer( std::array<double, 3> { 0.6 * results[0] , 1.2 * results[0] / results[1], 0.125 * results[0] * results[1]} );
+    to_set_answer( std::array<double, 3> { 0.2 * results[0] , 0.4 * results[0] / results[1], 0.066 * results[0] * results[1]} );
 }
 
 void Regulator_tuner_my_ziegler_nichols_method::to_do_final_step()

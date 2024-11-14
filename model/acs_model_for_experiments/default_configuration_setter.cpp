@@ -199,7 +199,7 @@ void Default_configuration_setter::to_set_experiment_parameters(std::shared_ptr<
 void Default_configuration_setter::to_set_experiment_parameters(Experiment_executor_interface * _experiment) const
 {
     _experiment->to_set_dt(1e-5);
-    _experiment->to_set_t_length(10); //experiment->to_set_t_length(10);
+    _experiment->to_set_t_length(30); //experiment->to_set_t_length(10);
     _experiment->to_set_time_to_registrate(1e-1); //experiment->to_set_time_to_registrate(1e-1);
 }
 
