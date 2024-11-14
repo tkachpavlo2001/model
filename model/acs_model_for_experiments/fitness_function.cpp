@@ -114,6 +114,8 @@ std::array<double, 3> gradient_by_step(double*ans,void*param)
         gradient[2] = fitness_function_varied_reference_signal(ans, param) - fitness_value;
         p_regulator->to_get_parameters()[PID_regulator::K_D] = ans[2] = temp;
 
+        std::cout << "fi():\t" << fitness_value << "\t";
+
         status = 0;
         return gradient;
     }

@@ -81,12 +81,13 @@ std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > gradient_meth
     std::array<double, POLYNOM> gradient;
     for (int i = 0; i < ITERATION; ++i)
     {
+        std::cout << "\nNEXT_STEP:\n";                                                 // REDUNDANCE
         gradient = this->to_gradient(answer, param);
         for(int j = 0; j < POLYNOM; ++j)
             answer[j] -= gradient[j] * learn_coefficient;
-        for (auto i : gradient) std::cout << i << "\t";     // REDUNDANCE
-        for (auto i : answer) std::cout << i << "\t";       // REDUNDANCE
-        std::cout << std::endl << std::flush;               // REDUNDANCE
+        std::cout << "\ngrad:\t"; for (auto i : gradient) std::cout << i << "\t";     // REDUNDANCE
+        std::cout << "\nans:\t"; for (auto i : answer) std::cout << i << "\t";       // REDUNDANCE
+        std::cout << std::endl << std::flush;                                         // REDUNDANCE
     }
     return std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM>> (gradient,answer);;
 }
