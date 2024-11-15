@@ -72,7 +72,7 @@ std::array<double, POLYNOM> gradient_method_step_based<POLYNOM>::to_gradient(std
     for(int j = 0; j < POLYNOM; ++j)
         answer[j] -= gradient.second[j] * learn_coefficient;
     ans_rating.insert(std::pair<double, std::array<double,3>> (gradient.first, answer));
-    return answer;
+    return gradient.second;
 }
 
 template <int POLYNOM>
@@ -86,7 +86,7 @@ std::pair<std::array<double,POLYNOM>, std::array<double,POLYNOM> > gradient_meth
     for (int i = 0; i < ITERATION; ++i)
     {
         std::cout << "\nNEXT_STEP:\n";                                                 // REDUNDANCE
-        this->to_gradient(answer, param);
+        gradient = this->to_gradient(answer, param);
         std::cout << "\ngrad:\t"; for (auto i : gradient) std::cout << i << "\t\t";     // REDUNDANCE
         std::cout << "\nans:\t"; for (auto i : answer) std::cout << i << "\t\t";       // REDUNDANCE
         std::cout << std::endl << std::flush;                                         // REDUNDANCE

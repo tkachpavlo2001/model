@@ -269,7 +269,7 @@ void Default_configuration_setter::to_set_configurations_in_parameters_for_optim
 
     _arg.parameters_for_gradient_obj.dx = 5e-5;
     _arg.parameters_for_gradient_obj.last_value_f = -1;
-    _arg.parameters_for_gradient_obj.learn_step = 1e-6;
+    _arg.parameters_for_gradient_obj.learn_step = 1e-5;
     _arg.parameters_for_gradient_obj.tries = 1;
     _arg.parameters_for_gradient_obj.learn_step_distortion;
     _arg.parameters_for_gradient_obj.learn_step_distortion_velocity;
