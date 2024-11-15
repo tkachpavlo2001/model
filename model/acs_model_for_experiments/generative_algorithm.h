@@ -82,6 +82,7 @@ void generative_algorithm<POLYNOM>::add_answer(std::multimap<double, std::array<
     for (int i = 0; i < POLYNOM; ++i)
         array[i] = _answer[i];
     double fi = fitnes_function(array, fitness_function_parameters);
+    std::cout << "." << std::flush;                                                         //REDUNDANT
     _rating.insert(std::pair(fi, _answer));
 }
 
@@ -165,8 +166,11 @@ void generative_algorithm<POLYNOM>::to_show(const std::array<double, POLYNOM> & 
 template <int POLYNOM>
 void generative_algorithm<POLYNOM>::to_show_iteration_status(const std::pair<double, std::array<double, POLYNOM>> & _best_answer, const std::pair<double, std::array<double, POLYNOM>> & _new_answer, int iteration)
 {
-    std::cout << iteration << ":\t" << _new_answer.first << '\t' << _best_answer.first;
-    for (auto i : _best_answer.second) std::cout << '\t' << i;
+    std::cout << iteration << ":\nglobaly best:\t\t" << _best_answer.first;
+    for (auto i : _best_answer.second) std::cout << "\t\t" << i;
+    std::cout << iteration << "\nlocally best:\t\t" << _new_answer.first;
+    for (auto i : _new_answer.second) std::cout << "\t\t" << i;
+    std::cout << iteration << "\n";
 }
 
 template <int POLYNOM>
@@ -222,6 +226,10 @@ std::pair<double, std::array<double,POLYNOM>> generative_algorithm<POLYNOM>::to_
         to_cut(answer_rating);
         answer = *(std::begin(answer_rating));
         if (best_answer.first > answer.first) best_answer = answer;
+
+        std::cout << "\n";                                                                        // REDUNDANT
+        to_show_iteration_status(best_answer, answer, i);
+        std::cout << std::endl;
     }
     return best_answer;
 }
