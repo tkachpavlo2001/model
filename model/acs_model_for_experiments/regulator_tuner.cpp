@@ -59,9 +59,6 @@ void Regulator_tuner_my_gradient_algorithm::to_tune()
 {
 
 
-    stochastic_gradient_method_step_based_obj.to_set_tries_amount(p_parameters->parameters_for_gradient_obj.tries);
-    stochastic_gradient_method_step_based_obj.to_set_initiation_minimum(p_parameters->parameters_configurations_for_optimizer_obj.min_init);
-    stochastic_gradient_method_step_based_obj.to_set_initiation_maximum(p_parameters->parameters_configurations_for_optimizer_obj.max_init);
     stochastic_gradient_method_step_based_obj.to_set_initiation_function(nullptr);
 
     stochastic_gradient_method_step_based_obj.to_set_step(p_parameters->parameters_for_gradient_obj.dx);
@@ -71,7 +68,16 @@ void Regulator_tuner_my_gradient_algorithm::to_tune()
     stochastic_gradient_method_step_based_obj.to_set_fitness_function(fitness_function_varied_reference_signal);
     stochastic_gradient_method_step_based_obj.to_set_gradient_function(gradient_by_step);
     //stochastic_gradient_method_step_based_obj.to_get_fitness_function_value();
-
+    //auto f = [](double* _arg, double [] = {1,0,0}) {};
+    stochastic_gradient_method_step_based_obj.to_set_initiation_function([](double* _arg, void* param)
+    {
+        parameters_for_optimizer* p_parameters_for_optimizer = static_cast<parameters_for_optimizer*>(param);
+        PID_regulator * p_regulator = p_parameters_for_optimizer->parameters_p_objects_parameters_obj.p_regulator;
+        _arg[0] = p_regulator->to_get_parameters()[PID_regulator::K_P];
+        _arg[1] = p_regulator->to_get_parameters()[PID_regulator::K_I];
+        _arg[2] = p_regulator->to_get_parameters()[PID_regulator::K_D];
+    });
+    // temp = p_regulator->to_get_parameters()[PID_regulator::K_P];
     to_set_answer( stochastic_gradient_method_step_based_obj.to_solve_array_out(p_parameters) );
 
     auto k = to_check_answer();

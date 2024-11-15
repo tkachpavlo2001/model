@@ -61,7 +61,7 @@ double fitness_function_varied_reference_signal(double*ans,void*param)
         for (int i = 0; i < p_parameters_for_optimizer->parameters_for_varied_fitness_function_obj.times; ++i) p_experiment->to_run();
 
         status = 0;
-        return std::accumulate(records.begin(), records.end(), 0, [&](double acc, double num)->double {return acc + num * num;} );
+        return std::accumulate(records.begin(), records.end(), 0.0, [&](double acc, double num)->double {return acc + num * num;} );
     }
     catch (exception_for_fitness_function_varied_reference_signal&)
     {
@@ -71,7 +71,7 @@ double fitness_function_varied_reference_signal(double*ans,void*param)
 
 }
 
-std::array<double, 3> gradient_by_step(double*ans,void*param)
+std::pair<double, std::array<double, 3>> gradient_by_step(double*ans,void*param)
 {
     int status = -1;
     parameters_for_optimizer * p_parameters_for_optimizer;
@@ -94,7 +94,12 @@ std::array<double, 3> gradient_by_step(double*ans,void*param)
         double temp;
         double stepped_value;
 
-        double fitness_value = fitness_function_varied_reference_signal(ans,param);
+        for(int i = 0; i < 3; ++i) if (ans[i] < 0) ans[i] = 0;
+        double fitness_value;
+        if (p_parameters_for_optimizer->parameters_for_gradient_obj.last_value_f<0) fitness_value = fitness_function_varied_reference_signal(ans,param);
+        else fitness_value = p_parameters_for_optimizer->parameters_for_gradient_obj.last_value_f;
+        std::cout << "\ncnf:\t"; for(int i = 0; i < 3; ++i) std::cout << ans[i] << "\t\t";
+        std::cout << std::endl;
 
         temp = p_regulator->to_get_parameters()[PID_regulator::K_P];
         //p_regulator->to_get_parameters()[PID_regulator::K_P] += p_parameters_for_optimizer->parameters_for_gradient_obj.dx;
@@ -116,8 +121,11 @@ std::array<double, 3> gradient_by_step(double*ans,void*param)
 
         std::cout << "fi():\t" << fitness_value << "\t";
 
+        if (p_parameters_for_optimizer->parameters_for_gradient_obj.last_value_f<0) p_parameters_for_optimizer->parameters_for_gradient_obj.last_value_f = fitness_value;
+        else p_parameters_for_optimizer->parameters_for_gradient_obj.last_value_f = fitness_function_varied_reference_signal(ans,param);
+
         status = 0;
-        return gradient;
+        return std::pair<double, std::array<double, 3> > (fitness_value, gradient);
     }
     catch (exception_for_gradient_by_step&)
     {
