@@ -17,7 +17,7 @@ void second_experiments();
 
 int main()
 {
-    second_experiments();
+    first_experiments();
     return 0;
 }
 void first_experiments_auto()
@@ -167,7 +167,7 @@ void first_experiments()
     std::shared_ptr<Regulator_tuner_my_ziegler_nichols_method> optimizer = std::make_shared<Regulator_tuner_my_ziegler_nichols_method>(parameters_for_optimizer_obj);
 
     optimizer->to_set_start_k(0.5);
-    //optimizer->to_tune();
+    optimizer->to_tune();
 
     //return;
 
@@ -244,7 +244,7 @@ void second_experiments()
     arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = 99 * inertia;
     process->to_set_all_parameters(arr);
     //alg
-    regulator->to_set_koefficients(1);
+    regulator->to_set_koefficients(10);
     definder->to_set_signal(20);
     //experiment->to_run();
 
