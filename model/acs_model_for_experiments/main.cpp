@@ -20,7 +20,7 @@ void evaluate_resuls();
 
 int main()
 {
-    evaluate_resuls();
+    third_experiments();
     return 0;
 }
 void first_experiments_auto()
@@ -169,7 +169,7 @@ void first_experiments()
 
     std::shared_ptr<Regulator_tuner_my_ziegler_nichols_method> optimizer = std::make_shared<Regulator_tuner_my_ziegler_nichols_method>(parameters_for_optimizer_obj);
 
-    optimizer->to_set_start_k(0.5);
+    optimizer->to_set_start_k(1);
     optimizer->to_tune();
 
     //return;
@@ -199,7 +199,7 @@ void first_experiments()
     experiment_1->to_set_result_title("After the regulator tuning");
     default_configuration_setter_obj.to_set_experiment_parameters(experiment_1);
 
-    regulator_1->to_set_koefficients( 10 * 0.2625,	0.5 * 0.0272021,	10 * 1.67186	);  //there
+    regulator_1->to_set_koefficients( k[0], k[1], k[2] );  //there
     definder_1->to_set_signal(20);
     experiment_1->to_set_t_length(720);
     experiment_1->to_run();
@@ -351,7 +351,7 @@ void first_and_second_experiments()
     process->to_set_calculation_mode(DC_engine::EULER);
 
     std::shared_ptr<Regulator_tuner_my_ziegler_nichols_method> optimizer_0 = std::make_shared<Regulator_tuner_my_ziegler_nichols_method>(parameters_for_optimizer_obj);
-    optimizer_0->to_set_start_k(1);
+    optimizer_0->to_set_start_k(0.5);
     optimizer_0->to_tune();
 
     std::shared_ptr<Regulator_tuner_my_gradient_algorithm> optimizer_1 = std::make_shared<Regulator_tuner_my_gradient_algorithm>(parameters_for_optimizer_obj);
@@ -491,13 +491,22 @@ void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<con
 void to_show_results(const std::multimap<long double, std::pair<const char*, std::array<double,3>>>&);
 void to_set_results_to_evaluate(std::multimap<long double, std::pair<const char*, std::array<double,3>>> & arr)
 {
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method '1,0,0' init" , std::array<double,3> { 1.06758, 0.317347, 0.579046 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method '2,0,0' init" , std::array<double,3> { 8.38471, -29403.1, -341273 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method '5,0,0' init" , std::array<double,3> { 6.13157, 1.49139, 1.30597 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method '7,0,0' init" , std::array<double,3> { 7.69889, 0.876194, 0.881272 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method '10,0,0' init" , std::array<double,3> { 10.474, 0.568234, 0.571808 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass" , std::array<double,3> { 0.175, 0.0190217, 1.0626 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Zeingler-Nichols method 0.1 step k_crit" , std::array<double,3> { 0.595, 0.111215, 2.10095 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Zeingler-Nichols method 1 step k_crit" , std::array<double,3> { 0.8, 0.137339, 3.0756 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #1" , std::array<double,3> { 3.9, 3.5, 5.3	} ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #2" , std::array<double,3> { 5.1, 2.2, 6.7 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #2" , std::array<double,3> {  } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method mutationable #1" , std::array<double,3> { 9.4, 7, 3.5 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method mutationable #2" , std::array<double,3> { 9.1, 5, 0 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit " , std::array<double,3> { 5.7759, 5.34597, 7.63554 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit " , std::array<double,3> { 4.70099, 4.2221, 6.21183	 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method with init by the Zeingler-Nichols method 1 step k_krit " , std::array<double,3> { 2.49195, 1.82929, 4.76755	 } ) ) );
     arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
     arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
 }
@@ -552,7 +561,7 @@ void evaluate_resuls()
             = std::make_shared<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>();
     to_set_results_to_evaluate(*arr_to_evaluate);
     //      setting metrics:
-    //      from optimize
+    //      (from optimization)
     parameters_for_optimizer parameters_for_optimizer_obj;
     default_configuration_setter_obj.to_set_configurations_in_parameters_for_optimizer(parameters_for_optimizer_obj);
     parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_acs_model = acs_model.get();
@@ -592,8 +601,73 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
     to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
     to_show_results(*arr_to_evaluate);
-}
 
+    // Longer:
+    //      Non mutable reference signal the tuning have been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 20;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 20;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Non mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 50;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Another non mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 100;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 100;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 100;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 360;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    // Longest:
+    //      Non mutable reference signal the tuning have been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 20;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 20;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 1440;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Non mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 50;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 1440;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Another non mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 100;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 100;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 1440;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 100;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+}
 void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr, parameters_for_optimizer* param)
 {
     std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr_to_rate
@@ -613,20 +687,27 @@ void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<con
     arr_to_rate->clear();
     std::cout << "Done!\n";
 }
-
 void to_show_results(const std::multimap<long double, std::pair<const char*, std::array<double,3>>>& arr)
 {
-    unsigned int n = 0;
-    std::cout << "Results:\n";
+    std::ofstream fout("Evaluation_report.txt", std::ios::app);
+    unsigned int n = 1;
+    static unsigned int n_glob = 0;
+    ++n_glob;
+    std::cout << "Results #" << n_glob << ":\n";
+    fout << "Results #" << n_glob << ":\n";
     for (const auto i : arr)
     {
-        std::cout << n << ": " << i.first << "\t" << i.second.first << "\t";
+        std::cout << n << ":\t" << i.first << "\t" << i.second.first << "\t";
+        fout << n << ": " << i.first << "\t" << i.second.first << "\t";
         for (auto j : i.second.second)
         {
             std::cout << j;
+            fout << j;
         }
         std::cout << std::endl;
+        fout << std::endl;
     }
-    std::cout << "The end of rating list\n" << std::endl;
+    std::cout << "The end of rating list\n\n" << std::endl;
+    fout << "The end of rating list\n\n" << std::endl;
 }
 

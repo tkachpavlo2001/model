@@ -66,6 +66,7 @@ bool container_analyzer::is_stable_the_oscilations(const std::vector<int>& secon
     average_amplitude = double( std::accumulate(amplitudes.begin(), amplitudes.end(), 0) ) / double(amplitudes.size());
     for (auto i : amplitudes)
         ans *= (double(average_amplitude) * 0.5 < i && i < double(average_amplitude) * 2) ;
+    if (amplitudes.size() < 2) ans = false;
     return ans;
 }
 
