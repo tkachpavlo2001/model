@@ -723,7 +723,7 @@ void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<con
     }
     arr->swap(*arr_to_rate);
     arr_to_rate->clear();
-    std::cout << "Done!\n" << std::flush;
+    std::cout << "\tDone!\n" << std::flush;
 }
 void to_show_results(const std::multimap<long double, std::pair<const char*, std::array<double,3>>>& arr)
 {
@@ -735,12 +735,12 @@ void to_show_results(const std::multimap<long double, std::pair<const char*, std
     fout << "Results #" << n_glob << ":\n" << std::flush;
     for (const auto i : arr)
     {
-        std::cout << n << ":\t" << i.first << "\t" << i.second.first << "\t" << std::flush;
-        fout << n << ": " << i.first << "\t" << i.second.first << "\t" << std::flush;
+        std::cout << n << ":\t\t" << i.first << "\t\t" << i.second.first << "\t\t" << std::flush;
+        fout << n << ":\t\t" << i.first << "\t\t" << i.second.first << "\t\t" << std::flush;
         for (auto j : i.second.second)
         {
-            std::cout << j << std::flush;
-            fout << j << std::flush;
+            std::cout << j << "\t\t" << std::flush;
+            fout << j << "\t\t" << std::flush;
         }
         std::cout << std::endl;
         fout << std::endl;

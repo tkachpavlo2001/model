@@ -143,7 +143,7 @@ void Registrator_to_std_vector::to_set_vector(std::shared_ptr<std::vector<double
 
 void Registrator_to_std_vector_difference::to_record()
 {
-    bool COEFITIENT_LIMITING_MODE = true;
+    bool COEFITIENT_LIMITING_MODE = false;
     double a = to_check_acs_model_status()->to_check_regulator()->to_check_parameters()[PID_regulator::OUTPUT_SIGNAL] ;
     double b = to_check_acs_model_status()->to_check_source()->to_check_parameters()[DC_source::MAX_VOLTAGE];
     double c = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::OUTPUT_SIGNAL];
