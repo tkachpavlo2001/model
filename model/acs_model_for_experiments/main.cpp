@@ -20,7 +20,7 @@ void evaluate_resuls();
 
 int main()
 {
-    third_experiments();
+    evaluate_resuls();
     return 0;
 }
 void first_experiments_auto()
@@ -501,14 +501,17 @@ void to_set_results_to_evaluate(std::multimap<long double, std::pair<const char*
     arr.emplace( std::make_pair( 0 , std::make_pair( "Zeingler-Nichols method 1 step k_crit" , std::array<double,3> { 0.8, 0.137339, 3.0756 } ) ) );
     arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #1" , std::array<double,3> { 3.9, 3.5, 5.3	} ) ) );
     arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #2" , std::array<double,3> { 5.1, 2.2, 6.7 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #2" , std::array<double,3> {  } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #3" , std::array<double,3> { 5.2, 1.2, 2.8 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #4" , std::array<double,3> { 5.8, 6.4, 7.2 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method non mutationable a lot #5" , std::array<double,3> { 4, 4.3, 0.1 } ) ) );
     arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method mutationable #1" , std::array<double,3> { 9.4, 7, 3.5 } ) ) );
     arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method mutationable #2" , std::array<double,3> { 9.1, 5, 0 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method mutationable #3" , std::array<double,3> { 8.8, 2.5, 5.2 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method mutationable #4" , std::array<double,3> { 1.7, 0.8, 0.3 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Generative method mutationable #5" , std::array<double,3> { 0.5, 6.7, 1.3 } ) ) );
     arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit " , std::array<double,3> { 5.7759, 5.34597, 7.63554 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit " , std::array<double,3> { 4.70099, 4.2221, 6.21183	 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method with init by the Zeingler-Nichols method 1 step k_krit " , std::array<double,3> { 2.49195, 1.82929, 4.76755	 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
-    arr.emplace( std::make_pair( 0 , std::make_pair( "0" , std::array<double,3> { 0, 0, 0 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit " , std::array<double,3> { 4.70099, 4.2221, 6.21183 } ) ) );
+    arr.emplace( std::make_pair( 0 , std::make_pair( "Gradient method with init by the Zeingler-Nichols method 1 step k_krit " , std::array<double,3> { 2.49195, 1.82929, 4.76755 } ) ) );
 }
 void evaluate_resuls()
 {
@@ -667,25 +670,60 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
     to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
     to_show_results(*arr_to_evaluate);
+
+    // Long and mutable torque depend upon the rotation velocity:
+    arr[DC_engine::LOAD_K_0] = 0.5 * load;
+    arr[DC_engine::LOAD_K_1] = 0.2 * load;
+    //      Non mutable reference signal the tuning have been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 20;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 20;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Non mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 50;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Another non mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 100;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 100;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
+
+    //      Mutable reference signal the tuning have NOT been made for
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 100;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
+    parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 360;
+    parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_show_results(*arr_to_evaluate);
 }
 void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr, parameters_for_optimizer* param)
 {
     std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr_to_rate
             = std::make_shared<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>();
-
     unsigned int num = 0;
-    std::cout << arr->size() << ": " << num;
+    std::cout << arr->size() << ":\t" << std::flush;
     for (auto i : *arr)
     {
-        std::cout << ' ' << num;
-        arr_to_rate->emplace(
+        std::cout << ' ' << num << std::flush;
+       arr_to_rate->emplace(
                                 fitness_function_varied_reference_signal(i.second.second.begin(), param),
                                 i.second
                             );
+        ++num;
     }
     arr->swap(*arr_to_rate);
     arr_to_rate->clear();
-    std::cout << "Done!\n";
+    std::cout << "Done!\n" << std::flush;
 }
 void to_show_results(const std::multimap<long double, std::pair<const char*, std::array<double,3>>>& arr)
 {
@@ -693,21 +731,22 @@ void to_show_results(const std::multimap<long double, std::pair<const char*, std
     unsigned int n = 1;
     static unsigned int n_glob = 0;
     ++n_glob;
-    std::cout << "Results #" << n_glob << ":\n";
-    fout << "Results #" << n_glob << ":\n";
+    std::cout << "Results #" << n_glob << ":\n" << std::flush;
+    fout << "Results #" << n_glob << ":\n" << std::flush;
     for (const auto i : arr)
     {
-        std::cout << n << ":\t" << i.first << "\t" << i.second.first << "\t";
-        fout << n << ": " << i.first << "\t" << i.second.first << "\t";
+        std::cout << n << ":\t" << i.first << "\t" << i.second.first << "\t" << std::flush;
+        fout << n << ": " << i.first << "\t" << i.second.first << "\t" << std::flush;
         for (auto j : i.second.second)
         {
-            std::cout << j;
-            fout << j;
+            std::cout << j << std::flush;
+            fout << j << std::flush;
         }
         std::cout << std::endl;
         fout << std::endl;
+        ++n;
     }
-    std::cout << "The end of rating list\n\n" << std::endl;
-    fout << "The end of rating list\n\n" << std::endl;
+    std::cout << "The end of rating list\n\n" << std::endl << std::flush;
+    fout << "The end of rating list\n\n" << std::endl << std::flush;
 }
 

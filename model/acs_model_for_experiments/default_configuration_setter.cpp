@@ -282,8 +282,8 @@ void Default_configuration_setter::to_set_configurations_in_parameters_for_optim
     _arg.parameters_configurations_for_optimizer_obj.iterations = 5;
     _arg.parameters_configurations_for_optimizer_obj.agents = 3;
     _arg.parameters_configurations_for_optimizer_obj.new_agents = 10;
-    _arg.parameters_configurations_for_optimizer_obj.mutation_step = 0.1 * scale;
-    _arg.parameters_configurations_for_optimizer_obj.mutation_propability = 0.5;
+    _arg.parameters_configurations_for_optimizer_obj.mutation_step = 1 * scale;
+    _arg.parameters_configurations_for_optimizer_obj.mutation_propability = 0.9;
     _arg.parameters_configurations_for_optimizer_obj.min_init = 0;
     _arg.parameters_configurations_for_optimizer_obj.max_init = 1 * scale;
 }
