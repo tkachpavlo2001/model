@@ -487,7 +487,7 @@ void third_experiments()
 
 #include <thread>
 
-void to_mantain_acs_model_for_experiments(parameters_for_optimizer* p_parameters_for_optimizer_obj, int* p_threads_signal)
+void to_mantain_acs_model_for_experiments(parameters_for_optimizer** p_p_parameters_for_optimizer_obj, int* p_threads_signal)
 {
     while (1)
     {
@@ -535,8 +535,8 @@ void to_mantain_acs_model_for_experiments(parameters_for_optimizer* p_parameters
 
         ///
         /// ATTENTION!
-        p_parameters_for_optimizer_obj = new parameters_for_optimizer;
-        parameters_for_optimizer& parameters_for_optimizer_obj = *p_parameters_for_optimizer_obj;
+        *p_p_parameters_for_optimizer_obj = new parameters_for_optimizer;
+        parameters_for_optimizer& parameters_for_optimizer_obj = **p_p_parameters_for_optimizer_obj;
         /// ATTENTION!
         ///
 
@@ -550,8 +550,8 @@ void to_mantain_acs_model_for_experiments(parameters_for_optimizer* p_parameters
         *p_threads_signal = 1;
         while (*p_threads_signal > 0) continue;
         /// END OF EVALUATION
-        delete p_parameters_for_optimizer_obj;
-        p_parameters_for_optimizer_obj = nullptr;
+        delete *p_p_parameters_for_optimizer_obj;
+        *p_p_parameters_for_optimizer_obj = nullptr;
         if (*p_threads_signal == 0) break;
     }
     while (1)
@@ -600,8 +600,8 @@ void to_mantain_acs_model_for_experiments(parameters_for_optimizer* p_parameters
 
         ///
         /// ATTENTION!
-        p_parameters_for_optimizer_obj = new parameters_for_optimizer;
-        parameters_for_optimizer& parameters_for_optimizer_obj = *p_parameters_for_optimizer_obj;
+        *p_p_parameters_for_optimizer_obj = new parameters_for_optimizer;
+        parameters_for_optimizer& parameters_for_optimizer_obj = **p_p_parameters_for_optimizer_obj;
         /// ATTENTION!
         ///
 
@@ -615,16 +615,16 @@ void to_mantain_acs_model_for_experiments(parameters_for_optimizer* p_parameters
         *p_threads_signal = 1;
         while (*p_threads_signal > 0) continue;
         /// END OF EVALUATION
-        delete p_parameters_for_optimizer_obj;
-        p_parameters_for_optimizer_obj = nullptr;
+        delete *p_p_parameters_for_optimizer_obj;
+        *p_p_parameters_for_optimizer_obj = nullptr;
         if (*p_threads_signal == 0) break;
     }
     *p_threads_signal = 1;
 }
 
-void param_set(parameters_for_optimizer* param, int step)
+void param_set(parameters_for_optimizer** param, int step)
 {
-    parameters_for_optimizer& parameters_for_optimizer_obj = *param;
+    parameters_for_optimizer& parameters_for_optimizer_obj = **param;
     switch (step)
     {
     case 11:
@@ -704,7 +704,7 @@ void param_set(parameters_for_optimizer* param, int step)
         break;
     }
 }
-void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>, parameters_for_optimizer*, int*, int);
+void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>, parameters_for_optimizer**, int*, int);
 void to_show_results(const std::multimap<long double, std::pair<const char*, std::array<double,3>>>&);
 void to_set_results_to_evaluate(std::multimap<long double, std::pair<const char*, std::array<double,3>>> & arr)
 {
@@ -740,64 +740,65 @@ void evaluate_resuls()
 
     //      setting equipment for the experimental evaluation
     int* p_threads_signal = new int(0);
-    parameters_for_optimizer * p_parameters_for_optimizer_obj = nullptr;
-    std::thread tread_acs_equipment(to_mantain_acs_model_for_experiments, p_parameters_for_optimizer_obj, p_threads_signal);
-    tread_acs_equipment.detach();
+    parameters_for_optimizer ** p_p_parameters_for_optimizer_obj = new (parameters_for_optimizer*);
+    *p_p_parameters_for_optimizer_obj = nullptr;
+    std::thread thread_acs_equipment(to_mantain_acs_model_for_experiments, p_p_parameters_for_optimizer_obj, p_threads_signal);
+    thread_acs_equipment.detach();
 
 
-    parameters_for_optimizer& parameters_for_optimizer_obj = *p_parameters_for_optimizer_obj;
+    //parameters_for_optimizer& parameters_for_optimizer_obj = *p_parameters_for_optimizer_obj;
 
 
     // Evaluation process:
 
     //      Non mutable reference signal the tuning have been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 11);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 11);
     to_show_results(*arr_to_evaluate);
 
     //      Non mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 12);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 12);
     to_show_results(*arr_to_evaluate);
 
     //      Another non mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 13);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 13);
     to_show_results(*arr_to_evaluate);
 
     //      Mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 14);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 14);
     to_show_results(*arr_to_evaluate);
 
     // Longer:
     //      Non mutable reference signal the tuning have been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 21);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 21);
     to_show_results(*arr_to_evaluate);
 
     //      Non mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 22);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 22);
     to_show_results(*arr_to_evaluate);
 
     //      Another non mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 23);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 23);
     to_show_results(*arr_to_evaluate);
 
     //      Mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 24);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 24);
     to_show_results(*arr_to_evaluate);
 
     // Longest:
     //      Non mutable reference signal the tuning have been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 31);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 31);
     to_show_results(*arr_to_evaluate);
 
     //      Non mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal,32);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal,32);
     to_show_results(*arr_to_evaluate);
 
     //      Another non mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 33);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 33);
     to_show_results(*arr_to_evaluate);
 
     //      Mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 34);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 34);
     to_show_results(*arr_to_evaluate);
 
 
@@ -805,26 +806,26 @@ void evaluate_resuls()
     // Long and mutable torque depend upon the rotation velocity:
     *p_threads_signal = 0;
     //      Non mutable reference signal the tuning have been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 21);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 21);
     to_show_results(*arr_to_evaluate);
 
     //      Non mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 22);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 22);
     to_show_results(*arr_to_evaluate);
 
     //      Another non mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 23);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 23);
     to_show_results(*arr_to_evaluate);
 
     //      Mutable reference signal the tuning have NOT been made for
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 24);
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 24);
     to_show_results(*arr_to_evaluate);
 
     *p_threads_signal = 0;
     while (*p_threads_signal < 1) continue;
     delete p_threads_signal;
 }
-void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr, parameters_for_optimizer* param, int* p_threads_signal, int step)
+void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr, parameters_for_optimizer** param, int* p_threads_signal, int step)
 {
     std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr_to_rate
             = std::make_shared<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>();
@@ -839,7 +840,7 @@ void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<con
         while (*p_threads_signal < 1) continue;
         param_set(param, step);
         arr_to_rate->emplace(
-                                fitness_function_varied_reference_signal(i.second.second.begin(), param),
+                                fitness_function_varied_reference_signal(i.second.second.begin(), *param),
                                 i.second
                             );
        *p_threads_signal = -1;
