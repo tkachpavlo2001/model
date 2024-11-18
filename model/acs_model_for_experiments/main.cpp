@@ -485,9 +485,82 @@ void third_experiments()
     std::cout << std::endl;
 }
 
+#include <thread>
+#include <mutex>
+std::mutex mtx_equip;
+std::mutex mtx_run;
+
+void to_mantain_acs_model_for_experiments(parameters_for_optimizer* p_parameters_for_optimizer_obj, int* p_threads_signal)
+{
+
+    while (1)
+    {
+
+        // As an ordinar case
+        std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
+        std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
+        std::shared_ptr<DC_source_inerted> source = std::make_shared<DC_source_inerted>();
+        std::shared_ptr<DC_engine> process = std::make_shared<DC_engine>();
+
+        default_configuration_setter_obj.to_set_elements_parameters(
+                    definder,
+                    regulator,
+                    source,
+                    process
+                    );
+
+        process->to_set_calculation_mode(DC_engine::EULER);
+
+        std::shared_ptr<Automated_control_system_paralleled> acs_model = std::make_shared<Automated_control_system_paralleled>();
+        acs_model->to_mount_the_element(definder.get());
+        acs_model->to_mount_the_element(regulator.get());
+        acs_model->to_mount_the_element(source.get());
+        acs_model->to_mount_the_element(process.get());
 
 
-void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>, parameters_for_optimizer*);
+        std::shared_ptr<Experiment_executor_short_report> experiment = std::make_shared<Experiment_executor_short_report>();
+        experiment->to_get_model_to_run(acs_model.get());
+        experiment->to_set_result_title("Before the regulator tuning");
+        default_configuration_setter_obj.to_set_experiment_parameters(experiment);
+        //set
+        double load = 20;
+        double inertia = 0.05;
+        auto arr = process->to_get_parameters();
+        arr[DC_engine::LOAD_K_0] = 1 * load;
+        arr[DC_engine::LOAD_K_1] = 0 * load;
+        arr[DC_engine::LOAD_K_EXP_CURVATURE] = 0 * load;
+        arr[DC_engine::LOAD_K_EXP_LIMIT] = 0 * load;
+
+        arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = 99 * inertia;
+        process->to_set_all_parameters(arr);
+        //alg
+        regulator->to_set_koefficients(10);
+        definder->to_set_signal(20);
+
+        ///
+        /// ATTENTION!
+        p_parameters_for_optimizer_obj = new parameters_for_optimizer;
+        parameters_for_optimizer& parameters_for_optimizer_obj = *p_parameters_for_optimizer_obj;
+        /// ATTENTION!
+        ///
+
+        // user parameters set
+        default_configuration_setter_obj.to_set_configurations_in_parameters_for_optimizer(parameters_for_optimizer_obj);
+        parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_acs_model = acs_model.get();
+        parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_regulator = regulator.get();
+        process->to_set_calculation_mode(DC_engine::EULER);
+
+        /// START OF EVALUATION
+        *p_threads_signal = 1;
+        while (*p_threads_signal > 0) continue;
+        /// END OF EVALUATION
+        delete p_parameters_for_optimizer_obj;
+        p_parameters_for_optimizer_obj = nullptr;
+        if (*p_threads_signal == 0) break;
+    }
+}
+
+void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>, parameters_for_optimizer*, int*, int);
 void to_show_results(const std::multimap<long double, std::pair<const char*, std::array<double,3>>>&);
 void to_set_results_to_evaluate(std::multimap<long double, std::pair<const char*, std::array<double,3>>> & arr)
 {
@@ -515,70 +588,27 @@ void to_set_results_to_evaluate(std::multimap<long double, std::pair<const char*
 }
 void evaluate_resuls()
 {
-    // reference case
-    std::shared_ptr<Reference_signal_definder_static> definder = std::make_shared<Reference_signal_definder_static>();
-    std::shared_ptr<PID_regulator> regulator = std::make_shared<PID_regulator>();
-    std::shared_ptr<DC_source_inerted> source = std::make_shared<DC_source_inerted>();
-    std::shared_ptr<DC_engine> process = std::make_shared<DC_engine>();
-
-    default_configuration_setter_obj.to_set_elements_parameters(
-                definder,
-                regulator,
-                source,
-                process
-                );
-
-    process->to_set_calculation_mode(DC_engine::EULER);
-
-    std::shared_ptr<Automated_control_system_paralleled> acs_model = std::make_shared<Automated_control_system_paralleled>();
-    acs_model->to_mount_the_element(definder.get());
-    acs_model->to_mount_the_element(regulator.get());
-    acs_model->to_mount_the_element(source.get());
-    acs_model->to_mount_the_element(process.get());
-
-
-    std::shared_ptr<Experiment_executor_short_report> experiment = std::make_shared<Experiment_executor_short_report>();
-    experiment->to_get_model_to_run(acs_model.get());
-    experiment->to_set_result_title("Before the regulator tuning");
-    default_configuration_setter_obj.to_set_experiment_parameters(experiment);
-    //set
-    double load = 20;
-    double inertia = 0.05;
-    auto arr = process->to_get_parameters();
-    arr[DC_engine::LOAD_K_0] = 1 * load;
-    arr[DC_engine::LOAD_K_1] = 0 * load;
-    arr[DC_engine::LOAD_K_EXP_CURVATURE] = 0 * load;
-    arr[DC_engine::LOAD_K_EXP_LIMIT] = 0 * load;
-
-    arr[DC_engine::MOMENT_OF_INERTIA_OF_MECHANICAL_LOAD] = 99 * inertia;
-    process->to_set_all_parameters(arr);
-    //alg
-    regulator->to_set_koefficients(10);
-    definder->to_set_signal(20);
-
-
-    // Evaluation part
-
-    //      setting arr:
+    //      setting arr of the experiments data:
     std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr_to_evaluate
             = std::make_shared<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>();
     to_set_results_to_evaluate(*arr_to_evaluate);
-    //      setting metrics:
-    //      (from optimization)
-    parameters_for_optimizer parameters_for_optimizer_obj;
-    default_configuration_setter_obj.to_set_configurations_in_parameters_for_optimizer(parameters_for_optimizer_obj);
-    parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_acs_model = acs_model.get();
-    parameters_for_optimizer_obj.parameters_p_objects_parameters_obj.p_regulator = regulator.get();
-    process->to_set_calculation_mode(DC_engine::EULER);
+    //      setting equipment for the experimental evaluation
+    int* p_threads_signal = new int(0);
+    parameters_for_optimizer * p_parameters_for_optimizer_obj = nullptr;
+    std::thread tread_acs_equipment(to_mantain_acs_model_for_experiments, p_parameters_for_optimizer_obj, p_threads_signal);
+    tread_acs_equipment.detach();
 
+
+    parameters_for_optimizer& parameters_for_optimizer_obj = *p_parameters_for_optimizer_obj;
     // Evaluation process:
 
+    while (*p_threads_signal == 0) continue;
     //      Non mutable reference signal the tuning have been made for
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.min = 20;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 20;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 360;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal, 11);
     to_show_results(*arr_to_evaluate);
 
     //      Non mutable reference signal the tuning have NOT been made for
@@ -586,7 +616,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 360;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Another non mutable reference signal the tuning have NOT been made for
@@ -594,7 +624,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 100;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 360;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Mutable reference signal the tuning have NOT been made for
@@ -602,7 +632,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 180;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     // Longer:
@@ -611,7 +641,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 20;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Non mutable reference signal the tuning have NOT been made for
@@ -619,7 +649,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Another non mutable reference signal the tuning have NOT been made for
@@ -627,7 +657,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 100;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Mutable reference signal the tuning have NOT been made for
@@ -635,7 +665,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 360;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     // Longest:
@@ -644,7 +674,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 20;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 1440;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Non mutable reference signal the tuning have NOT been made for
@@ -652,7 +682,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 1440;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Another non mutable reference signal the tuning have NOT been made for
@@ -660,7 +690,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 100;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 1440;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Mutable reference signal the tuning have NOT been made for
@@ -668,7 +698,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     // Long and mutable torque depend upon the rotation velocity:
@@ -679,7 +709,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 20;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Non mutable reference signal the tuning have NOT been made for
@@ -687,7 +717,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Another non mutable reference signal the tuning have NOT been made for
@@ -695,7 +725,7 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 100;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 720;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 1;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
 
     //      Mutable reference signal the tuning have NOT been made for
@@ -703,10 +733,12 @@ void evaluate_resuls()
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.max = 50;
     parameters_for_optimizer_obj.parameters_for_fitness_function_obj.length = 360;
     parameters_for_optimizer_obj.parameters_for_varied_fitness_function_obj.times = 2;
-    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj);
+    to_evaluate_put_in(arr_to_evaluate, &parameters_for_optimizer_obj, p_threads_signal);
     to_show_results(*arr_to_evaluate);
+
+    delete p_threads_signal;
 }
-void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr, parameters_for_optimizer* param)
+void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr, parameters_for_optimizer* param, int* p_threads_signal, int step)
 {
     std::shared_ptr<std::multimap<long double, std::pair<const char*, std::array<double,3>>>> arr_to_rate
             = std::make_shared<std::multimap<long double, std::pair<const char*, std::array<double,3>>>>();
@@ -715,11 +747,22 @@ void to_evaluate_put_in(std::shared_ptr<std::multimap<long double, std::pair<con
     for (auto i : *arr)
     {
         std::cout << ' ' << num << std::flush;
+
+
+        while (*p_threads_signal < 1) continue;
+        ///
+        /// START OF EVALUATION
        arr_to_rate->emplace(
                                 fitness_function_varied_reference_signal(i.second.second.begin(), param),
                                 i.second
                             );
-        ++num;
+       *p_threads_signal = -1;
+       while (*p_threads_signal < 1) continue;
+       /// END OF EVALUATION
+       ///
+
+
+       ++num;
     }
     arr->swap(*arr_to_rate);
     arr_to_rate->clear();
