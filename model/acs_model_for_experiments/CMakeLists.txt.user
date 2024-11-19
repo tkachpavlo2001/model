@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
+<<<<<<< HEAD
 <!-- Written by QtCreator 9.0.2, 2024-11-03T00:29:02. -->
+=======
+<!-- Written by QtCreator 9.0.2, 2024-11-19T06:15:12. -->
+>>>>>>> 47396ac (Report for the diploma project has been made successfully.)
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
