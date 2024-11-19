@@ -821,6 +821,24 @@ void evaluate_resuls()
     to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 24);
     to_show_results(*arr_to_evaluate);
 
+    // Short and mutable torque depend upon the rotation velocity:
+    *p_threads_signal = 0;
+    //      Non mutable reference signal the tuning have been made for
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 11);
+    to_show_results(*arr_to_evaluate);
+
+    //      Non mutable reference signal the tuning have NOT been made for
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 12);
+    to_show_results(*arr_to_evaluate);
+
+    //      Another non mutable reference signal the tuning have NOT been made for
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 13);
+    to_show_results(*arr_to_evaluate);
+
+    //      Mutable reference signal the tuning have NOT been made for
+    to_evaluate_put_in(arr_to_evaluate, p_p_parameters_for_optimizer_obj, p_threads_signal, 14);
+    to_show_results(*arr_to_evaluate);
+
     *p_threads_signal = 0;
     while (*p_threads_signal < 1) continue;
     delete p_threads_signal;
