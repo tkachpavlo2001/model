@@ -1,0 +1,500 @@
+Results #1:
+1:		7933.8		Generative method mutationable #3		8.8		2.5		5.2		
+2:		12125.3		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+3:		12462.2		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+4:		14415.8		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+5:		17432.9		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		166038		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		395448		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		7.14289e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		5.9584e+09		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		1.803e+10		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		3.57176e+10		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+12:		3.86145e+10		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+13:		3.88705e+10		Generative method mutationable #4		1.7		0.8		0.3		
+14:		3.92763e+10		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+15:		4.18367e+10		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+16:		4.50287e+10		Generative method mutationable #2		9.1		5		0		
+17:		4.98165e+10		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+18:		5.31742e+10		Generative method mutationable #1		9.4		7		3.5		
+19:		5.38634e+10		Generative method non mutationable a lot #5		4		4.3		0.1		
+20:		6.63403e+10		Generative method mutationable #5		0.5		6.7		1.3		
+21:		6.17963e+12		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #2:
+1:		78484.9		Generative method mutationable #3		8.8		2.5		5.2		
+2:		97479.7		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+3:		99333.1		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+4:		114749		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		150177		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		236840		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		431264		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		6.6484e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		1.85535e+10		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		2.46394e+10		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		3.36734e+10		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+12:		3.97422e+10		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+13:		4.15997e+10		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+14:		4.17452e+10		Generative method mutationable #4		1.7		0.8		0.3		
+15:		4.18692e+10		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+16:		4.42951e+10		Generative method mutationable #2		9.1		5		0		
+17:		4.68945e+10		Generative method non mutationable a lot #5		4		4.3		0.1		
+18:		5.02991e+10		Generative method mutationable #5		0.5		6.7		1.3		
+19:		5.63382e+10		Generative method mutationable #1		9.4		7		3.5		
+20:		6.13424e+10		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+21:		6.18729e+12		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #3:
+1:		457724		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+2:		666458		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+3:		889542		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+4:		1.00809e+06		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		1.03424e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+6:		6.65404e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+7:		2.04577e+10		Generative method mutationable #3		8.8		2.5		5.2		
+8:		2.26438e+10		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+9:		2.59467e+10		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+10:		3.20344e+10		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+11:		3.84074e+10		Generative method mutationable #2		9.1		5		0		
+12:		4.61027e+10		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+13:		4.62812e+10		Generative method non mutationable a lot #5		4		4.3		0.1		
+14:		4.67316e+10		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+15:		4.90011e+10		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+16:		4.99198e+10		Generative method mutationable #4		1.7		0.8		0.3		
+17:		5.03485e+10		Generative method mutationable #1		9.4		7		3.5		
+18:		5.15883e+10		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+19:		5.73611e+10		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+20:		6.92311e+10		Generative method mutationable #5		0.5		6.7		1.3		
+21:		6.20007e+12		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #4:
+1:		390011		Generative method mutationable #3		8.8		2.5		5.2		
+2:		464792		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+3:		493856		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+4:		578055		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		765018		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		808379		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		1.2953e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		9.6949e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		1.78783e+10		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		2.35183e+10		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		3.37411e+10		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+12:		3.99902e+10		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+13:		4.11928e+10		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+14:		4.13851e+10		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+15:		4.171e+10		Generative method mutationable #4		1.7		0.8		0.3		
+16:		4.38918e+10		Generative method mutationable #2		9.1		5		0		
+17:		4.60766e+10		Generative method non mutationable a lot #5		4		4.3		0.1		
+18:		5.11235e+10		Generative method mutationable #5		0.5		6.7		1.3		
+19:		5.55545e+10		Generative method mutationable #1		9.4		7		3.5		
+20:		6.07955e+10		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+21:		6.19856e+12		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #5:
+1:		7933.8		Generative method mutationable #3		8.8		2.5		5.2		
+2:		12125.3		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+3:		12462.2		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+4:		14415.8		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+5:		17432.9		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		166038		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		395448		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		7.14284e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		9.04144e+10		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		1.44855e+11		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		1.79127e+11		Generative method mutationable #4		1.7		0.8		0.3		
+12:		1.87097e+11		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+13:		2.06264e+11		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+14:		2.31281e+11		Generative method mutationable #1		9.4		7		3.5		
+15:		2.42982e+11		Generative method non mutationable a lot #5		4		4.3		0.1		
+16:		2.45416e+11		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+17:		2.51947e+11		Generative method mutationable #2		9.1		5		0		
+18:		2.58673e+11		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+19:		2.67477e+11		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+20:		3.20685e+11		Generative method mutationable #5		0.5		6.7		1.3		
+21:		5.13795e+13		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #6:
+1:		78484.9		Generative method mutationable #3		8.8		2.5		5.2		
+2:		97479.7		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+3:		99333.1		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+4:		114749		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		150177		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		236840		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		431264		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		6.64835e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		1.16601e+11		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		1.53557e+11		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		1.93005e+11		Generative method mutationable #4		1.7		0.8		0.3		
+12:		2.00711e+11		Generative method mutationable #2		9.1		5		0		
+13:		2.20806e+11		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+14:		2.4108e+11		Generative method non mutationable a lot #5		4		4.3		0.1		
+15:		2.41898e+11		Generative method mutationable #1		9.4		7		3.5		
+16:		2.62017e+11		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+17:		2.63236e+11		Generative method mutationable #5		0.5		6.7		1.3		
+18:		2.69486e+11		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+19:		2.69576e+11		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+20:		2.73378e+11		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+21:		5.14109e+13		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #7:
+1:		457724		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+2:		666458		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+3:		889542		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+4:		1.00809e+06		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		1.03424e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+6:		6.65399e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+7:		1.39424e+11		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+8:		1.4784e+11		Generative method mutationable #3		8.8		2.5		5.2		
+9:		1.52826e+11		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+10:		1.65548e+11		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		2.15131e+11		Generative method mutationable #4		1.7		0.8		0.3		
+12:		2.23251e+11		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+13:		2.2651e+11		Generative method mutationable #1		9.4		7		3.5		
+14:		2.30718e+11		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+15:		2.3131e+11		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+16:		2.31708e+11		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+17:		2.57062e+11		Generative method mutationable #2		9.1		5		0		
+18:		2.76725e+11		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+19:		2.7848e+11		Generative method non mutationable a lot #5		4		4.3		0.1		
+20:		3.19554e+11		Generative method mutationable #5		0.5		6.7		1.3		
+21:		5.14633e+13		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #8:
+1:		389988		Generative method mutationable #3		8.8		2.5		5.2		
+2:		464403		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+3:		498065		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+4:		582379		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		804565		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		820910		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		1.45637e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		7.92699e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		1.18716e+11		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		1.53943e+11		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		1.92876e+11		Generative method mutationable #4		1.7		0.8		0.3		
+12:		2.0101e+11		Generative method mutationable #2		9.1		5		0		
+13:		2.21875e+11		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+14:		2.40556e+11		Generative method non mutationable a lot #5		4		4.3		0.1		
+15:		2.4117e+11		Generative method mutationable #1		9.4		7		3.5		
+16:		2.63259e+11		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+17:		2.64126e+11		Generative method mutationable #5		0.5		6.7		1.3		
+18:		2.70369e+11		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+19:		2.70442e+11		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+20:		2.72099e+11		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+21:		5.14572e+13		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #9:
+1:		7933.8		Generative method mutationable #3		8.8		2.5		5.2		
+2:		12125.3		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+3:		12462.2		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+4:		14415.8		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+5:		17432.9		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		166038		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		395448		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		7.14284e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		5.63513e+11		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		7.06777e+11		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		1.02779e+12		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+12:		1.07954e+12		Generative method mutationable #1		9.4		7		3.5		
+13:		1.0857e+12		Generative method mutationable #2		9.1		5		0		
+14:		1.09695e+12		Generative method mutationable #4		1.7		0.8		0.3		
+15:		1.09814e+12		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+16:		1.09879e+12		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+17:		1.15468e+12		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+18:		1.1689e+12		Generative method non mutationable a lot #5		4		4.3		0.1		
+19:		1.33388e+12		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+20:		1.5439e+12		Generative method mutationable #5		0.5		6.7		1.3		
+21:		4.18962e+14		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #10:
+1:		78484.9		Generative method mutationable #3		8.8		2.5		5.2		
+2:		97479.7		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+3:		99333.1		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+4:		114749		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		150177		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		236840		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		431264		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		6.64835e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		6.19321e+11		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		6.98053e+11		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		9.22533e+11		Generative method mutationable #4		1.7		0.8		0.3		
+12:		1.10969e+12		Generative method mutationable #1		9.4		7		3.5		
+13:		1.13962e+12		Generative method mutationable #2		9.1		5		0		
+14:		1.15072e+12		Generative method non mutationable a lot #5		4		4.3		0.1		
+15:		1.22879e+12		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+16:		1.26875e+12		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+17:		1.29641e+12		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+18:		1.30006e+12		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+19:		1.3005e+12		Generative method mutationable #5		0.5		6.7		1.3		
+20:		1.31868e+12		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+21:		4.19089e+14		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #11:
+1:		457724		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+2:		666458		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+3:		889542		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+4:		1.00809e+06		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		1.03424e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+6:		6.65399e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+7:		7.15194e+11		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+8:		7.2562e+11		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+9:		8.03985e+11		Generative method mutationable #3		8.8		2.5		5.2		
+10:		9.59222e+11		Generative method mutationable #4		1.7		0.8		0.3		
+11:		9.97941e+11		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+12:		1.0588e+12		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+13:		1.09009e+12		Generative method mutationable #1		9.4		7		3.5		
+14:		1.09998e+12		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+15:		1.1001e+12		Generative method mutationable #2		9.1		5		0		
+16:		1.10489e+12		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+17:		1.13114e+12		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+18:		1.32819e+12		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+19:		1.368e+12		Generative method non mutationable a lot #5		4		4.3		0.1		
+20:		1.47221e+12		Generative method mutationable #5		0.5		6.7		1.3		
+21:		4.19301e+14		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #12:
+1:		389988		Generative method mutationable #3		8.8		2.5		5.2		
+2:		464403		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+3:		498073		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+4:		582366		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		802003		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		820988		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		1.44995e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		8.21382e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		6.17015e+11		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		6.98871e+11		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		9.19363e+11		Generative method mutationable #4		1.7		0.8		0.3		
+12:		1.11513e+12		Generative method mutationable #1		9.4		7		3.5		
+13:		1.13719e+12		Generative method mutationable #2		9.1		5		0		
+14:		1.14763e+12		Generative method non mutationable a lot #5		4		4.3		0.1		
+15:		1.22927e+12		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+16:		1.27492e+12		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+17:		1.29049e+12		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+18:		1.29464e+12		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+19:		1.30054e+12		Generative method mutationable #5		0.5		6.7		1.3		
+20:		1.31692e+12		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+21:		4.19276e+14		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #13:
+1:		4745.66		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+2:		5726.89		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+3:		6380.64		Generative method mutationable #3		8.8		2.5		5.2		
+4:		7411.42		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+5:		8551.93		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+6:		10548.9		Generative method mutationable #2		9.1		5		0		
+7:		11346.3		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+8:		11699.1		Generative method mutationable #1		9.4		7		3.5		
+9:		18292.7		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+10:		22057.6		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+11:		26549		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+12:		27236.2		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+13:		29190		Generative method mutationable #4		1.7		0.8		0.3		
+14:		30417.2		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+15:		39805.4		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+16:		67629		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+17:		98415.7		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+18:		1.08994e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+19:		9.08211e+07		Generative method non mutationable a lot #5		4		4.3		0.1		
+20:		6.27809e+08		Generative method mutationable #5		0.5		6.7		1.3		
+21:		6.2676e+11		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #14:
+1:		46803.5		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+2:		50753.1		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+3:		59759.2		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+4:		62885.8		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+5:		65995		Generative method mutationable #3		8.8		2.5		5.2		
+6:		79743.6		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+7:		117546		Generative method mutationable #2		9.1		5		0		
+8:		157813		Generative method mutationable #1		9.4		7		3.5		
+9:		175293		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+10:		182988		Generative method mutationable #4		1.7		0.8		0.3		
+11:		183355		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+12:		195203		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+13:		204994		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+14:		209921		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+15:		284819		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+16:		320986		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+17:		374239		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+18:		1.85982e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+19:		1.0386e+08		Generative method non mutationable a lot #5		4		4.3		0.1		
+20:		6.63794e+08		Generative method mutationable #5		0.5		6.7		1.3		
+21:		6.30257e+11		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #15:
+1:		316008		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+2:		362191		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+3:		460112		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+4:		467443		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+5:		482973		Generative method mutationable #3		8.8		2.5		5.2		
+6:		615544		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+7:		836975		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+8:		881995		Generative method mutationable #4		1.7		0.8		0.3		
+9:		933833		Generative method mutationable #2		9.1		5		0		
+10:		1.07774e+06		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+11:		1.21753e+06		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+12:		1.38498e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+13:		1.57439e+06		Generative method mutationable #1		9.4		7		3.5		
+14:		1.94974e+06		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+15:		2.03124e+06		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+16:		2.06661e+06		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+17:		4.69737e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+18:		3.55451e+07		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+19:		1.31872e+08		Generative method non mutationable a lot #5		4		4.3		0.1		
+20:		6.81605e+08		Generative method mutationable #5		0.5		6.7		1.3		
+21:		6.36114e+11		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #16:
+1:		188301		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+2:		207039		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+3:		248625		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+4:		258416		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+5:		264193		Generative method mutationable #3		8.8		2.5		5.2		
+6:		328708		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+7:		485718		Generative method mutationable #2		9.1		5		0		
+8:		652422		Generative method mutationable #1		9.4		7		3.5		
+9:		719040		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+10:		751088		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+11:		764367		Generative method mutationable #4		1.7		0.8		0.3		
+12:		800822		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+13:		840969		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+14:		852854		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+15:		1.08727e+06		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+16:		1.33279e+06		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+17:		1.41009e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+18:		4.65041e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+19:		8.08954e+07		Generative method non mutationable a lot #5		4		4.3		0.1		
+20:		7.58259e+08		Generative method mutationable #5		0.5		6.7		1.3		
+21:		6.34078e+11		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #17:
+1:		7933.8		Generative method mutationable #3		8.8		2.5		5.2		
+2:		12125.3		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+3:		12462.2		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+4:		14415.8		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+5:		17432.9		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		166038		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		395448		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		7.14289e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		5.9584e+09		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		1.803e+10		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		3.57176e+10		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+12:		3.86145e+10		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+13:		3.88705e+10		Generative method mutationable #4		1.7		0.8		0.3		
+14:		3.92763e+10		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+15:		4.18367e+10		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+16:		4.50287e+10		Generative method mutationable #2		9.1		5		0		
+17:		4.98165e+10		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+18:		5.31742e+10		Generative method mutationable #1		9.4		7		3.5		
+19:		5.38634e+10		Generative method non mutationable a lot #5		4		4.3		0.1		
+20:		6.63403e+10		Generative method mutationable #5		0.5		6.7		1.3		
+21:		6.17963e+12		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #18:
+1:		78484.9		Generative method mutationable #3		8.8		2.5		5.2		
+2:		97479.7		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+3:		99333.1		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+4:		114749		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		150177		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		236840		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		431264		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		6.6484e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		1.85535e+10		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		2.46394e+10		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		3.36734e+10		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+12:		3.97422e+10		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+13:		4.15997e+10		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+14:		4.17452e+10		Generative method mutationable #4		1.7		0.8		0.3		
+15:		4.18692e+10		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+16:		4.42951e+10		Generative method mutationable #2		9.1		5		0		
+17:		4.68945e+10		Generative method non mutationable a lot #5		4		4.3		0.1		
+18:		5.02991e+10		Generative method mutationable #5		0.5		6.7		1.3		
+19:		5.63382e+10		Generative method mutationable #1		9.4		7		3.5		
+20:		6.13424e+10		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+21:		6.18729e+12		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #19:
+1:		457724		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+2:		666458		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+3:		889542		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+4:		1.00809e+06		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		1.03424e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+6:		6.65404e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+7:		2.04577e+10		Generative method mutationable #3		8.8		2.5		5.2		
+8:		2.26438e+10		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+9:		2.59467e+10		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+10:		3.20344e+10		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+11:		3.84074e+10		Generative method mutationable #2		9.1		5		0		
+12:		4.61027e+10		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+13:		4.62812e+10		Generative method non mutationable a lot #5		4		4.3		0.1		
+14:		4.67316e+10		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+15:		4.90011e+10		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+16:		4.99198e+10		Generative method mutationable #4		1.7		0.8		0.3		
+17:		5.03485e+10		Generative method mutationable #1		9.4		7		3.5		
+18:		5.15883e+10		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+19:		5.73611e+10		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+20:		6.92311e+10		Generative method mutationable #5		0.5		6.7		1.3		
+21:		6.20007e+12		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
+Results #20:
+1:		390011		Generative method mutationable #3		8.8		2.5		5.2		
+2:		464792		Generative method non mutationable a lot #2		5.1		2.2		6.7		
+3:		493856		Gradient method '10,0,0' init		10.474		0.568234		0.571808		
+4:		578055		Generative method non mutationable a lot #3		5.2		1.2		2.8		
+5:		765018		Gradient method '7,0,0' init		7.69889		0.876194		0.881272		
+6:		808379		Zeingler-Nichols method 1 step k_crit		0.8		0.137339		3.0756		
+7:		1.2953e+06		Zeingler-Nichols method 0.1 step k_crit		0.595		0.111215		2.10095		
+8:		9.6949e+06		Zeingler-Nichols method 'x0.5 and x2'+'x0.33 and x3' at '0.5 step k_crit' to avrg pass		0.175		0.0190217		1.0626		
+9:		1.78783e+10		Gradient method '5,0,0' init		6.13157		1.49139		1.30597		
+10:		2.35183e+10		Gradient method '1,0,0' init		1.06758		0.317347		0.579046		
+11:		3.37411e+10		Gradient method with init by the Zeingler-Nichols method 1 step k_krit 		2.49195		1.82929		4.76755		
+12:		3.99902e+10		Gradient method with init by the Zeingler-Nichols method 0.5 step k_krit 		5.7759		5.34597		7.63554		
+13:		4.11928e+10		Gradient method with init by the Zeingler-Nichols method 0.1 step k_krit 		4.70099		4.2221		6.21183		
+14:		4.13851e+10		Generative method non mutationable a lot #1		3.9		3.5		5.3		
+15:		4.171e+10		Generative method mutationable #4		1.7		0.8		0.3		
+16:		4.38918e+10		Generative method mutationable #2		9.1		5		0		
+17:		4.60766e+10		Generative method non mutationable a lot #5		4		4.3		0.1		
+18:		5.11235e+10		Generative method mutationable #5		0.5		6.7		1.3		
+19:		5.55545e+10		Generative method mutationable #1		9.4		7		3.5		
+20:		6.07955e+10		Generative method non mutationable a lot #4		5.8		6.4		7.2		
+21:		6.19856e+12		Gradient method '2,0,0' init		8.38471		-29403.1		-341273		
+The end of rating list
+
+
