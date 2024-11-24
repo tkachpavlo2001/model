@@ -4,9 +4,17 @@ project(acs_model_for_experiments LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 find_package(GSL REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
+
+if(NOT Qt6_FOUND)
+    message(SEND_ERROR "Failed to find Qt6")
+endif()
+
 if(NOT GSL_FOUND)
     message(SEND_ERROR "Failed to find GSL")
 else()
@@ -14,6 +22,32 @@ else()
 endif()
 include_directories(tkachpavlo2001lib)
 
+
+
+
+
+qt_wrap_ui(UI_HEADERS dialog.ui)
+add_library( Interactive_part SHARED
+    mainwindow.h
+    mainwindow.cpp
+    ${UI_HEADERS}
+)
+target_link_libraries( Interactive_part PRIVATE Qt6::Widgets)
+
+file(RENAME ${CMAKE_CURRENT_BINARY_DIR}/ui_dialog.h ${CMAKE_CURRENT_SOURCE_DIR}/ui_dialog.h)
+
+
+
+
+add_library( Service_units SHARED
+    registrator.h
+    registrator.cpp
+    experiment_executor.h
+    experiment_executor.cpp
+    default_configuration_setter.h
+    default_configuration_setter.cpp
+    tkachpavlo2001lib/tkachpavlo2001lib.hpp
+)
 
 add_library(
     Controlled_process SHARED
@@ -59,13 +93,6 @@ add_executable( acs_model_for_experiments
     main.cpp
     automated_control_system.h
     automated_control_system.cpp
-    registrator.h
-    registrator.cpp
-    experiment_executor.h
-    experiment_executor.cpp
-    default_configuration_setter.h
-    default_configuration_setter.cpp
-    tkachpavlo2001lib/tkachpavlo2001lib.hpp
 )
 
 add_executable( unit_test
@@ -84,6 +111,9 @@ target_link_libraries( acs_model_for_experiments PUBLIC Controlled_process )
 target_link_libraries( acs_model_for_experiments PUBLIC Regulator)
 target_link_libraries( acs_model_for_experiments PUBLIC DC_source)
 target_link_libraries( acs_model_for_experiments PUBLIC Regulator_tunner)
+target_link_libraries( acs_model_for_experiments PUBLIC Interactive_part)
+target_link_libraries( acs_model_for_experiments PUBLIC Service_units)
+target_link_libraries( acs_model_for_experiments PRIVATE Qt6::Widgets)
 target_link_libraries( acs_model_for_experiments PUBLIC ${GSL_LIBRARY})
 
 target_link_libraries( unit_test PRIVATE

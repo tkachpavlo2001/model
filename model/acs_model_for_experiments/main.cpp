@@ -5,6 +5,9 @@
 #include "default_configuration_setter.h"
 #include "regulator_tuner.h"
 
+#include <QApplication>
+#include "mainwindow.h"
+
 #include <cmath>
 
 using namespace std;
@@ -17,12 +20,34 @@ void second_experiments();
 void first_and_second_experiments();
 void third_experiments();
 void evaluate_resuls();
-
-int main()
+#include<thread>
+#include<chrono>
+#include<QLabel>
+int main(int argc, char** argv)
 {
-    evaluate_resuls();
+    QApplication my_application(argc, argv);
+
+    MainWindow enter_window;
+    enter_window.resize(800,600);
+    enter_window.show();
+    QLabel * label = new QLabel(&enter_window);
+    my_application.exec();
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+    label->setText("HELLO!");
+    enter_window.setCentralWidget(label);
+
+
+
     return 0;
 }
+
+
+
+
+
+
+
+
 void first_experiments_auto()
 {
     // reference case
