@@ -23,22 +23,106 @@ void evaluate_resuls();
 #include<thread>
 #include<chrono>
 #include<QLabel>
+//
+#include<QApplication>
+#include<QWidget>
+#include<QHBoxLayout>
+#include<QVBoxLayout>
+#include<QLabel>
+#include<QLineEdit>
+#include<QPushButton>
+#include<QDebug>
+#include<cctype>
 int main(int argc, char** argv)
 {
-    QApplication my_application(argc, argv);
+    QApplication app (argc, argv);
 
-    MainWindow enter_window;
-    enter_window.resize(800,600);
-    enter_window.show();
-    QLabel * label = new QLabel(&enter_window);
-    my_application.exec();
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-    label->setText("HELLO!");
-    enter_window.setCentralWidget(label);
+    QWidget window;
+    window.setWindowTitle("Data enter form");
+    window.resize(400, 300);
+
+    QVBoxLayout * mainLayout = new QVBoxLayout(&window);
+
+    QLabel * nameLabel = new QLabel("Name:");
+    QLineEdit * nameEdit = new QLineEdit();
+    QHBoxLayout * nameLayout = new QHBoxLayout();
+
+    nameLayout->addWidget(nameLabel);
+    nameLayout->addWidget(nameEdit);
+
+    QLabel * ageLabel = new QLabel("Age:");
+    QLineEdit * ageEdit = new QLineEdit();
+    QHBoxLayout * ageLayout = new QHBoxLayout();
+
+    ageLayout->addWidget(ageLabel);
+    ageLayout->addWidget(ageEdit);
+
+    QPushButton * submitButton = new QPushButton("Save");
+    QPushButton * cancelButton = new QPushButton("Cancel");
+    QHBoxLayout * buttonLayout = new QHBoxLayout();
+
+    buttonLayout->addWidget(submitButton);
+    buttonLayout->addWidget(cancelButton);
+
+    mainLayout->addLayout(nameLayout);
+    mainLayout->addLayout(ageLayout);
+    mainLayout->addLayout(buttonLayout);
+
+    window.setLayout(mainLayout);
+    window.show();
+
+    QObject::connect(submitButton, &QPushButton::clicked, [&]()
+    {
+        QString name = nameEdit->text();
+        QString age = ageEdit->text();
+        qDebug() << "Name: " << name << "\nAge: " << age;
+
+        bool isNum = true;
+        for(auto i : age)
+            if(!i.isDigit()) isNum = false;
+        if (age.size() == 0) isNum = false;
+
+        if(!isNum) cancelButton->clicked();
+
+        QLabel * label = new QLabel(nullptr);
+        if (isNum) label->setText(QString( "Name: " + name + "\nAge: " + age));
+        else label->setText("Incorrect Input");
+        label->show();
+        label->resize(200,150);
+        label->alignment();
+        //delete label;
+    });
+
+    QObject::connect(cancelButton, &QPushButton::clicked, [&]()
+    {
+        nameEdit->clear();
+        ageEdit->clear();
+    });
+
+    cancelButton->clicked();
+
+
+//    QApplication app(argc, argv);
+
+//    MainWindow window;
+//    window.resize(300, 200);
+//    window.show();
+
+
+//    QApplication my_application(argc, argv);
+
+//    MainWindow enter_window;
+//    enter_window.resize(800,600);
+//    enter_window.show();
+//    QLabel * label = new QLabel(&enter_window);
+//    my_application.exec();
+//    std::this_thread::sleep_for(std::chrono::seconds(10));
+//    label->setText("HELLO!");
+//    enter_window.setCentralWidget(label);
 
 
 
-    return 0;
+    return app.exec();
 }
 
 
