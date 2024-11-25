@@ -31,7 +31,8 @@ qt_wrap_ui(UI_HEADERS dialog.ui)
 add_library( Interactive_part SHARED
     mainwindow.h
     mainwindow.cpp
-    ${UI_HEADERS}
+    timerapp.h
+    timerapp.cpp
 )
 target_link_libraries( Interactive_part PRIVATE Qt6::Widgets)
 
