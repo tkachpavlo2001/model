@@ -27,8 +27,8 @@ int main(int argc, char** argv)
 {
     QApplication app (argc, argv);
 
-    TimerApp window;
-    window.setWindowTitle("Timer Instance");
+    TabbedApp window;
+    window.setWindowTitle("TabbedApp Instance");
     window.resize(300, 200);
     window.show();
 
