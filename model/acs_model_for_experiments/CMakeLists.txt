@@ -9,7 +9,7 @@ set(CMAKE_AUTOMOC ON)
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 find_package(GSL REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
-#find_package(Qt6 REQUIRED COMPONENTS Charts)
+find_package(Qt6 REQUIRED COMPONENTS Charts)
 
 
 if(NOT Qt6_FOUND)
@@ -35,12 +35,6 @@ add_library( Interactive_part SHARED
     timerapp.cpp
 )
 target_link_libraries( Interactive_part PRIVATE Qt6::Widgets)
-
-#file(RENAME ${CMAKE_CURRENT_BINARY_DIR}/ui_dialog.h ${CMAKE_CURRENT_SOURCE_DIR}/ui_dialog.h)
-
-
-
-
 
 add_library( Service_units SHARED
     registrator.h
@@ -86,12 +80,6 @@ add_library(
     container_analyzer.cpp
 )
 
-
-#target_include_directories(
-#    Controlled_process PUBLIC
-#    ${CMAKE_CURRENT_SOURCE_DIR}
-#s)
-
 add_executable( acs_model_for_experiments
     main.cpp
     automated_control_system.h
@@ -117,7 +105,7 @@ target_link_libraries( acs_model_for_experiments PUBLIC Regulator_tunner)
 target_link_libraries( acs_model_for_experiments PUBLIC Interactive_part)
 target_link_libraries( acs_model_for_experiments PUBLIC Service_units)
 target_link_libraries( acs_model_for_experiments PRIVATE Qt6::Widgets)
-#target_link_libraries( acs_model_for_experiments PRIVATE Qt6::Charts)
+target_link_libraries( acs_model_for_experiments PRIVATE Qt6::Charts)
 target_link_libraries( acs_model_for_experiments PUBLIC ${GSL_LIBRARY})
 
 target_link_libraries( unit_test PRIVATE
@@ -128,10 +116,3 @@ target_link_libraries( unit_test PRIVATE
     DC_source
     Regulator_tunner
 )
-
-#target_link_libraries(acs_model_for_experiments GSL::gsl GSL::gslcblas)
-#target_link_libraries(unit_test GSL::gsl GSL::gslcblas)
-
-
-#install(TARGETS acs_model_for_experiments
-#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

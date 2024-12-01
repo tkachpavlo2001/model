@@ -21,16 +21,61 @@ void evaluate_resuls();
 
 
 #include <QApplication>
+#include <QMainWindow>
+#include <QtCharts/QChartView>
+#include <QtCharts/QScatterSeries>
+#include <QtCharts/QValueAxis>
 //#include "mainwindow.h"
-#include "timerapp.h"
+//#include "timerapp.h"
 int main(int argc, char** argv)
 {
     QApplication app (argc, argv);
 
+    QScatterSeries * p_series = new QScatterSeries();
+    p_series->setName("TestSeriesSample");
+
+    p_series->append(1, 1);
+    p_series->append(2, 4);
+    p_series->append(3, 9);
+    p_series->append(4, 16);
+    p_series->append(5, 25);
+    p_series->append(6, 36);
+
+    QChart * p_chart = new QChart();
+    p_chart->addSeries(p_series);
+    p_chart->setTitle("TestChartSample");
+    p_chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    QValueAxis * p_axisX = new QValueAxis();
+    p_axisX->setTitleText("X");
+    p_axisX->setLabelFormat("%i");
+    p_axisX->setTickCount(6);
+
+    QValueAxis * p_axisY = new QValueAxis();
+    p_axisX->setTitleText("Y");
+    p_axisX->setLabelFormat("%i");
+    p_axisX->setTickCount(6);
+
+    p_chart->setAxisX(p_axisX, p_series);
+    p_chart->setAxisY(p_axisY, p_series);
+
+    QChartView * p_chartView = new QChartView(p_chart);
+
+    p_chartView->setRenderHint(QPainter::Antialiasing);
+
+    QMainWindow window;
+    window.setCentralWidget(p_chartView);
+    window.resize(600, 400);
+    window.show();
+
+
+
+/*
     TabbedApp window;
     window.setWindowTitle("TabbedApp Instance");
     window.resize(300, 200);
     window.show();
+*/
 
     return app.exec();
 }
