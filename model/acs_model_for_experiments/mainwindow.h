@@ -1,32 +1,65 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QApplication>
 #include <QMainWindow>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QMessageBox>
-#include "ui_dialog.h"
+#include <QtCharts/QSplineSeries>
+#include <QtCharts/QChartView>
+#include <QtCharts/QValueAxis>
+
+static const int a = 0;
+
+class Chart_abstract_factory
+{
+public:
+    Chart_abstract_factory(){}
+};
+
+class Chart_config_abstract_factory
+{
+public:
+    Chart_config_abstract_factory(){}
+};
 
 class MainWindow : public QMainWindow
 {
 private:
     Q_OBJECT
-public:
+private:
+    QPushButton * _pbutton_velocity_run;
+    QPushButton * _pbutton_theta_run;
+    QPushButton * _pregulator_run;
+    enum mode
+    {
+        VELOCITY,
+        THETA,
+        REGULATOR
+    };
+    mode _ebutton_chosed = VELOCITY;
+    Chart_abstract_factory _aChart_abstract_factory;
+    Chart_config_abstract_factory _aChart_config_abstract_factory;
+    virtual QChartView * _to_new_abstract_chart();
+    virtual QWidget * _to_new_abstract_chart_config();
+protected:
     MainWindow()
     {
-        QPushButton * button = new QPushButton("Click this one", this);
-        button->setGeometry(50, 50, 200, 50);
-        connect(button, &QPushButton::clicked, this, &MainWindow::onButtonClicked);
     }
-    //MainWindow(QWidget* arg=nullptr);
     ~MainWindow() override;
 private slots:
-    void onButtonClicked()
+    QChartView * to_show_chart();
+    QWidget * to_show_chart_config();
+public:
+    static MainWindow * to_new()
     {
-        QMessageBox::information(this, "Message", "The button is pushed");
+        return new MainWindow();
     }
-private:
-    //Ui::MainWindow * ui;
 };
-
 
 
 #endif // MAINWINDOW_H

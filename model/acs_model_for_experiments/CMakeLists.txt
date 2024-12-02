@@ -33,6 +33,8 @@ add_library( Interactive_part SHARED
     mainwindow.cpp
     timerapp.h
     timerapp.cpp
+    chartwidgetfactory.h
+    chartwidgetfactory.cpp
 )
 target_link_libraries( Interactive_part PRIVATE Qt6::Widgets)
 
