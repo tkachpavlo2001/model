@@ -27,7 +27,7 @@ include_directories(tkachpavlo2001lib)
 
 
 
-qt_wrap_ui(UI_HEADERS dialog.ui)
+#qt_wrap_ui(UI_HEADERS dialog.ui)
 add_library( Interactive_part SHARED
     mainwindow.h
     mainwindow.cpp
@@ -47,6 +47,7 @@ add_library( Service_units SHARED
     default_configuration_setter.cpp
     tkachpavlo2001lib/tkachpavlo2001lib.hpp
 )
+target_link_libraries( Service_units PRIVATE Qt6::Widgets)
 
 add_library(
     Controlled_process SHARED

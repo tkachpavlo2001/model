@@ -16,6 +16,8 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QValueAxis>
 
+#include "registrator.h"
+
 class iChartWidget : public QWidget
 {
 private:
@@ -31,7 +33,19 @@ protected:
     QSlider * _pk0Slider = nullptr;
     QSlider * _pk1Slider = nullptr;
     QLCDNumber * _pOutputNumber = nullptr;
-    void _to_init()
+
+    Registrator_qt * _pRegistrator = nullptr;
+    void _to_back_init()
+    {
+        _pBackChart = new QChart();
+
+        _pRegistrator = Registrator_qt::to_new(this);
+
+        _pSeries = new QSplineSeries(this);
+        _pBackChart->addSeries(_pSeries);
+        _pRegistrator->to_set_series(_pSeries);
+    }
+    void _to_front_init()
     {
         _pMainLayout = new QHBoxLayout(this);
 
@@ -64,10 +78,22 @@ protected:
         pknLayout->addWidget(_pk1Slider);
 
         _pMainChart = new QChartView(this);
+        _pMainChart->setRenderHint(QPainter::Antialiasing);
         _pMainLayout->addWidget(_pMainChart);
 
         _pOutputNumber = new QLCDNumber(this);
     }
+    void _to_init()
+    {
+        _to_back_init();
+        _to_front_init();
+
+        connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
+    }
+private slots:
+    void slot_to_update_chart();
+    void slot_to_run_model();
+    void slot_to_update_model();
 protected:
     iChartWidget(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
 public:
@@ -161,6 +187,9 @@ private:
         pButtonsLayout->addWidget(_pApplyButton);
         pButtonsLayout->addWidget(_pRunButton);
     }
+signals:
+    void signal_run_model();
+    void signal_model_updated();
 private slots:
     void slot_run_model();
     void slot_apply();

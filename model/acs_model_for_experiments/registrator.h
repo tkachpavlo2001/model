@@ -66,4 +66,18 @@ class Registrator_to_std_vector_difference : public Registrator_to_std_vector
     void to_record() override;
 };
 
+#include <QtCharts/QSplineSeries>
+#include <QWidget>
+class Registrator_qt : public Registrator, QWidget
+{
+private:
+    QSplineSeries * _pSeries = nullptr;
+    void to_record() override;
+protected:
+    Registrator_qt(QWidget*p) : QWidget(p), Registrator() {}
+public:
+    void to_set_series(QSplineSeries*arg) { _pSeries = arg; }
+    static Registrator_qt * to_new(QWidget*p) { return new Registrator_qt(p); }
+};
+
 #endif // REGISTRATOR_H
