@@ -48,6 +48,7 @@ protected:
     void _to_front_init()
     {
         _pMainLayout = new QHBoxLayout(this);
+        this->setLayout(_pMainLayout);
 
         QVBoxLayout * pInputLayout = new QVBoxLayout;
         _pMainLayout->addLayout(pInputLayout);
@@ -68,20 +69,19 @@ protected:
         pknLayout->addWidget(_pknLabel);
 
         QHBoxLayout * pknSliderLayout = new QHBoxLayout;
-        pknLayout->addLayout(pknLayout);
+        pknLayout->addLayout(pknSliderLayout);
 
         _pk0Slider = new QSlider(this);
-        pInputLayout->addWidget(_pk0Slider);
+        pknSliderLayout->addWidget(_pk0Slider);
         _pk1Slider = new QSlider(this);
-        pInputLayout->addWidget(_pk1Slider);
-        pknLayout->addWidget(_pk0Slider);
-        pknLayout->addWidget(_pk1Slider);
+        pknSliderLayout->addWidget(_pk1Slider);
 
         _pMainChart = new QChartView(this);
         _pMainChart->setRenderHint(QPainter::Antialiasing);
         _pMainLayout->addWidget(_pMainChart);
 
         _pOutputNumber = new QLCDNumber(this);
+        _pMainLayout->addWidget(_pOutputNumber);
     }
     void _to_init()
     {
@@ -90,14 +90,16 @@ protected:
 
         connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
     }
+    virtual void _to_run() = 0;
 private slots:
-    void slot_to_update_chart();
-    void slot_to_run_model();
-    void slot_to_update_model();
+    void slot_to_update_chart() {}
+    void slot_to_run_model() { _to_run(); }
+    void slot_to_update_model() {}
 protected:
     iChartWidget(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
+    ~iChartWidget();
 public:
-    static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
+    // static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
 };
 class ChartWidget_velocity : public iChartWidget
 {
@@ -106,6 +108,7 @@ private:
     {
         _pInputLabel->setText("Voltage");
     }
+    void _to_run() override;
 public:
     static ChartWidget_velocity * to_new(QWidget*p_parent) { return new ChartWidget_velocity(p_parent); }
 };
@@ -116,6 +119,7 @@ private:
     {
         _pInputLabel->setText("Voltage");
     }
+    void _to_run() override;
 public:
     static ChartWidget_theta * to_new(QWidget*p_parent) { return new ChartWidget_theta(p_parent); }
 };
@@ -126,6 +130,7 @@ private:
     {
         _pInputLabel->setText("RefSignal");
     }
+    void _to_run() override;
 public:
     static ChartWidget_regulator * to_new(QWidget*p_parent) { return new ChartWidget_regulator(p_parent); }
 };
@@ -152,6 +157,7 @@ private:
     void _to_init()
     {
         _pMainLayout = new QVBoxLayout(this);
+        this->setLayout(_pMainLayout);
 
         QHBoxLayout * p_primeInputLayout = new QHBoxLayout;
         _pMainLayout->addLayout(p_primeInputLayout);
@@ -191,15 +197,15 @@ signals:
     void signal_run_model();
     void signal_model_updated();
 private slots:
-    void slot_run_model();
-    void slot_apply();
+    void slot_run_model() {}
+    void slot_apply() {}
 protected:
     iChartWidgetConfig(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
     virtual ~iChartWidgetConfig() = 0;
 public:
     //static iChartWidgetConfig * to_new(QWidget*p_parent) { return new iChartWidgetConfig(p_parent); }
 };
-class ChartWidgetConfig_velocity : iChartWidgetConfig
+class ChartWidgetConfig_velocity : public iChartWidgetConfig
 {
 private:
     ChartWidgetConfig_velocity(QWidget*p_parent) : iChartWidgetConfig(p_parent)
@@ -210,7 +216,7 @@ private:
 public:
     static ChartWidgetConfig_velocity * to_new(QWidget*p_parent) { return new ChartWidgetConfig_velocity(p_parent); }
 };
-class ChartWidgetConfig_theta : iChartWidgetConfig
+class ChartWidgetConfig_theta : public iChartWidgetConfig
 {
 private:
     ChartWidgetConfig_theta(QWidget*p_parent) : iChartWidgetConfig(p_parent)
@@ -221,7 +227,7 @@ private:
 public:
     static ChartWidgetConfig_theta * to_new(QWidget*p_parent) { return new ChartWidgetConfig_theta(p_parent); }
 };
-class ChartWidgetConfig_regulator : iChartWidgetConfig
+class ChartWidgetConfig_regulator : public iChartWidgetConfig
 {
 private:
     ChartWidgetConfig_regulator(QWidget*p_parent) : iChartWidgetConfig(p_parent)
@@ -248,6 +254,58 @@ public:
     static ChartWidgetConfig_regulator * to_new(QWidget*p_parent) { return new ChartWidgetConfig_regulator(p_parent); }
 };
 
+class iWidgetAbstractFactory
+{
+protected:
+    iWidgetAbstractFactory() {}
+public:
+    virtual ~iWidgetAbstractFactory() = 0;
+    virtual iChartWidget * to_new_ChartWidget(QWidget*p) = 0;
+    virtual iChartWidgetConfig * to_new_ChartWidgetConfig(QWidget*p) = 0;
+};
+
+template<class ChartWidget, class ChartWidgetConfig>
+class bWidgetAbstractFactory : public iWidgetAbstractFactory
+{
+protected:
+    bWidgetAbstractFactory() {}
+public:
+    virtual ~bWidgetAbstractFactory() {}
+    iChartWidget * to_new_ChartWidget(QWidget*p) override { return ChartWidget::to_new(p); }
+    iChartWidgetConfig * to_new_ChartWidgetConfig(QWidget*p) override { return ChartWidgetConfig::to_new(p); }
+};
+
+class WidgetFactory_velocity : public bWidgetAbstractFactory<ChartWidget_velocity, ChartWidgetConfig_velocity> {};
+
+class WidgetFactory_theta : public bWidgetAbstractFactory<ChartWidget_theta, ChartWidgetConfig_theta> {};
+
+class WidgetFactory_regulator : public bWidgetAbstractFactory<ChartWidget_regulator, ChartWidgetConfig_regulator> {};
+
+/*
+class WidgetFactory_velocity : public iWidgetAbstractFactory
+{
+    virtual ~WidgetFactory_velocity() {}
+public:
+    virtual iChartWidget * to_new_ChartWidget(QWidget*p) { return ChartWidget_velocity::to_new(p); }
+    virtual iChartWidgetConfig * to_new_ChartWidgetConfig(QWidget*p) { return ChartWidgetConfig_velocity::to_new(p); }
+};
+
+class WidgetFactory_theta : public iWidgetAbstractFactory
+{
+    virtual ~WidgetFactory_theta() {}
+public:
+    virtual iChartWidget * to_new_ChartWidget(QWidget*p) { return ChartWidget_theta::to_new(p); }
+    virtual iChartWidgetConfig * to_new_ChartWidgetConfig(QWidget*p) { return ChartWidgetConfig_theta::to_new(p); }
+};
+
+class WidgetFactory_regulator : public iWidgetAbstractFactory
+{
+    virtual ~WidgetFactory_regulator() {}
+public:
+    virtual iChartWidget * to_new_ChartWidget(QWidget*p) { return ChartWidget_regulator::to_new(p); }
+    virtual iChartWidgetConfig * to_new_ChartWidgetConfig(QWidget*p) { return ChartWidgetConfig_regulator::to_new(p); }
+};
+*/
 
 
 /*

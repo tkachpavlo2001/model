@@ -66,6 +66,7 @@ class Registrator_to_std_vector_difference : public Registrator_to_std_vector
     void to_record() override;
 };
 
+#include <QApplication>
 #include <QtCharts/QSplineSeries>
 #include <QWidget>
 class Registrator_qt : public Registrator, QWidget

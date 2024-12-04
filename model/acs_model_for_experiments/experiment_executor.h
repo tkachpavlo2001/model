@@ -18,6 +18,7 @@ private:
     double interval;
     double amount_of_show;
 protected:
+    Registrator * p_registrator = nullptr;
     void reset_interval();
     virtual void to_run(Registrator *) const;
     double to_get_t_length() const;
@@ -33,6 +34,7 @@ public:
     void to_set_t_length(double);
     void to_set_time_to_registrate(double);
     void to_set_amount_of_registrations(double);
+    void to_set_registrator(Registrator * p) { p_registrator = p; }
 };
 
 class Experiment_executor : virtual public Experiment_executor_interface // for txt-file report

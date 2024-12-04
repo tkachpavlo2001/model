@@ -25,12 +25,17 @@ void evaluate_resuls();
 #include <QtCharts/QChartView>
 #include <QtCharts/QScatterSeries>
 #include <QtCharts/QValueAxis>
-//#include "mainwindow.h"
+#include "mainwindow.h"
 //#include "timerapp.h"
 int main(int argc, char** argv)
 {
     QApplication app (argc, argv);
 
+    QMainWindow * window = MainWindow::to_new();
+
+    window->show();
+
+    /*
     QScatterSeries * p_series = new QScatterSeries();
     p_series->setName("TestSeriesSample");
 
@@ -67,7 +72,7 @@ int main(int argc, char** argv)
     window.setCentralWidget(p_chartView);
     window.resize(600, 400);
     window.show();
-
+    */
 
 
 /*
