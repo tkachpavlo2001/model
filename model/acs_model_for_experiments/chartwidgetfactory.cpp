@@ -11,12 +11,12 @@ iWidgetAbstractFactory::~iWidgetAbstractFactory() {}
 
 void iChartWidget::_to_reset_chart()
 {
-    if (_pSeries != nullptr)delete _pSeries;
-    _pSeries = new QSplineSeries(this);
-    _pBackChart->addSeries(_pSeries);
+    if (_pSeries != nullptr)
+    {
+        _pSeries->clear();
+    }
+    if (_pSeries == nullptr) _pBackChart->addSeries(_pSeries);
     _pRegistrator->to_set_series(_pSeries);
-    _pBackChart->setAxisX(_pAxisX, _pSeries);
-    _pBackChart->setAxisY(_pAxisY, _pSeries);
     _pRegistrator->to_set_series(_pSeries);
 }
 
@@ -68,6 +68,7 @@ void iChartWidget::_to_model_init()
     //alg
     _regulator->to_set_koefficients(3);
     _definder->to_set_signal(20);
+
 }
 
 
@@ -78,7 +79,7 @@ void ChartWidget_velocity::_to_run()
 
 void ChartWidget_theta::_to_run()
 {
-    //_to_reset_chart();
+    _to_reset_chart();
 
 
     //_pAxisX->setTitleText("t");
@@ -88,6 +89,7 @@ void ChartWidget_theta::_to_run()
 
 
     _experiment->to_set_registrator(_pRegistrator);
+    _pRegistrator->to_set_dt_to_plot(_experiment->to_check_time_to_show());
     _experiment->to_run();
 
     qDebug() << "DONE0\n";

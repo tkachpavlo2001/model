@@ -48,25 +48,47 @@ protected:
 
     void _to_back_init()
     {
-        _pBackChart = new QChart();
+        _pBackChart = new QChart();//
+        _pMainChart->setChart(_pBackChart);
 
         _pRegistrator = Registrator_qt::to_new(this);
 
-        _pSeries = new QSplineSeries(this);
-        _pBackChart->addSeries(_pSeries);
+        _pSeries = new QSplineSeries(this);//
+        ///
+//        _pSeries->append(10,10);//
+//        _pSeries->append(20,40);//
+//        _pSeries->append(30,90);//
+        ///_pMainChart->
+        _pBackChart->addSeries(_pSeries);//
         _pRegistrator->to_set_series(_pSeries);
 
         _pAxisX = new QValueAxis(this);
         _pAxisY = new QValueAxis(this);
+        _pAxisX->setRange(0,50);//
+        _pAxisY->setRange(0,50);//
 
-        _pBackChart->setAxisX(_pAxisX, _pSeries);
-        _pBackChart->setAxisY(_pAxisY, _pSeries);
+        //_pBackChart->setAxisX(_pAxisX, _pSeries);
+        //_pBackChart->setAxisY(_pAxisY, _pSeries);
+
+        _pBackChart->addAxis(_pAxisX, Qt::AlignBottom);//
+        _pBackChart->addAxis(_pAxisY, Qt::AlignLeft);//
+
+        _pSeries->attachAxis(_pAxisX);//
+        _pSeries->attachAxis(_pAxisY);//
+        ///
+        _pAxisX->setTitleText("t");//
+        _pAxisY->setTitleText("theta(t)");//
+        ///
+        _pMainChart->setRenderHint(QPainter::Antialiasing);
+
+
     }
     void _to_model_init();
     void _to_front_init()
     {
         _pMainLayout = new QHBoxLayout(this);
         this->setLayout(_pMainLayout);
+        this->resize(400,300);
 
         QVBoxLayout * pInputLayout = new QVBoxLayout;
         _pMainLayout->addLayout(pInputLayout);
@@ -103,11 +125,13 @@ protected:
     }
     void _to_init()
     {
+        _to_front_init();
         _to_back_init();
         _to_model_init();
-        _to_front_init();
 
+        //connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
         connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
+        //connect(this, &iChartWidget::signal_to_update_chart, this, &iChartWidget::slot_to_update_chart);
     }
 
     void _to_reset_chart();
@@ -115,14 +139,18 @@ protected:
     virtual void _to_run() = 0;
 signals:
     void signal_to_update_chart();
+    void signal_to_notify_run_finished();
 private slots:
-    void slot_to_update_chart() { emit signal_to_update_chart(); }
+    void slot_to_update_chart()
+    {
+        //_pSeries->;
+    }
     void slot_to_update_model() {}
 protected:
     iChartWidget(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
     ~iChartWidget();
 public slots:
-    void slot_to_run_model() { qDebug() << "DONE2\n"; _to_run(); }
+    void slot_to_run_model() { qDebug() << "DONE2\n"; _to_run(); emit signal_to_notify_run_finished();}
     // static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
 };
 class ChartWidget_velocity : public iChartWidget

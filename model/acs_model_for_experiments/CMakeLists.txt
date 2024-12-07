@@ -10,6 +10,7 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 find_package(GSL REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Charts)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 
 if(NOT Qt6_FOUND)
@@ -36,7 +37,7 @@ add_library( Interactive_part SHARED
     chartwidgetfactory.h
     chartwidgetfactory.cpp
 )
-target_link_libraries( Interactive_part PRIVATE Qt6::Widgets Qt6::Charts)
+target_link_libraries( Interactive_part PRIVATE Qt6::Widgets Qt6::Charts Qt6::Core)
 
 add_library( Service_units SHARED
     registrator.h

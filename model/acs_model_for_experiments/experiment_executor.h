@@ -35,6 +35,7 @@ public:
     void to_set_time_to_registrate(double);
     void to_set_amount_of_registrations(double);
     void to_set_registrator(Registrator * p) { p_registrator = p; }
+    double to_check_time_to_show() { return time_to_show; }
 };
 
 class Experiment_executor : virtual public Experiment_executor_interface // for txt-file report
