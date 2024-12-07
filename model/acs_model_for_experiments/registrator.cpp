@@ -164,14 +164,14 @@ void Registrator_to_std_vector_difference::to_record()
 
 void Registrator_qt::to_record()
 {
-    if(_pSeries==nullptr) { std::cout << "Registrator error"; abort(); }
+    if(_pSeries==nullptr) { qDebug() << "Registrator error"; abort(); }
     double dt = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::DT] ;
     double out = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::OUTPUT_SIGNAL];
-    /*if(_pSeries->count() > 0) _pSeries->append( _pSeries->at(_pSeries->count() - 1).x() + dt, out );
+    if(_pSeries->count() > 0) _pSeries->append( _pSeries->at(_pSeries->count() - 1).x() + dt, out );
     else if (_pSeries->count() == 0)
     {
         _pSeries->append( 0, out );
         _pSeries->append( _pSeries->at(_pSeries->count() - 1).x() + dt, out );
-    }*/
+    }
 }
 

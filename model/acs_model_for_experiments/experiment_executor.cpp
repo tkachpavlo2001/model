@@ -106,11 +106,11 @@ void Experiment_executor::to_run()
     if (p_registrator == nullptr) own_registrator = new Registrator_to_txt_file;
     else own_registrator = p_registrator;
     Registrator & fout = *own_registrator;
-    fout.to_set_name_of_file(results_title);
+    //fout.to_set_name_of_file(results_title);
 
     Experiment_executor_interface::to_run(own_registrator);
 
-    delete own_registrator;
+    if (p_registrator == nullptr) delete own_registrator;
 }
 
 Experiment_executor_short_report::Experiment_executor_short_report(Automated_control_system * arg) : Experiment_executor(arg), Experiment_executor_interface(arg)

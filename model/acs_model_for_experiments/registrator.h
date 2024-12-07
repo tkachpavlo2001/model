@@ -6,6 +6,8 @@
 #include <fstream>
 #include <vector>
 
+#include <QDebug>
+
 class Registrator
 {
 private:
@@ -16,8 +18,8 @@ private:
 protected:
     bool to_actulize_the_fist_record_commited_status();
     const Automated_control_system * to_check_acs_model_status() const;
-public:
     Registrator();
+public:
     virtual ~Registrator() = 0;
 
     const char * to_check_name_of_file() const;

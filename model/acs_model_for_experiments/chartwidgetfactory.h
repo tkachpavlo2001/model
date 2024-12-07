@@ -17,6 +17,7 @@
 #include <QtCharts/QValueAxis>
 
 #include "registrator.h"
+#include "experiment_executor.h"
 
 class iChartWidget : public QWidget
 {
@@ -27,6 +28,8 @@ protected:
     QChartView * _pMainChart = nullptr;
     QChart * _pBackChart = nullptr;
     QSplineSeries * _pSeries = nullptr;
+    QValueAxis * _pAxisX = nullptr;
+    QValueAxis * _pAxisY = nullptr;
     QLabel * _pInputLabel = nullptr;
     QSlider * _pInputSlider = nullptr;
     QLabel * _pknLabel = nullptr;
@@ -35,6 +38,14 @@ protected:
     QLCDNumber * _pOutputNumber = nullptr;
 
     Registrator_qt * _pRegistrator = nullptr;
+
+    std::shared_ptr<Reference_signal_definder_static> _definder;
+    std::shared_ptr<PID_regulator> _regulator;
+    std::shared_ptr<DC_source_inerted> _source;
+    std::shared_ptr<DC_engine> _process;
+    std::shared_ptr<Automated_control_system_paralleled> _acs_model;
+    std::shared_ptr<Experiment_executor_interface> _experiment;
+
     void _to_back_init()
     {
         _pBackChart = new QChart();
@@ -44,7 +55,14 @@ protected:
         _pSeries = new QSplineSeries(this);
         _pBackChart->addSeries(_pSeries);
         _pRegistrator->to_set_series(_pSeries);
+
+        _pAxisX = new QValueAxis(this);
+        _pAxisY = new QValueAxis(this);
+
+        _pBackChart->setAxisX(_pAxisX, _pSeries);
+        _pBackChart->setAxisY(_pAxisY, _pSeries);
     }
+    void _to_model_init();
     void _to_front_init()
     {
         _pMainLayout = new QHBoxLayout(this);
@@ -86,19 +104,25 @@ protected:
     void _to_init()
     {
         _to_back_init();
+        _to_model_init();
         _to_front_init();
 
         connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
     }
+
+    void _to_reset_chart();
+
     virtual void _to_run() = 0;
+signals:
+    void signal_to_update_chart();
 private slots:
-    void slot_to_update_chart() {}
-    void slot_to_run_model() { _to_run(); }
+    void slot_to_update_chart() { emit signal_to_update_chart(); }
     void slot_to_update_model() {}
 protected:
     iChartWidget(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
     ~iChartWidget();
-public:
+public slots:
+    void slot_to_run_model() { qDebug() << "DONE2\n"; _to_run(); }
     // static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
 };
 class ChartWidget_velocity : public iChartWidget
@@ -189,15 +213,18 @@ private:
         _pRunButton = new QPushButton(this);
         _pRunButton->setText("Run");
         _pApplyButton = new QPushButton(this);
-        _pRunButton->setText("Apply");
+        _pApplyButton->setText("Apply");
         pButtonsLayout->addWidget(_pApplyButton);
         pButtonsLayout->addWidget(_pRunButton);
+
+        connect(_pRunButton, &QPushButton::clicked, this, &iChartWidgetConfig::slot_run_model);
     }
 signals:
     void signal_run_model();
     void signal_model_updated();
+    void slot_update_chart();
 private slots:
-    void slot_run_model() {}
+    void slot_run_model() { emit signal_run_model(); }
     void slot_apply() {}
 protected:
     iChartWidgetConfig(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
@@ -281,83 +308,5 @@ class WidgetFactory_theta : public bWidgetAbstractFactory<ChartWidget_theta, Cha
 
 class WidgetFactory_regulator : public bWidgetAbstractFactory<ChartWidget_regulator, ChartWidgetConfig_regulator> {};
 
-/*
-class WidgetFactory_velocity : public iWidgetAbstractFactory
-{
-    virtual ~WidgetFactory_velocity() {}
-public:
-    virtual iChartWidget * to_new_ChartWidget(QWidget*p) { return ChartWidget_velocity::to_new(p); }
-    virtual iChartWidgetConfig * to_new_ChartWidgetConfig(QWidget*p) { return ChartWidgetConfig_velocity::to_new(p); }
-};
 
-class WidgetFactory_theta : public iWidgetAbstractFactory
-{
-    virtual ~WidgetFactory_theta() {}
-public:
-    virtual iChartWidget * to_new_ChartWidget(QWidget*p) { return ChartWidget_theta::to_new(p); }
-    virtual iChartWidgetConfig * to_new_ChartWidgetConfig(QWidget*p) { return ChartWidgetConfig_theta::to_new(p); }
-};
-
-class WidgetFactory_regulator : public iWidgetAbstractFactory
-{
-    virtual ~WidgetFactory_regulator() {}
-public:
-    virtual iChartWidget * to_new_ChartWidget(QWidget*p) { return ChartWidget_regulator::to_new(p); }
-    virtual iChartWidgetConfig * to_new_ChartWidgetConfig(QWidget*p) { return ChartWidgetConfig_regulator::to_new(p); }
-};
-*/
-
-
-/*
-class core : public QWidget
-{
-private:
-    Q_OBJECT
-public:
-    iChartWidget * p_iChartWidget = nullptr;
-    iChartWidgetConfig * p_iChartWidgetConfig = nullptr;
-    core(QWidget * p_parent) : QWidget(p_parent) {}
-};
-
-class ChartWidgetAbstractFactory : public QWidget
-{
-private:
-    Q_OBJECT
-private:
-    enum mode
-    {
-        VELOCITY = 0,
-        THETA = 1,
-        REGULATOR = 2
-    } _mode;
-    core * _to_new(QWidget * p_parent, int mode, int n)
-    {
-        switch(mode)
-        {
-        case 0:
-            break;
-        case 1:
-            break;
-        case 2:
-            break;
-        default:
-            QMessageBox * pError = new QMessageBox(this);
-            pError->setIcon(QMessageBox::Critical);
-            pError->setDefaultButton(QMessageBox::Close);
-            pError->setText("iChartWidgetFactory problem");
-            pError->show();
-            break;
-        }
-
-    }
-protected:
-    ChartWidgetAbstractFactory(QWidget * p_parent, int n = 0) : QWidget(p_parent) { _mode = mode(n); }
-public:
-    static ChartWidgetAbstractFactory * to_new_velocity(QWidget * p_parent) { return new ChartWidgetAbstractFactory(p_parent); }
-    static ChartWidgetAbstractFactory * to_new_theta(QWidget * p_parent) { return new ChartWidgetAbstractFactory(p_parent, 1); }
-    static ChartWidgetAbstractFactory * to_new_regulator(QWidget * p_parent) { return new ChartWidgetAbstractFactory(p_parent, 2); }
-    iChartWidget * to_new_chart() { _to_new(this, _mode, 0); }
-    iChartWidgetConfig * to_new_config() { _to_new(this, _mode, 1); }
-};
-*/
 #endif // CHARTWIDGETFACTORY_H

@@ -23,8 +23,11 @@ private:
 private:
     QPushButton * _pbutton_velocity_run = nullptr;
     QPushButton * _pbutton_theta_run = nullptr;
-    QPushButton * _pregulator_run = nullptr;
+    QPushButton * _pbutton_regulator_run = nullptr;
     iWidgetAbstractFactory * _pWidgetFactory = nullptr;
+
+    iChartWidget * _p_ChartWidget = nullptr;
+    iChartWidgetConfig * _p_ChartWidgetConfig = nullptr;
 
     void _to_delete(iWidgetAbstractFactory * p) { if ( p != nullptr) delete p; }
 protected:
@@ -44,26 +47,34 @@ protected:
         _pbutton_theta_run->setText("Theta");
         pMainLayout->addWidget(_pbutton_theta_run);
 
-        _pregulator_run = new QPushButton(this);
-        _pregulator_run->setText("Regulator");
-        pMainLayout->addWidget(_pregulator_run);
+        _pbutton_regulator_run = new QPushButton(this);
+        _pbutton_regulator_run->setText("Regulator");
+        pMainLayout->addWidget(_pbutton_regulator_run);
 
+        connect(_pbutton_velocity_run, &QPushButton::clicked, this, &MainWindow::slot_run_velocity_mode);
         connect(_pbutton_theta_run, &QPushButton::clicked, this, &MainWindow::slot_run_theta_mode);
+        connect(_pbutton_regulator_run, &QPushButton::clicked, this, &MainWindow::slot_run_regulator_mode);
+
     }
     ~MainWindow() override { _to_delete(_pWidgetFactory); };
 
     void _to_run_subApp()
     {
-        iChartWidget * p_ChartWidget = _pWidgetFactory->to_new_ChartWidget(nullptr);
-        iChartWidgetConfig * p_ChartWidgetConfig = _pWidgetFactory->to_new_ChartWidgetConfig(nullptr);
+        _p_ChartWidget = _pWidgetFactory->to_new_ChartWidget(nullptr);
+        _p_ChartWidgetConfig = _pWidgetFactory->to_new_ChartWidgetConfig(nullptr);
 
-        QWidget * p_window_1 = new QWidget(this);
-        p_window_1->resize(400, 300);
-        QWidget * p_window_2 = new QWidget(this);
-        p_window_2->resize(400, 300);
+        //QWidget * p_window_1 = new QWidget(this);
+        //p_window_1->resize(400, 300);
+        //QWidget * p_window_2 = new QWidget(this);
+        //p_window_2->resize(400, 300);
 
-        p_ChartWidget->show();
-        p_ChartWidgetConfig->show();
+        connect(_p_ChartWidgetConfig, &iChartWidgetConfig::signal_run_model, _p_ChartWidget, &iChartWidget::slot_to_run_model);
+        connect(_p_ChartWidget, &iChartWidget::signal_to_update_chart, _p_ChartWidgetConfig, &iChartWidgetConfig::slot_update_chart);
+
+        qDebug() << "DONE3\n";
+
+        _p_ChartWidget->show();
+        _p_ChartWidgetConfig->show();
     }
 private slots:
     void slot_run_velocity_mode() { _to_delete(_pWidgetFactory); _pWidgetFactory = new WidgetFactory_velocity; _to_run_subApp(); }

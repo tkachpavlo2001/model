@@ -191,7 +191,7 @@ void Default_configuration_setter::to_set_elements_parameters(Reference_signal_d
     this->to_fill_process(_process);
 }
 
-void Default_configuration_setter::to_set_experiment_parameters(std::shared_ptr<Experiment_executor> _experiment) const
+void Default_configuration_setter::to_set_experiment_parameters(std::shared_ptr<Experiment_executor_interface> _experiment) const
 {
     to_set_experiment_parameters(_experiment.get());
 }
