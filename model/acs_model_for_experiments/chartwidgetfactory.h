@@ -16,6 +16,8 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QValueAxis>
 
+#include <thread>
+
 #include "registrator.h"
 #include "experiment_executor.h"
 
@@ -80,6 +82,7 @@ protected:
         _pAxisY->setTitleText("theta(t)");//
         ///
         _pMainChart->setRenderHint(QPainter::Antialiasing);
+
 
 
     }
@@ -150,7 +153,15 @@ protected:
     iChartWidget(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
     ~iChartWidget();
 public slots:
-    void slot_to_run_model() { qDebug() << "DONE2\n"; _to_run(); emit signal_to_notify_run_finished();}
+    void slot_to_run_model()
+    {
+        qDebug() << "DONE2\n";
+        std::thread a ([this](){ _to_run(); emit signal_to_notify_run_finished();} );
+        std::thread b ([this](){ _pMainChart->update(); });
+        a.detach();
+        b.detach();
+    }
+
     // static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
 };
 class ChartWidget_velocity : public iChartWidget

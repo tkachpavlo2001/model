@@ -66,23 +66,10 @@ protected:
         _p_ChartWidget = _pWidgetFactory->to_new_ChartWidget(nullptr);
         _p_ChartWidgetConfig = _pWidgetFactory->to_new_ChartWidgetConfig(nullptr);
 
-        //connect(_p_ChartWidgetConfig, &iChartWidgetConfig::signal_run_model, _p_ChartWidget, &iChartWidget::slot_to_run_model);
 
         qDebug() << "DONE3\n";
 
-        QThread * pThread_run = new QThread(this);
-        //_p_ChartWidget->moveToThread(pThread_run);
-
-
-        //void (QThread::*overloaded_start)(QThread::NormalPriority) = QThread::start;
-        connect(_p_ChartWidgetConfig, &iChartWidgetConfig::signal_run_model, pThread_run, [pThread_run]()
-        {
-            pThread_run->start();
-            pThread_run->setPriority(QThread::NormalPriority);
-        } );
-        connect(pThread_run, &QThread::started, _p_ChartWidget, &iChartWidget::slot_to_run_model);
-        connect(_p_ChartWidget, &iChartWidget::signal_to_notify_run_finished, pThread_run, &QThread::quit);
-        //connect(_p_ChartWidget, &iChartWidget::signal_to_notify_run_finished, pThread_run, &QThread::deleteLater);
+        connect(_p_ChartWidgetConfig, &iChartWidgetConfig::signal_run_model, _p_ChartWidget, &iChartWidget::slot_to_run_model);
 
         _p_ChartWidget->show();
         _p_ChartWidgetConfig->show();
