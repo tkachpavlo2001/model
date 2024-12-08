@@ -31,6 +31,7 @@ protected:
     QChartView * _pMainChart = nullptr;
     QChart * _pBackChart = nullptr;
     QXYSeries * _pSeries = nullptr;
+    QXYSeries * _pSeries_def = nullptr;
     QValueAxis * _pAxisX = nullptr;
     QValueAxis * _pAxisY = nullptr;
     QLabel * _pInputLabel = nullptr;
@@ -61,32 +62,30 @@ protected:
         _pRegistrator = Registrator_qt::to_new(this);
         _pRegistrator->to_set_chart(this);
 
-        _pSeries = new QLineSeries(this);//
-        ///
-//        _pSeries->append(10,10);//
-//        _pSeries->append(20,40);//
-//        _pSeries->append(30,90);//
-        ///_pMainChart->
-        _pBackChart->addSeries(_pSeries);//
+        _pSeries = new QLineSeries(this);
+        _pBackChart->addSeries(_pSeries);
         _pRegistrator->to_set_series(_pSeries);
+
+        _pSeries_def = new QLineSeries(this);
+        _pBackChart->addSeries(_pSeries_def);
+        _pRegistrator->to_set_series_additional(_pSeries_def);
 
         _pAxisX = new QValueAxis(this);
         _pAxisY = new QValueAxis(this);
-        _pAxisX->setRange(0,50);//
-        _pAxisY->setRange(0,50);//
+        _pAxisX->setRange(0,50);//?
+        _pAxisY->setRange(0,50);//?
+        _pAxisX->setLabelFormat("%.2f");
+        _pAxisY->setLabelFormat("%.2f");
 
-        //_pBackChart->setAxisX(_pAxisX, _pSeries);
-        //_pBackChart->setAxisY(_pAxisY, _pSeries);
+        _pBackChart->addAxis(_pAxisX, Qt::AlignBottom);
+        _pBackChart->addAxis(_pAxisY, Qt::AlignLeft);
 
-        _pBackChart->addAxis(_pAxisX, Qt::AlignBottom);//
-        _pBackChart->addAxis(_pAxisY, Qt::AlignLeft);//
+        _pSeries->attachAxis(_pAxisX);
+        _pSeries->attachAxis(_pAxisY);
 
-        _pSeries->attachAxis(_pAxisX);//
-        _pSeries->attachAxis(_pAxisY);//
-        ///
-        _pAxisX->setTitleText("t");//
-        _pAxisY->setTitleText("theta(t)");//
-        ///
+        _pSeries_def->attachAxis(_pAxisX);
+        _pSeries_def->attachAxis(_pAxisY);
+
         _pMainChart->setRenderHint(QPainter::Antialiasing);
 
 

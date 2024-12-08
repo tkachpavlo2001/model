@@ -19,7 +19,7 @@ void iChartWidget::_to_reset_chart()
 
 void iChartWidget::_to_model_init()
 {
-    _pRegistrator = Registrator_qt::to_new(this);
+    //_pRegistrator = Registrator_qt::to_new(this);
     _pRegistrator->to_set_series(_pSeries);
 
     const Default_configuration_setter default_configuration_setter_obj;
@@ -79,8 +79,9 @@ void ChartWidget_theta::_to_run()
     _to_reset_chart();
 
 
-    //_pAxisX->setTitleText("t");
-    //_pAxisY->setTitleText("theta(t)");
+    _pAxisX->setTitleText("t");
+    _pAxisY->setTitleText("theta(t)");
+    _pMainChart->update();
 
     qDebug() << "DONE1\n";
 
