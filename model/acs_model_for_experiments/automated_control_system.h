@@ -11,10 +11,10 @@
 class Automated_control_system
 {
 private:
-    DC_engine * p_process;
-    PID_regulator * p_regulator;
-    Reference_signal_definder_static * p_definder;
-    DC_source * p_source;
+    DC_engine * p_process = nullptr;
+    PID_regulator * p_regulator = nullptr;
+    Reference_signal_definder_static * p_definder = nullptr;
+    DC_source * p_source = nullptr;
     double dt;
     double t;
 

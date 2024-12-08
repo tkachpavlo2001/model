@@ -167,7 +167,8 @@ void Registrator_qt::to_record()
     if(_pSeries==nullptr) { qDebug() << "Registrator error"; abort(); }
     double dt = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::DT] ;
     double out = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::OUTPUT_SIGNAL];
-    double out_additional = to_check_acs_model_status()->to_check_definder()->to_check_parameters()[Reference_signal_definder_static::OUTPUT_SIGNAL];
+    double out_additional = 0;
+    if ( to_check_acs_model_status()->to_check_definder() != nullptr ) out_additional = to_check_acs_model_status()->to_check_definder()->to_check_parameters()[Reference_signal_definder_static::OUTPUT_SIGNAL];
     double x;
 
     if(_pSeries->count() != 0) x = _pSeries->at(_pSeries->count() - 1).x() + _dt_to_plot;

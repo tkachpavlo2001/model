@@ -43,12 +43,12 @@ protected:
 
     Registrator_qt * _pRegistrator = nullptr;
 
-    std::shared_ptr<Reference_signal_definder_static> _definder;
-    std::shared_ptr<PID_regulator> _regulator;
-    std::shared_ptr<DC_source_inerted> _source;
-    std::shared_ptr<DC_engine> _process;
-    std::shared_ptr<Automated_control_system_paralleled> _acs_model;
-    std::shared_ptr<Experiment_executor_interface> _experiment;
+    std::shared_ptr<Reference_signal_definder_static> _definder = nullptr;
+    std::shared_ptr<PID_regulator> _regulator = nullptr;
+    std::shared_ptr<DC_source_inerted> _source = nullptr;
+    std::shared_ptr<DC_engine> _process = nullptr;
+    std::shared_ptr<Automated_control_system_paralleled> _acs_model = nullptr;
+    std::shared_ptr<Experiment_executor_interface> _experiment = nullptr;
 
     void _to_back_init()
     {
