@@ -175,20 +175,20 @@ void Default_configuration_setter::to_set_elements_parameters(
         std::shared_ptr<DC_engine> _process
         ) const
 {
-    _definder->to_set_signal(100); //definder->to_set_signal(100);
-    _regulator->to_set_koefficients(5, 2e-5, 4);
-    _source->to_set_max_voltage(220);
-    _source->to_set_min_voltage(-220);
-    this->to_fill_process(_process);
+    if ( _definder != nullptr ) _definder->to_set_signal(100); //definder->to_set_signal(100);
+    if ( _regulator != nullptr ) _regulator->to_set_koefficients(5, 2e-5, 4);
+    if ( _source != nullptr ) _source->to_set_max_voltage(220);
+    if ( _source != nullptr ) _source->to_set_min_voltage(-220);
+    if ( _process != nullptr ) this->to_fill_process(_process);
 }
 
 void Default_configuration_setter::to_set_elements_parameters(Reference_signal_definder_static*_definder,PID_regulator*_regulator,DC_source*_source,DC_engine*_process) const
 {
-    _definder->to_set_signal(100); //definder->to_set_signal(100);
-    _regulator->to_set_koefficients(5, 2e-5, 4);
-    _source->to_set_max_voltage(220);
-    _source->to_set_min_voltage(-220);
-    this->to_fill_process(_process);
+    if ( _definder != nullptr ) _definder->to_set_signal(100); //definder->to_set_signal(100);
+    if ( _regulator != nullptr ) _regulator->to_set_koefficients(5, 2e-5, 4);
+    if ( _source != nullptr ) _source->to_set_max_voltage(220);
+    if ( _source != nullptr ) _source->to_set_min_voltage(-220);
+    if ( _process != nullptr ) this->to_fill_process(_process);
 }
 
 void Default_configuration_setter::to_set_experiment_parameters(std::shared_ptr<Experiment_executor_interface> _experiment) const
