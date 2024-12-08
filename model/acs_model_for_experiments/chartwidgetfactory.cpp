@@ -80,7 +80,7 @@ void ChartWidget_velocity::_to_run()
     ///_definder = std::make_shared<Reference_signal_definder_static>();
     ///_regulator = std::make_shared<PID_regulator>();
     _source = std::make_shared<DC_source_inerted>();
-    _process = std::make_shared<DC_engine>();
+    _process = std::make_shared<DC_engine_velocity_out>();
 
     default_configuration_setter_obj.to_set_elements_parameters(
                 _definder,
@@ -118,13 +118,13 @@ void ChartWidget_velocity::_to_run()
     //alg
     ///_regulator->to_set_koefficients(3);
     ///_definder->to_set_signal(20);
-    _source->to_receive_input_signal(20);
+    _source->to_receive_input_signal(50);
 
     _to_reset_chart();
 
 
     _pAxisX->setTitleText("t");
-    _pAxisY->setTitleText("theta(t)");
+    _pAxisY->setTitleText("Velocity(t)");
     _pMainChart->update();
 
     qDebug() << "DONE1\n";
