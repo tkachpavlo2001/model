@@ -173,5 +173,13 @@ void Registrator_qt::to_record()
         _pSeries->append( 0, out );
         _pSeries->append( _pSeries->at(_pSeries->count() - 1).x() + _dt_to_plot, out );
     }
+    _to_update_chart();
 }
 
+#include"chartwidgetfactory.h"
+#include<QDebug>
+void Registrator_qt::_to_update_chart()
+{
+    if ( this->parent() != nullptr ) (static_cast<iChartWidget*>(this->parent()))->to_update_chart();
+    else qDebug() << "&Registrator_qt::_to_update_chart ERROR";
+}

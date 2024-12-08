@@ -13,6 +13,7 @@
 #include <QLCDNumber>
 #include <QMessageBox>
 #include <QtCharts/QSplineSeries>
+#include <QtCharts/QLineSeries>
 #include <QtCharts/QChartView>
 #include <QtCharts/QValueAxis>
 
@@ -29,7 +30,7 @@ protected:
     QBoxLayout * _pMainLayout = nullptr;
     QChartView * _pMainChart = nullptr;
     QChart * _pBackChart = nullptr;
-    QSplineSeries * _pSeries = nullptr;
+    QXYSeries * _pSeries = nullptr;
     QValueAxis * _pAxisX = nullptr;
     QValueAxis * _pAxisY = nullptr;
     QLabel * _pInputLabel = nullptr;
@@ -52,10 +53,15 @@ protected:
     {
         _pBackChart = new QChart();//
         _pMainChart->setChart(_pBackChart);
+        _pMainChart->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        _pMainChart->setCacheMode(QGraphicsView::CacheNone);
+
+
 
         _pRegistrator = Registrator_qt::to_new(this);
+        _pRegistrator->to_set_chart(this);
 
-        _pSeries = new QSplineSeries(this);//
+        _pSeries = new QLineSeries(this);//
         ///
 //        _pSeries->append(10,10);//
 //        _pSeries->append(20,40);//
@@ -146,7 +152,8 @@ signals:
 private slots:
     void slot_to_update_chart()
     {
-        //_pSeries->;
+        //std::thread b ([this](){ _pMainChart->update(); });
+        //b.join();
     }
     void slot_to_update_model() {}
 protected:
@@ -157,11 +164,10 @@ public slots:
     {
         qDebug() << "DONE2\n";
         std::thread a ([this](){ _to_run(); emit signal_to_notify_run_finished();} );
-        std::thread b ([this](){ _pMainChart->update(); });
         a.detach();
-        b.detach();
     }
-
+public:
+    void to_update_chart() { _pMainChart->update(); }
     // static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
 };
 class ChartWidget_velocity : public iChartWidget

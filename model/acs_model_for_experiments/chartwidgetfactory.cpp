@@ -15,9 +15,6 @@ void iChartWidget::_to_reset_chart()
     {
         _pSeries->clear();
     }
-    if (_pSeries == nullptr) _pBackChart->addSeries(_pSeries);
-    _pRegistrator->to_set_series(_pSeries);
-    _pRegistrator->to_set_series(_pSeries);
 }
 
 void iChartWidget::_to_model_init()
