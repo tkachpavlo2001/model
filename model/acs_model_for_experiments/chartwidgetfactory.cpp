@@ -24,8 +24,8 @@ void iChartWidget::_to_model_init()
 
     const Default_configuration_setter default_configuration_setter_obj;
     // reference case
-    _definder = std::make_shared<Reference_signal_definder_static>();
-    _regulator = std::make_shared<PID_regulator>();
+    ///_definder = std::make_shared<Reference_signal_definder_static>();
+    ///_regulator = std::make_shared<PID_regulator>();
     _source = std::make_shared<DC_source_inerted>();
     _process = std::make_shared<DC_engine>();
 
@@ -63,8 +63,9 @@ void iChartWidget::_to_model_init()
 
     _experiment->to_set_registrator(_pRegistrator);
     //alg
-    _regulator->to_set_koefficients(3);
-    _definder->to_set_signal(20);
+    ///_regulator->to_set_koefficients(3);
+    ///_definder->to_set_signal(20);
+    _source->to_receive_input_signal(20);
 
 }
 

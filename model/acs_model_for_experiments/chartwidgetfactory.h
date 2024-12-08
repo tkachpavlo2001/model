@@ -73,7 +73,7 @@ protected:
         _pAxisX = new QValueAxis(this);
         _pAxisY = new QValueAxis(this);
         _pAxisX->setRange(0,50);//?
-        _pAxisY->setRange(0,50);//?
+        _pAxisY->setRange(-10,50);//?
         _pAxisX->setLabelFormat("%.2f");
         _pAxisY->setLabelFormat("%.2f");
 
