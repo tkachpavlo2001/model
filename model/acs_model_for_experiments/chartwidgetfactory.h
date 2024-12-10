@@ -18,11 +18,48 @@
 #include <QtCharts/QValueAxis>
 
 #include <thread>
+#include <map>
+#include <memory>
 
 #include "registrator.h"
 #include "experiment_executor.h"
 
-class iChartWidget : public QWidget
+struct config;
+
+class aDataset_config_base
+{
+    friend class config;
+protected:
+    enum value { K0, K1, KP, KI, KD };
+    std::shared_ptr< std::map<value, double> > _p_config = nullptr;
+    aDataset_config_base() {}
+    virtual ~aDataset_config_base() = 0;
+public:
+    void to_set_config(std::shared_ptr< std::map<value, double> >&p) { _p_config = p; }
+    void to_set_config(config&p);
+};
+struct config
+{
+    std::shared_ptr< std::map<aDataset_config_base::value, double> > p_config = std::make_shared< std::map<aDataset_config_base::value, double> >();
+};
+
+
+class iDataset_config_sender : public aDataset_config_base
+{
+protected:
+    virtual void _to_handle_changes() = 0;
+    virtual bool _is_changed_config() = 0;
+    iDataset_config_sender() : aDataset_config_base() { }
+};
+class iDataset_config_receiver : public aDataset_config_base
+{
+protected:
+    virtual void _to_apply_changes() = 0;
+    iDataset_config_receiver() : aDataset_config_base() { }
+};
+
+
+class iChartWidget : public QWidget, public iDataset_config_receiver
 {
 private:
     Q_OBJECT
@@ -146,6 +183,7 @@ protected:
     void _to_reset_chart();
 
     virtual void _to_run() = 0;
+    void _to_apply_changes() override;
 signals:
     void signal_to_update_chart();
     void signal_to_notify_run_finished();
@@ -155,7 +193,6 @@ private slots:
         //std::thread b ([this](){ _pMainChart->update(); });
         //b.join();
     }
-    void slot_to_update_model() {}
 protected:
     iChartWidget(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
     ~iChartWidget();
@@ -166,6 +203,7 @@ public slots:
         std::thread a ([this](){ _to_run(); emit signal_to_notify_run_finished();} );
         a.detach();
     }
+    void slot_to_update_model() { _to_apply_changes(); }
 public:
     void to_update_chart() { _pMainChart->update(); }
     // static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
@@ -225,7 +263,7 @@ public:
     }
 };
 
-class iChartWidgetConfig : public QWidget
+class iChartWidgetConfig : public QWidget , public iDataset_config_sender
 {
 private:
     Q_OBJECT
@@ -284,17 +322,25 @@ private:
         pButtonsLayout->addWidget(_pRunButton);
 
         connect(_pRunButton, &QPushButton::clicked, this, &iChartWidgetConfig::slot_run_model);
+        connect(_pApplyButton, &QPushButton::clicked, this, &iChartWidgetConfig::slot_apply);
+
     }
+    void _to_handle_changes() override;
 signals:
     void signal_run_model();
     void signal_model_updated();
-    void slot_update_chart();
+    void signal_update_chart();
 private slots:
     void slot_run_model() { emit signal_run_model(); }
-    void slot_apply() {}
+    void slot_apply()
+    {
+        std::thread a ([this](){ _to_handle_changes(); emit signal_model_updated();} );
+        a.detach();
+    }
 protected:
     iChartWidgetConfig(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
     virtual ~iChartWidgetConfig() = 0;
+    bool _is_changed_config() override;
 public:
     //static iChartWidgetConfig * to_new(QWidget*p_parent) { return new iChartWidgetConfig(p_parent); }
 };

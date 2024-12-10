@@ -2,6 +2,10 @@
 #include "default_configuration_setter.h"
 #include "QDebug"
 
+void aDataset_config_base::to_set_config(config&p) { _p_config = p.p_config; }
+
+aDataset_config_base::~aDataset_config_base() {}
+
 iChartWidget::~iChartWidget() {}
 
 iChartWidgetConfig::~iChartWidgetConfig() {}
@@ -291,4 +295,38 @@ void ChartWidget_regulator::_to_run()
     _experiment->to_run();
 
     qDebug() << "DONE0\n";
+}
+
+void iChartWidgetConfig::_to_handle_changes()
+{
+    if ( _p_config == nullptr ) { qDebug() << "the _to_handle_changes() ERROR: _p_config == nullptr"; return ; }
+    _p_config->insert_or_assign(value::K0, 20);
+    _p_config->insert_or_assign(value::K1, 0);
+
+    _p_config->insert_or_assign(value::KP, 3);
+    _p_config->insert_or_assign(value::KI, 0);
+    _p_config->insert_or_assign(value::KD, 0);
+    /*
+    _p_config->insert_or_assign(value::KP, 0.175);
+    _p_config->insert_or_assign(value::KI, 0.0190217);
+    _p_config->insert_or_assign(value::KD, 1.0626);*/
+}
+
+bool iChartWidgetConfig::_is_changed_config()
+{
+    return true;
+}
+
+void iChartWidget::_to_apply_changes()
+{
+    if ( _p_config == nullptr ) { qDebug() << "the _to_apply_changes() ERROR: _p_config == nullptr"; return ; }
+    auto vector_engine = _acs_model->to_check_process()->to_check_parameters();
+    vector_engine[DC_engine::LOAD_K_0] = _p_config->at(value::K0);
+    vector_engine[DC_engine::LOAD_K_1] = _p_config->at(value::K1);
+    auto vector_regulator = _acs_model->to_check_regulator()->to_check_parameters();
+    vector_regulator[PID_regulator::K_P] = _p_config->at(value::KP);
+    vector_regulator[PID_regulator::K_I] = _p_config->at(value::KI);
+    vector_regulator[PID_regulator::K_D] = _p_config->at(value::KD);
+    _process->to_set_all_parameters(vector_engine);
+    _regulator->to_set_all_parameters(vector_regulator);
 }
