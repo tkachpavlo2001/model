@@ -91,7 +91,6 @@ protected:
 
 
     }
-    virtual void _to_model_init();
     void _to_front_init()
     {
         _pMainLayout = new QHBoxLayout(this);
@@ -141,6 +140,9 @@ protected:
         //connect(this, &iChartWidget::signal_to_update_chart, this, &iChartWidget::slot_to_update_chart);
     }
 
+    virtual void _to_model_init();
+    virtual void _to_init_model_config() = 0;
+
     void _to_reset_chart();
 
     virtual void _to_run() = 0;
@@ -177,6 +179,7 @@ private:
     }
     void _to_run() override;
     virtual void _to_model_init() override;
+    virtual void _to_init_model_config() override;
 public:
     static ChartWidget_velocity * to_new(QWidget*p_parent)
     {
@@ -194,6 +197,7 @@ private:
     }
     void _to_run() override;
     virtual void _to_model_init() override;
+    virtual void _to_init_model_config() override;
 public:
     static ChartWidget_theta * to_new(QWidget*p_parent)
     {
@@ -211,6 +215,7 @@ private:
     }
     void _to_run() override;
     virtual void _to_model_init() override;
+    virtual void _to_init_model_config() override;
 public:
     static ChartWidget_regulator * to_new(QWidget*p_parent)
     {

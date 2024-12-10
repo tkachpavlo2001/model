@@ -11,9 +11,19 @@ iWidgetAbstractFactory::~iWidgetAbstractFactory() {}
 
 void iChartWidget::_to_reset_chart()
 {
-    if (_pSeries != nullptr)
+    if (_pSeries != nullptr && _pSeries->count() != 0)
     {
+        auto p = _pSeries->at(_pSeries->count()-1);
+        p.setX(0);
         _pSeries->clear();
+        _pSeries->append(p);
+    }
+    if (_pSeries_def != nullptr && _pSeries_def->count() != 0)
+    {
+        auto p = _pSeries_def->at(_pSeries_def->count()-1);
+        p.setX(0);
+        _pSeries_def->clear();
+        _pSeries_def->append(p);
     }
 }
 
@@ -105,7 +115,11 @@ void ChartWidget_velocity::_to_model_init()
 
 
     default_configuration_setter_obj.to_set_experiment_parameters(_experiment);
-    //set
+
+    _to_init_model_config();
+}
+void ChartWidget_velocity::_to_init_model_config()
+{    //set
 
     double load = 20;
     double inertia = 0.05;
@@ -166,6 +180,11 @@ void ChartWidget_theta::_to_model_init()
     _acs_model->to_mount_the_element(_process.get());
 
     default_configuration_setter_obj.to_set_experiment_parameters(_experiment);
+
+    _to_init_model_config();
+}
+void ChartWidget_theta::_to_init_model_config()
+{
     //set
 
     double load = 20;
@@ -231,6 +250,11 @@ void ChartWidget_regulator::_to_model_init()
     _acs_model->to_mount_the_element(_process.get());
 
     default_configuration_setter_obj.to_set_experiment_parameters(_experiment);
+
+    _to_init_model_config();
+}
+void ChartWidget_regulator::_to_init_model_config()
+{
     //set
 
     double load = 20;
