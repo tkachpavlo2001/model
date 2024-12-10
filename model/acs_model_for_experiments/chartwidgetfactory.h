@@ -91,7 +91,7 @@ protected:
 
 
     }
-    void _to_model_init();
+    virtual void _to_model_init();
     void _to_front_init()
     {
         _pMainLayout = new QHBoxLayout(this);
@@ -135,7 +135,6 @@ protected:
     {
         _to_front_init();
         _to_back_init();
-        _to_model_init();
 
         //connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
         connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
@@ -177,8 +176,14 @@ private:
         _pInputLabel->setText("Voltage");
     }
     void _to_run() override;
+    virtual void _to_model_init() override;
 public:
-    static ChartWidget_velocity * to_new(QWidget*p_parent) { return new ChartWidget_velocity(p_parent); }
+    static ChartWidget_velocity * to_new(QWidget*p_parent)
+    {
+        auto p = new ChartWidget_velocity(p_parent);
+        p->_to_model_init();
+        return p;
+    }
 };
 class ChartWidget_theta : public iChartWidget
 {
@@ -188,8 +193,14 @@ private:
         _pInputLabel->setText("Voltage");
     }
     void _to_run() override;
+    virtual void _to_model_init() override;
 public:
-    static ChartWidget_theta * to_new(QWidget*p_parent) { return new ChartWidget_theta(p_parent); }
+    static ChartWidget_theta * to_new(QWidget*p_parent)
+    {
+        auto p = new ChartWidget_theta(p_parent);
+        p->_to_model_init();
+        return p;
+    }
 };
 class ChartWidget_regulator : public iChartWidget
 {
@@ -199,8 +210,14 @@ private:
         _pInputLabel->setText("RefSignal");
     }
     void _to_run() override;
+    virtual void _to_model_init() override;
 public:
-    static ChartWidget_regulator * to_new(QWidget*p_parent) { return new ChartWidget_regulator(p_parent); }
+    static ChartWidget_regulator * to_new(QWidget*p_parent)
+    {
+        auto p = new ChartWidget_regulator(p_parent);
+        p->_to_model_init();
+        return p;
+    }
 };
 
 class iChartWidgetConfig : public QWidget
