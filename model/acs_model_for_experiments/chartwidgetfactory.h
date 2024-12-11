@@ -31,7 +31,7 @@ class aDataset_config_base
 {
     friend class config;
 protected:
-    enum value { K0, K1, KP, KI, KD };
+    enum value { INPUT, K0, K1, KP, KI, KD };
     std::shared_ptr< std::map<value, double> > _p_config = nullptr;
     aDataset_config_base() {}
     virtual ~aDataset_config_base() = 0;
@@ -184,7 +184,7 @@ protected:
     void _to_reset_chart();
 
     virtual void _to_run() = 0;
-    void _to_apply_changes() override;
+    virtual void _to_apply_changes() override;
 signals:
     void signal_to_update_chart();
     void signal_to_notify_run_finished();
@@ -219,6 +219,7 @@ private:
     void _to_run() override;
     virtual void _to_model_init() override;
     virtual void _to_init_model_config() override;
+    virtual void _to_apply_changes() override;
 public:
     static ChartWidget_velocity * to_new(QWidget*p_parent)
     {
@@ -237,6 +238,7 @@ private:
     void _to_run() override;
     virtual void _to_model_init() override;
     virtual void _to_init_model_config() override;
+    virtual void _to_apply_changes() override;
 public:
     static ChartWidget_theta * to_new(QWidget*p_parent)
     {
@@ -255,6 +257,7 @@ private:
     void _to_run() override;
     virtual void _to_model_init() override;
     virtual void _to_init_model_config() override;
+    virtual void _to_apply_changes() override;
 public:
     static ChartWidget_regulator * to_new(QWidget*p_parent)
     {
@@ -350,6 +353,7 @@ protected:
     iChartWidgetConfig(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
     virtual ~iChartWidgetConfig() = 0;
     bool _is_changed_config() override;
+    void _to_init_user_input();
 public:
     //static iChartWidgetConfig * to_new(QWidget*p_parent) { return new iChartWidgetConfig(p_parent); }
 };
@@ -359,7 +363,8 @@ private:
     ChartWidgetConfig_velocity(QWidget*p_parent) : iChartWidgetConfig(p_parent)
     {
         _pInputLabel->setText("Velocity: ");
-        ;
+        _to_init_user_input();
+        emit signal_model_updated();
     }
 public:
     static ChartWidgetConfig_velocity * to_new(QWidget*p_parent) { return new ChartWidgetConfig_velocity(p_parent); }
@@ -370,7 +375,8 @@ private:
     ChartWidgetConfig_theta(QWidget*p_parent) : iChartWidgetConfig(p_parent)
     {
         _pInputLabel->setText("Theta: ");
-        ;
+        _to_init_user_input();
+        emit signal_model_updated();
     }
 public:
     static ChartWidgetConfig_theta * to_new(QWidget*p_parent) { return new ChartWidgetConfig_theta(p_parent); }
@@ -400,6 +406,10 @@ private:
         _pkdEdit = new QLineEdit(this);
         _pkdEdit->setValidator(_pValidator);
         pRegulatorInputLayout->addWidget(_pkdEdit);
+
+
+        _to_init_user_input();
+        emit signal_model_updated();
     }
 public:
     static ChartWidgetConfig_regulator * to_new(QWidget*p_parent) { return new ChartWidgetConfig_regulator(p_parent); }

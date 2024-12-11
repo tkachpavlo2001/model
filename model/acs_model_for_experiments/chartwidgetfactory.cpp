@@ -297,15 +297,19 @@ void ChartWidget_regulator::_to_run()
     qDebug() << "DONE0\n";
 }
 
+
 void iChartWidgetConfig::_to_handle_changes()
 {
     if ( _p_config == nullptr ) { qDebug() << "the _to_handle_changes() ERROR: _p_config == nullptr"; return ; }
-    _p_config->insert_or_assign(value::K0, 20);
-    _p_config->insert_or_assign(value::K1, 0);
+    _p_config->insert_or_assign(value::K0, _pk0Edit->text().toDouble());
+    _p_config->insert_or_assign(value::K1, _pk1Edit->text().toDouble());
 
-    _p_config->insert_or_assign(value::KP, 3);
-    _p_config->insert_or_assign(value::KI, 0);
-    _p_config->insert_or_assign(value::KD, 0);
+    if (nullptr != _pkpEdit) _p_config->insert_or_assign(value::KP, _pkpEdit->text().toDouble());
+    if (nullptr != _pkiEdit) _p_config->insert_or_assign(value::KI, _pkiEdit->text().toDouble());
+    if (nullptr != _pkdEdit) _p_config->insert_or_assign(value::KD, _pkdEdit->text().toDouble());
+
+
+    _p_config->insert_or_assign(value::INPUT, _pInputEdit->text().toDouble());
     /*
     _p_config->insert_or_assign(value::KP, 0.175);
     _p_config->insert_or_assign(value::KI, 0.0190217);
@@ -323,10 +327,50 @@ void iChartWidget::_to_apply_changes()
     auto vector_engine = _acs_model->to_check_process()->to_check_parameters();
     vector_engine[DC_engine::LOAD_K_0] = _p_config->at(value::K0);
     vector_engine[DC_engine::LOAD_K_1] = _p_config->at(value::K1);
-    auto vector_regulator = _acs_model->to_check_regulator()->to_check_parameters();
-    vector_regulator[PID_regulator::K_P] = _p_config->at(value::KP);
-    vector_regulator[PID_regulator::K_I] = _p_config->at(value::KI);
-    vector_regulator[PID_regulator::K_D] = _p_config->at(value::KD);
+    auto vector_regulator = vector_engine;
+    if ( _acs_model->to_check_regulator() != nullptr ) vector_regulator = _acs_model->to_check_regulator()->to_check_parameters();
+    try {
+        vector_regulator[PID_regulator::K_P] = _p_config->at(value::KP);
+        vector_regulator[PID_regulator::K_I] = _p_config->at(value::KI);
+        vector_regulator[PID_regulator::K_D] = _p_config->at(value::KD);
+        _regulator->to_set_all_parameters(vector_regulator);
+    } catch ( std::out_of_range & e )
+    {
+        ;
+    }
     _process->to_set_all_parameters(vector_engine);
-    _regulator->to_set_all_parameters(vector_regulator);
+}
+
+void ChartWidget_velocity::_to_apply_changes()
+{
+    iChartWidget::_to_apply_changes();
+    auto vector_engine = _acs_model->to_check_process()->to_check_parameters();
+    vector_engine[DC_engine::INPUT_SIGNAL] = _p_config->at(value::INPUT);
+    _process->to_set_all_parameters(vector_engine);
+}
+
+void ChartWidget_theta::_to_apply_changes()
+{
+    iChartWidget::_to_apply_changes();
+    auto vector_engine = _acs_model->to_check_process()->to_check_parameters();
+    vector_engine[DC_engine::INPUT_SIGNAL] = _p_config->at(value::INPUT);
+    _process->to_set_all_parameters(vector_engine);
+}
+
+void ChartWidget_regulator::_to_apply_changes()
+{
+    iChartWidget::_to_apply_changes();
+    _acs_model->to_get_definder()->to_receive_input_signal(value::INPUT);
+}
+
+void iChartWidgetConfig::_to_init_user_input()
+{
+    _pk0Edit->setText("20");
+    _pk1Edit->setText("0");
+
+    if (nullptr != _pkpEdit) _pkpEdit->setText("3");
+    if (nullptr != _pkiEdit) _pkiEdit->setText("0");
+    if (nullptr != _pkdEdit) _pkdEdit->setText("0");
+
+    _pInputEdit->setText("20");
 }
