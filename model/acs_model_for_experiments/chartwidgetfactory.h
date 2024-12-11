@@ -7,6 +7,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLineEdit>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QLabel>
 #include <QPushButton>
 #include <QSlider>
@@ -24,8 +26,7 @@
 #include "registrator.h"
 #include "experiment_executor.h"
 
-struct config;
-
+class config;
 class aDataset_config_base
 {
     friend class config;
@@ -35,14 +36,14 @@ protected:
     aDataset_config_base() {}
     virtual ~aDataset_config_base() = 0;
 public:
-    void to_set_config(std::shared_ptr< std::map<value, double> >&p) { _p_config = p; }
+    //void to_set_config(std::shared_ptr< std::map<value, double> >&p) { _p_config = p; }
     void to_set_config(config&p);
 };
-struct config
+class config
 {
+    friend class aDataset_config_base;
     std::shared_ptr< std::map<aDataset_config_base::value, double> > p_config = std::make_shared< std::map<aDataset_config_base::value, double> >();
 };
-
 
 class iDataset_config_sender : public aDataset_config_base
 {
@@ -281,6 +282,8 @@ protected:
     QLineEdit * _pkpEdit = nullptr;
     QLineEdit * _pkiEdit = nullptr;
     QLineEdit * _pkdEdit = nullptr;
+
+    QRegularExpressionValidator * _pValidator = nullptr;
 private:
     void _to_init()
     {
@@ -290,11 +293,14 @@ private:
         QHBoxLayout * p_primeInputLayout = new QHBoxLayout;
         _pMainLayout->addLayout(p_primeInputLayout);
 
+        _pValidator = new QRegularExpressionValidator(QRegularExpression("^-?\\d{1,3}(\\.\\d{1,3})?$"),this);
+
         _pInputLabel = new QLabel(this);
         _pInputLabel->setText("NODATA");
         p_primeInputLayout->addWidget(_pInputLabel);
 
         _pInputEdit = new QLineEdit(this);
+        _pInputEdit->setValidator(_pValidator);
         p_primeInputLayout->addWidget(_pInputEdit);
 
         _pk0Label = new QLabel(this);
@@ -302,6 +308,7 @@ private:
         p_primeInputLayout->addWidget(_pk0Label);
 
         _pk0Edit = new QLineEdit(this);
+        _pk0Edit->setValidator(_pValidator);
         p_primeInputLayout->addWidget(_pk0Edit);
 
         _pk1Label = new QLabel(this);
@@ -309,6 +316,7 @@ private:
         p_primeInputLayout->addWidget(_pk1Label);
 
         _pk1Edit = new QLineEdit(this);
+        _pk1Edit->setValidator(_pValidator);
         p_primeInputLayout->addWidget(_pk1Edit);
 
         QHBoxLayout * pButtonsLayout = new QHBoxLayout;
@@ -320,6 +328,7 @@ private:
         _pApplyButton->setText("Apply");
         pButtonsLayout->addWidget(_pApplyButton);
         pButtonsLayout->addWidget(_pRunButton);
+
 
         connect(_pRunButton, &QPushButton::clicked, this, &iChartWidgetConfig::slot_run_model);
         connect(_pApplyButton, &QPushButton::clicked, this, &iChartWidgetConfig::slot_apply);
@@ -381,12 +390,15 @@ private:
         pRegulatorInputLayout->addWidget(_pRegulatorLabel);
 
         _pkpEdit = new QLineEdit(this);
+        _pkpEdit->setValidator(_pValidator);
         pRegulatorInputLayout->addWidget(_pkpEdit);
 
         _pkiEdit = new QLineEdit(this);
+        _pkiEdit->setValidator(_pValidator);
         pRegulatorInputLayout->addWidget(_pkiEdit);
 
         _pkdEdit = new QLineEdit(this);
+        _pkdEdit->setValidator(_pValidator);
         pRegulatorInputLayout->addWidget(_pkdEdit);
     }
 public:
