@@ -76,6 +76,12 @@ void DC_engine::to_calculate()
 
     parameters[OUTPUT_SIGNAL] = parameters[THETA];
 }
+void DC_engine_velocity_out::to_calculate()
+{
+    DC_engine::to_calculate();
+
+    parameters[OUTPUT_SIGNAL] = parameters[VELOCITY];
+}
 void DC_engine::to_solve_with_euler()
 {
     std::vector<double> new_parameters = parameters;

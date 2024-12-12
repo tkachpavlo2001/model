@@ -175,23 +175,23 @@ void Default_configuration_setter::to_set_elements_parameters(
         std::shared_ptr<DC_engine> _process
         ) const
 {
-    _definder->to_set_signal(100); //definder->to_set_signal(100);
-    _regulator->to_set_koefficients(5, 2e-5, 4);
-    _source->to_set_max_voltage(220);
-    _source->to_set_min_voltage(-220);
-    this->to_fill_process(_process);
+    if ( _definder != nullptr ) _definder->to_set_signal(100); //definder->to_set_signal(100);
+    if ( _regulator != nullptr ) _regulator->to_set_koefficients(5, 2e-5, 4);
+    if ( _source != nullptr ) _source->to_set_max_voltage(220);
+    if ( _source != nullptr ) _source->to_set_min_voltage(-220);
+    if ( _process != nullptr ) this->to_fill_process(_process);
 }
 
 void Default_configuration_setter::to_set_elements_parameters(Reference_signal_definder_static*_definder,PID_regulator*_regulator,DC_source*_source,DC_engine*_process) const
 {
-    _definder->to_set_signal(100); //definder->to_set_signal(100);
-    _regulator->to_set_koefficients(5, 2e-5, 4);
-    _source->to_set_max_voltage(220);
-    _source->to_set_min_voltage(-220);
-    this->to_fill_process(_process);
+    if ( _definder != nullptr ) _definder->to_set_signal(100); //definder->to_set_signal(100);
+    if ( _regulator != nullptr ) _regulator->to_set_koefficients(5, 2e-5, 4);
+    if ( _source != nullptr ) _source->to_set_max_voltage(220);
+    if ( _source != nullptr ) _source->to_set_min_voltage(-220);
+    if ( _process != nullptr ) this->to_fill_process(_process);
 }
 
-void Default_configuration_setter::to_set_experiment_parameters(std::shared_ptr<Experiment_executor> _experiment) const
+void Default_configuration_setter::to_set_experiment_parameters(std::shared_ptr<Experiment_executor_interface> _experiment) const
 {
     to_set_experiment_parameters(_experiment.get());
 }
@@ -199,7 +199,7 @@ void Default_configuration_setter::to_set_experiment_parameters(std::shared_ptr<
 void Default_configuration_setter::to_set_experiment_parameters(Experiment_executor_interface * _experiment) const
 {
     _experiment->to_set_dt(1e-5);
-    _experiment->to_set_t_length(10); //experiment->to_set_t_length(10);
+    _experiment->to_set_t_length(30); //experiment->to_set_t_length(10);
     _experiment->to_set_time_to_registrate(1e-1); //experiment->to_set_time_to_registrate(1e-1);
 }
 
@@ -267,23 +267,23 @@ void Default_configuration_setter::to_set_configurations_in_parameters_for_optim
     _arg.parameters_for_fitness_function_obj.dt = 1e-5;
     _arg.parameters_for_fitness_function_obj.length = 30;
 
-    _arg.parameters_for_gradient_obj.dx = 5e-2;
-    _arg.parameters_for_gradient_obj.last_value_f;
+    _arg.parameters_for_gradient_obj.dx = 5e-5;
+    _arg.parameters_for_gradient_obj.last_value_f = -1;
     _arg.parameters_for_gradient_obj.learn_step = 1e-5;
     _arg.parameters_for_gradient_obj.tries = 1;
     _arg.parameters_for_gradient_obj.learn_step_distortion;
     _arg.parameters_for_gradient_obj.learn_step_distortion_velocity;
 
-    _arg.parameters_for_varied_fitness_function_obj.min = 50;
-    _arg.parameters_for_varied_fitness_function_obj.max = 100;
+    _arg.parameters_for_varied_fitness_function_obj.min = 20;
+    _arg.parameters_for_varied_fitness_function_obj.max = 20;
     _arg.parameters_for_varied_fitness_function_obj.times = 5;
 
     double scale = 10;
-    _arg.parameters_configurations_for_optimizer_obj.iterations = 10;
+    _arg.parameters_configurations_for_optimizer_obj.iterations = 5;
     _arg.parameters_configurations_for_optimizer_obj.agents = 3;
     _arg.parameters_configurations_for_optimizer_obj.new_agents = 10;
-    _arg.parameters_configurations_for_optimizer_obj.mutation_step = 0.1 * scale;
-    _arg.parameters_configurations_for_optimizer_obj.mutation_propability = 0.5;
+    _arg.parameters_configurations_for_optimizer_obj.mutation_step = 1 * scale;
+    _arg.parameters_configurations_for_optimizer_obj.mutation_propability = 0.9;
     _arg.parameters_configurations_for_optimizer_obj.min_init = 0;
     _arg.parameters_configurations_for_optimizer_obj.max_init = 1 * scale;
 }

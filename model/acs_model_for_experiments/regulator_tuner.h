@@ -82,7 +82,7 @@ inline void to_copy_parameters_for_optimizer(parameters_for_optimizer& _receiver
 
 double fitness_function_varied_reference_signal(double*,void*);
 
-std::array<double, 3> gradient_by_step(double*,void*);
+std::pair<double, std::array<double, 3>> gradient_by_step(double*,void*);
 
 class Regulator_tuner_interface
 {
@@ -140,7 +140,7 @@ public:
 class Regulator_tuner_my_gradient_algorithm : public Regulator_tuner_my_optimizer_interface
 {
 private:
-    stochastic_gradient_method_step_based<3> stochastic_gradient_method_step_based_obj;
+    gradient_method_step_based<3> stochastic_gradient_method_step_based_obj;
     double learn_step_change = 1;
     double learn_step_change_velocity = 1;
 public:

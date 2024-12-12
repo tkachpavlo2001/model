@@ -127,6 +127,11 @@ public:
     bool to_verify_amount_of_parameters() const override;
     bool to_set_element_parameters(const std::vector<double> &) override;
     bool to_set_all_parameters(const std::vector<double> &) override;
+    virtual void to_calculate() override;
+};
+
+class DC_engine_velocity_out : public DC_engine
+{
     void to_calculate() override;
 };
 

@@ -6,6 +6,8 @@
 #include <fstream>
 #include <vector>
 
+#include <QDebug>
+
 class Registrator
 {
 private:
@@ -16,8 +18,8 @@ private:
 protected:
     bool to_actulize_the_fist_record_commited_status();
     const Automated_control_system * to_check_acs_model_status() const;
-public:
     Registrator();
+public:
     virtual ~Registrator() = 0;
 
     const char * to_check_name_of_file() const;
@@ -64,6 +66,29 @@ public:
 class Registrator_to_std_vector_difference : public Registrator_to_std_vector
 {
     void to_record() override;
+};
+
+#include <QApplication>
+#include <QtCharts/QSplineSeries>
+#include <QWidget>
+class iChartWidget;
+class Registrator_qt : public Registrator, QWidget
+{
+private:
+    double _dt_to_plot = 0;
+    QXYSeries * _pSeries = nullptr;
+    QXYSeries * _pSeries_additional = nullptr;
+    iChartWidget * _pChart = nullptr;
+    void to_record() override;
+protected:
+    Registrator_qt(QWidget*p) : QWidget(p), Registrator() {}
+    void _to_update_chart();
+public:
+    void to_set_series(QXYSeries*arg) { _pSeries = arg; }
+    void to_set_chart(iChartWidget*arg) { _pChart = arg; }
+    void to_set_series_additional(QXYSeries*arg) { _pSeries_additional = arg; }
+    void to_set_dt_to_plot(double n) { _dt_to_plot = n; }
+    static Registrator_qt * to_new(QWidget*p) { return new Registrator_qt(p); }
 };
 
 #endif // REGISTRATOR_H

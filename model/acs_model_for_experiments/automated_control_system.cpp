@@ -121,6 +121,7 @@ const std::vector<const Automated_control_system_element_interface *> Automated_
 
 bool Automated_control_system::to_mount_the_element(Automated_control_system_element_interface * p_element)
 {
+    if ( p_element == nullptr ) return false;
     switch (p_element->to_check_the_type())
     {
     case Automated_control_system_element_interface::PROCESS:

@@ -143,7 +143,7 @@ void Registrator_to_std_vector::to_set_vector(std::shared_ptr<std::vector<double
 
 void Registrator_to_std_vector_difference::to_record()
 {
-    bool COEFITIENT_LIMITING_MODE = true;
+    bool COEFITIENT_LIMITING_MODE = false;
     double a = to_check_acs_model_status()->to_check_regulator()->to_check_parameters()[PID_regulator::OUTPUT_SIGNAL] ;
     double b = to_check_acs_model_status()->to_check_source()->to_check_parameters()[DC_source::MAX_VOLTAGE];
     double c = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::OUTPUT_SIGNAL];
@@ -160,4 +160,31 @@ void Registrator_to_std_vector_difference::to_record()
     }
     else records->push_back(d-c);
 
+}
+
+void Registrator_qt::to_record()
+{
+    if(_pSeries==nullptr) { qDebug() << "Registrator error"; abort(); }
+    double dt = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::DT] ;
+    double out = to_check_acs_model_status()->to_check_process()->to_check_parameters()[DC_engine::OUTPUT_SIGNAL];
+    static double out_additional = 0;
+    if ( to_check_acs_model_status()->to_check_definder() != nullptr ) out_additional = to_check_acs_model_status()->to_check_definder()->to_check_parameters()[Reference_signal_definder_static::OUTPUT_SIGNAL];
+    else out_additional = to_check_acs_model_status()->to_check_source()->to_check_parameters()[DC_source::OUTPUT_SIGNAL];
+    double x;
+
+    if(_pSeries->count() != 0) x = _pSeries->at(_pSeries->count() - 1).x() + _dt_to_plot;
+    else x = 0;
+
+    _pSeries->append( x, out );
+    _pSeries_additional->append( x, out_additional );
+
+    _to_update_chart();
+}
+
+#include"chartwidgetfactory.h"
+#include<QDebug>
+void Registrator_qt::_to_update_chart()
+{
+    if ( this->parent() != nullptr ) (static_cast<iChartWidget*>(this->parent()))->to_update_chart();
+    else qDebug() << "&Registrator_qt::_to_update_chart ERROR";
 }
