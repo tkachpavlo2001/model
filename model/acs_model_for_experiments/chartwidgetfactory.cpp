@@ -313,7 +313,7 @@ void ChartWidget_regulator::_to_run()
 
 void iChartWidgetConfig::_to_handle_changes()
 {
-    if ( _p_config == nullptr ) { qDebug() << "the _to_handle_changes() ERROR: _p_config == nullptr"; return ; }
+    if ( _p_config == nullptr ) { qDebug() << "iChartWidgetConfig::the _to_handle_changes() ERROR: _p_config == nullptr"; return ; }
     _p_config->insert_or_assign(value::K0, _pk0Edit->text().toDouble());
     _p_config->insert_or_assign(value::K1, _pk1Edit->text().toDouble());
 
@@ -338,8 +338,10 @@ void iChartWidget::_to_apply_changes()
 {
     if ( _p_config == nullptr ) { qDebug() << "the _to_apply_changes() ERROR: _p_config == nullptr"; return ; }
     auto vector_engine = _acs_model->to_check_process()->to_check_parameters();
-    vector_engine[DC_engine::LOAD_K_0] = _p_config->at(value::K0);
-    vector_engine[DC_engine::LOAD_K_1] = _p_config->at(value::K1);
+    if ( _p_config->count(value::K0_1) != 0 ) vector_engine[DC_engine::LOAD_K_0] = _p_config->at(value::K0) * _p_config->at(value::K0_1);
+    else vector_engine[DC_engine::LOAD_K_0] = _p_config->at(value::K0);
+    if ( _p_config->count(value::K1_1) != 0) vector_engine[DC_engine::LOAD_K_1] = _p_config->at(value::K1) * _p_config->at(value::K1_1);
+    else vector_engine[DC_engine::LOAD_K_1] = _p_config->at(value::K1);
     auto vector_regulator = vector_engine;
     if ( _acs_model->to_check_regulator() != nullptr )
     try {
@@ -352,8 +354,16 @@ void iChartWidget::_to_apply_changes()
     {
         ;
     }
-    if ( _definder == nullptr ) _source->to_receive_input_signal(_p_config->at(value::INPUT));
-    else _definder->to_set_signal(_p_config->at(value::INPUT));
+    if ( _p_config->count(value::INPUT_1) != 0 )
+    {
+        if ( _definder == nullptr ) _source->to_receive_input_signal(_p_config->at(value::INPUT) * _p_config->at(value::INPUT_1));
+        else _definder->to_set_signal(_p_config->at(value::INPUT) * _p_config->at(value::INPUT_1));
+    }
+    else
+    {
+        if ( _definder == nullptr ) _source->to_receive_input_signal(_p_config->at(value::INPUT));
+        else _definder->to_set_signal(_p_config->at(value::INPUT));
+    }
     _process->to_set_all_parameters(vector_engine);
 }
 
@@ -367,4 +377,18 @@ void iChartWidgetConfig::_to_init_user_input()
     if (nullptr != _pkdEdit) _pkdEdit->setText("0");
 
     _pInputEdit->setText("20");
+}
+
+void iChartWidget::_to_handle_changes()
+{
+    if ( _p_config == nullptr ) { qDebug() << "iChartWidget::the _to_handle_changes() ERROR: _p_config == nullptr"; return ; }
+    _p_config->insert_or_assign(value::INPUT_1, _pInputSlider->value() / 100.0);
+    _p_config->insert_or_assign(value::K0_1, _pk0Slider->value() / 100.0);
+    _p_config->insert_or_assign(value::K1_1, _pk1Slider->value() / 100.0);
+    _to_apply_changes();
+}
+
+bool iChartWidget::_is_changed_config()
+{
+    return true;
 }

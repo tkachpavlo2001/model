@@ -18,6 +18,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QChartView>
 #include <QtCharts/QValueAxis>
+#include <QToolTip>
 
 #include <thread>
 #include <map>
@@ -31,7 +32,7 @@ class aDataset_config_base
 {
     friend class config;
 protected:
-    enum value { INPUT, K0, K1, KP, KI, KD };
+    enum value { INPUT, K0, K1, KP, KI, KD, INPUT_1, K0_1, K1_1 };
     std::shared_ptr< std::map<value, double> > _p_config = nullptr;
     aDataset_config_base() {}
     virtual ~aDataset_config_base() = 0;
@@ -45,22 +46,21 @@ class config
     std::shared_ptr< std::map<aDataset_config_base::value, double> > p_config = std::make_shared< std::map<aDataset_config_base::value, double> >();
 };
 
-class iDataset_config_sender : public aDataset_config_base
+class iDataset_config_sender : virtual public aDataset_config_base
 {
 protected:
     virtual void _to_handle_changes() = 0;
     virtual bool _is_changed_config() = 0;
     iDataset_config_sender() : aDataset_config_base() { }
 };
-class iDataset_config_receiver : public aDataset_config_base
+class iDataset_config_receiver : virtual public aDataset_config_base
 {
 protected:
     virtual void _to_apply_changes() = 0;
     iDataset_config_receiver() : aDataset_config_base() { }
 };
 
-
-class iChartWidget : public QWidget, public iDataset_config_receiver
+class iChartWidget : public QWidget, public iDataset_config_receiver, iDataset_config_sender
 {
 private:
     Q_OBJECT
@@ -133,6 +133,15 @@ protected:
 
         _pMainChart->setRenderHint(QPainter::Antialiasing);
 
+        _pInputSlider->setMinimum(0);
+        _pk0Slider->setMinimum(0);
+        _pk1Slider->setMinimum(0);
+        _pInputSlider->setMaximum(100);
+        _pk0Slider->setMaximum(100);
+        _pk1Slider->setMaximum(100);
+        _pInputSlider->setSliderPosition(100);
+        _pk0Slider->setSliderPosition(100);
+        _pk1Slider->setSliderPosition(100);
 
 
     }
@@ -180,9 +189,15 @@ protected:
         _to_front_init();
         _to_back_init();
 
-        //connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
         connect(_pSeries, &QSplineSeries::pointAdded, this, &iChartWidget::slot_to_update_chart);
-        //connect(this, &iChartWidget::signal_to_update_chart, this, &iChartWidget::slot_to_update_chart);
+
+        connect(_pInputSlider, &QSlider::valueChanged, this, &iChartWidget::slot_to_relise_change);
+        connect(_pk0Slider, &QSlider::valueChanged, this, &iChartWidget::slot_to_relise_change);
+        connect(_pk1Slider, &QSlider::valueChanged, this, &iChartWidget::slot_to_relise_change);
+
+        connect(_pInputSlider, &QSlider::valueChanged, this, [this](){ _to_show_value(_pInputSlider); } );
+        connect(_pk0Slider, &QSlider::valueChanged, this, [this](){ _to_show_value(_pk0Slider); });
+        connect(_pk1Slider, &QSlider::valueChanged, this, [this](){ _to_show_value(_pk1Slider); });
     }
 
     virtual void _to_model_init();
@@ -192,6 +207,13 @@ protected:
 
     virtual void _to_run() = 0;
     virtual void _to_apply_changes() override;
+    void _to_handle_changes() override;
+    bool _is_changed_config() override;
+    void _to_show_value(QSlider*p)
+    {
+        p->setToolTip(QString::number(p->value()));
+        QToolTip::showText(cursor().pos(), p->toolTip(), p);
+    }
 signals:
     void signal_to_update_chart();
     void signal_to_notify_run_finished();
@@ -200,7 +222,7 @@ private slots:
     {
         const double & x = _pSeries->at(_pSeries->count() - 1).x();
         const double & y = _pSeries->at(_pSeries->count() - 1).y();
-        const double & y1 = _pSeries->at(_pSeries_def->count() - 1).y();
+        const double & y1 = _pSeries_def->at(_pSeries_def->count() - 1).y();
         bool min_limit = y - rangeY_min >= 0.1 * (rangeY_max - rangeY_min);
         bool max_limit = rangeY_max - y >= 0.1 * (rangeY_max - rangeY_min);
         bool max_limit_1 = rangeY_max - y1 >= 0.1 * (rangeY_max - rangeY_min);
@@ -246,6 +268,11 @@ public slots:
         a.detach();
     }
     void slot_to_update_model() { _to_apply_changes(); }
+    void slot_to_relise_change()
+    {
+        std::thread a ([this](){ _to_handle_changes();} );
+        a.detach();
+    }
 public:
     void to_update_chart() { _pMainChart->update(); }
     // static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
