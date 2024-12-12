@@ -200,11 +200,15 @@ private slots:
     {
         const double & x = _pSeries->at(_pSeries->count() - 1).x();
         const double & y = _pSeries->at(_pSeries->count() - 1).y();
+        const double & y1 = _pSeries->at(_pSeries_def->count() - 1).y();
         bool min_limit = y - rangeY_min >= 0.1 * (rangeY_max - rangeY_min);
         bool max_limit = rangeY_max - y >= 0.1 * (rangeY_max - rangeY_min);
+        bool max_limit_1 = rangeY_max - y1 >= 0.1 * (rangeY_max - rangeY_min);
         bool time_limit = rangeX_max - x >= 0.1 * (rangeX_max - rangeX_min);
 
-        if (min_limit && max_limit && time_limit) return;
+        _pOutputNumber->display(y);
+
+        if (min_limit && max_limit && time_limit && max_limit_1) return;
 
         if (!min_limit)
         {
@@ -218,13 +222,18 @@ private slots:
             _pAxisY->setRange(rangeY_min, rangeY_max);
         }
 
+        if (!max_limit_1)
+        {
+            rangeY_max = y1 + scaling_speed * (rangeY_max - rangeY_min);
+            _pAxisY->setRange(rangeY_min, rangeY_max);
+        }
+
         if (!time_limit)
         {
             rangeX_max = x + scaling_speed * (rangeX_max - rangeX_min);
             _pAxisX->setRange(rangeX_min, rangeX_max);
         }
-        //std::thread b ([this](){ _pMainChart->update(); });
-        //b.join();
+
     }
 protected:
     iChartWidget(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }
@@ -397,7 +406,7 @@ class ChartWidgetConfig_velocity : public iChartWidgetConfig
 private:
     ChartWidgetConfig_velocity(QWidget*p_parent) : iChartWidgetConfig(p_parent)
     {
-        _pInputLabel->setText("Velocity: ");
+        _pInputLabel->setText("Voltage: ");
         _to_init_user_input();
         emit signal_model_updated();
     }
@@ -410,7 +419,7 @@ class ChartWidgetConfig_theta : public iChartWidgetConfig
 private:
     ChartWidgetConfig_theta(QWidget*p_parent) : iChartWidgetConfig(p_parent)
     {
-        _pInputLabel->setText("Theta: ");
+        _pInputLabel->setText("Voltage: ");
         _to_init_user_input();
         emit signal_model_updated();
     }
@@ -423,7 +432,7 @@ class ChartWidgetConfig_regulator : public iChartWidgetConfig
 private:
     ChartWidgetConfig_regulator(QWidget*p_parent) : iChartWidgetConfig(p_parent)
     {
-        _pInputLabel->setText("Theta: ");
+        _pInputLabel->setText("Reference signal (theta): ");
 
         QHBoxLayout * pRegulatorInputLayout = new QHBoxLayout;
         _pMainLayout->insertLayout(_pMainLayout->count()-1, pRegulatorInputLayout);

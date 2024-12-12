@@ -143,15 +143,17 @@ void ChartWidget_velocity::_to_init_model_config()
     ///_regulator->to_set_koefficients(3);
     ///_definder->to_set_signal(20);
     _source->to_receive_input_signal(50);
+
+    _pAxisX->setTitleText("time (sec)");
+    _pAxisY->setTitleText("angular velocity (rad/sec), voltage (V)");
+    _pSeries->setName("ω(t)");
+    _pSeries_def->setName("V(t)");
 }
 void ChartWidget_velocity::_to_run()
 {
 
     _to_reset_chart();
 
-
-    _pAxisX->setTitleText("t");
-    _pAxisY->setTitleText("Velocity(t)");
     _pMainChart->update();
 
     qDebug() << "DONE1\n";
@@ -211,15 +213,18 @@ void ChartWidget_theta::_to_init_model_config()
     ///_regulator->to_set_koefficients(3);
     ///_definder->to_set_signal(20);
     _source->to_receive_input_signal(20);
+
+    _pAxisX->setTitleText("time (sec)");
+    _pAxisY->setTitleText("angular displacement (rad), voltage (V)");
+    _pSeries->setName("θ(t)");
+    _pSeries_def->setName("V(t)");
+
 }
 void ChartWidget_theta::_to_run()
 {
 
     _to_reset_chart();
 
-
-    _pAxisX->setTitleText("t");
-    _pAxisY->setTitleText("theta(t)");
     _pMainChart->update();
 
     qDebug() << "DONE1\n";
@@ -282,15 +287,17 @@ void ChartWidget_regulator::_to_init_model_config()
     //alg
     _regulator->to_set_koefficients(3);
     _definder->to_set_signal(20);
+
+    _pAxisX->setTitleText("time (sec)");
+    _pAxisY->setTitleText("angular displacement  (rad)");
+    _pSeries->setName("θ(t)");
+    _pSeries_def->setName("θref(t)");
 }
 void ChartWidget_regulator::_to_run()
 {
 
     _to_reset_chart();
 
-
-    _pAxisX->setTitleText("t");
-    _pAxisY->setTitleText("theta(t)");
     _pMainChart->update();
 
     qDebug() << "DONE1\n";
