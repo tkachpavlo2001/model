@@ -120,6 +120,8 @@ void ChartWidget_velocity::_to_model_init()
 
     default_configuration_setter_obj.to_set_experiment_parameters(_experiment);
 
+    _experiment->to_set_t_length(run_time);
+
     _to_init_model_config();
 }
 void ChartWidget_velocity::_to_init_model_config()
@@ -184,6 +186,8 @@ void ChartWidget_theta::_to_model_init()
     _acs_model->to_mount_the_element(_process.get());
 
     default_configuration_setter_obj.to_set_experiment_parameters(_experiment);
+
+    _experiment->to_set_t_length(run_time);
 
     _to_init_model_config();
 }
@@ -254,6 +258,8 @@ void ChartWidget_regulator::_to_model_init()
     _acs_model->to_mount_the_element(_process.get());
 
     default_configuration_setter_obj.to_set_experiment_parameters(_experiment);
+
+    _experiment->to_set_t_length(run_time);
 
     _to_init_model_config();
 }

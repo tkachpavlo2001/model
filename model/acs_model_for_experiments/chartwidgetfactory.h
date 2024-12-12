@@ -88,6 +88,13 @@ protected:
     std::shared_ptr<Automated_control_system_paralleled> _acs_model = nullptr;
     std::shared_ptr<Experiment_executor_interface> _experiment = nullptr;
 
+    double rangeX_min = 0;
+    double rangeX_max = 50;
+    double rangeY_min = -10;
+    double rangeY_max = 50;
+    double scaling_speed = 0.1;
+    double run_time = 1480;
+
     void _to_back_init()
     {
         _pBackChart = new QChart();//
@@ -110,8 +117,8 @@ protected:
 
         _pAxisX = new QValueAxis(this);
         _pAxisY = new QValueAxis(this);
-        _pAxisX->setRange(0,50);//?
-        _pAxisY->setRange(-10,50);//?
+        _pAxisX->setRange(rangeX_min, rangeX_max);//?
+        _pAxisY->setRange(rangeY_min, rangeY_max);//?
         _pAxisX->setLabelFormat("%.2f");
         _pAxisY->setLabelFormat("%.2f");
 
@@ -191,6 +198,31 @@ signals:
 private slots:
     void slot_to_update_chart()
     {
+        const double & x = _pSeries->at(_pSeries->count() - 1).x();
+        const double & y = _pSeries->at(_pSeries->count() - 1).y();
+        bool min_limit = y - rangeY_min >= 0.1 * (rangeY_max - rangeY_min);
+        bool max_limit = rangeY_max - y >= 0.1 * (rangeY_max - rangeY_min);
+        bool time_limit = rangeX_max - x >= 0.1 * (rangeX_max - rangeX_min);
+
+        if (min_limit && max_limit && time_limit) return;
+
+        if (!min_limit)
+        {
+            rangeY_min = y - scaling_speed * (rangeY_max - rangeY_min);
+            _pAxisY->setRange(rangeY_min, rangeY_max);
+        }
+
+        if (!max_limit)
+        {
+            rangeY_max = y + scaling_speed * (rangeY_max - rangeY_min);
+            _pAxisY->setRange(rangeY_min, rangeY_max);
+        }
+
+        if (!time_limit)
+        {
+            rangeX_max = x + scaling_speed * (rangeX_max - rangeX_min);
+            _pAxisX->setRange(rangeX_min, rangeX_max);
+        }
         //std::thread b ([this](){ _pMainChart->update(); });
         //b.join();
     }
