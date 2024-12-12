@@ -219,7 +219,7 @@ private:
     void _to_run() override;
     virtual void _to_model_init() override;
     virtual void _to_init_model_config() override;
-    virtual void _to_apply_changes() override;
+    //virtual void _to_apply_changes() override;
 public:
     static ChartWidget_velocity * to_new(QWidget*p_parent)
     {
@@ -238,7 +238,7 @@ private:
     void _to_run() override;
     virtual void _to_model_init() override;
     virtual void _to_init_model_config() override;
-    virtual void _to_apply_changes() override;
+    //virtual void _to_apply_changes() override;
 public:
     static ChartWidget_theta * to_new(QWidget*p_parent)
     {
@@ -257,7 +257,7 @@ private:
     void _to_run() override;
     virtual void _to_model_init() override;
     virtual void _to_init_model_config() override;
-    virtual void _to_apply_changes() override;
+    //virtual void _to_apply_changes() override;
 public:
     static ChartWidget_regulator * to_new(QWidget*p_parent)
     {
@@ -344,6 +344,7 @@ signals:
     void signal_update_chart();
 private slots:
     void slot_run_model() { emit signal_run_model(); }
+public slots:
     void slot_apply()
     {
         std::thread a ([this](){ _to_handle_changes(); emit signal_model_updated();} );
@@ -354,7 +355,9 @@ protected:
     virtual ~iChartWidgetConfig() = 0;
     bool _is_changed_config() override;
     void _to_init_user_input();
+    void to_set_init_input(double arg) { _pInputEdit->setText(QString::number(arg)); }
 public:
+    virtual void to_set_init_input() {}
     //static iChartWidgetConfig * to_new(QWidget*p_parent) { return new iChartWidgetConfig(p_parent); }
 };
 class ChartWidgetConfig_velocity : public iChartWidgetConfig
@@ -368,6 +371,7 @@ private:
     }
 public:
     static ChartWidgetConfig_velocity * to_new(QWidget*p_parent) { return new ChartWidgetConfig_velocity(p_parent); }
+    void to_set_init_input() override { iChartWidgetConfig::to_set_init_input(50); }
 };
 class ChartWidgetConfig_theta : public iChartWidgetConfig
 {
@@ -380,6 +384,7 @@ private:
     }
 public:
     static ChartWidgetConfig_theta * to_new(QWidget*p_parent) { return new ChartWidgetConfig_theta(p_parent); }
+    void to_set_init_input() override { iChartWidgetConfig::to_set_init_input(50); }
 };
 class ChartWidgetConfig_regulator : public iChartWidgetConfig
 {
@@ -413,6 +418,7 @@ private:
     }
 public:
     static ChartWidgetConfig_regulator * to_new(QWidget*p_parent) { return new ChartWidgetConfig_regulator(p_parent); }
+    void to_set_init_input() override { iChartWidgetConfig::to_set_init_input(20); }
 };
 
 class iWidgetAbstractFactory

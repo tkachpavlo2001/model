@@ -328,8 +328,9 @@ void iChartWidget::_to_apply_changes()
     vector_engine[DC_engine::LOAD_K_0] = _p_config->at(value::K0);
     vector_engine[DC_engine::LOAD_K_1] = _p_config->at(value::K1);
     auto vector_regulator = vector_engine;
-    if ( _acs_model->to_check_regulator() != nullptr ) vector_regulator = _acs_model->to_check_regulator()->to_check_parameters();
+    if ( _acs_model->to_check_regulator() != nullptr )
     try {
+        vector_regulator = _acs_model->to_check_regulator()->to_check_parameters();
         vector_regulator[PID_regulator::K_P] = _p_config->at(value::KP);
         vector_regulator[PID_regulator::K_I] = _p_config->at(value::KI);
         vector_regulator[PID_regulator::K_D] = _p_config->at(value::KD);
@@ -338,29 +339,9 @@ void iChartWidget::_to_apply_changes()
     {
         ;
     }
+    if ( _definder == nullptr ) _source->to_receive_input_signal(_p_config->at(value::INPUT));
+    else _definder->to_set_signal(_p_config->at(value::INPUT));
     _process->to_set_all_parameters(vector_engine);
-}
-
-void ChartWidget_velocity::_to_apply_changes()
-{
-    iChartWidget::_to_apply_changes();
-    auto vector_engine = _acs_model->to_check_process()->to_check_parameters();
-    vector_engine[DC_engine::INPUT_SIGNAL] = _p_config->at(value::INPUT);
-    _process->to_set_all_parameters(vector_engine);
-}
-
-void ChartWidget_theta::_to_apply_changes()
-{
-    iChartWidget::_to_apply_changes();
-    auto vector_engine = _acs_model->to_check_process()->to_check_parameters();
-    vector_engine[DC_engine::INPUT_SIGNAL] = _p_config->at(value::INPUT);
-    _process->to_set_all_parameters(vector_engine);
-}
-
-void ChartWidget_regulator::_to_apply_changes()
-{
-    iChartWidget::_to_apply_changes();
-    _acs_model->to_get_definder()->to_receive_input_signal(value::INPUT);
 }
 
 void iChartWidgetConfig::_to_init_user_input()

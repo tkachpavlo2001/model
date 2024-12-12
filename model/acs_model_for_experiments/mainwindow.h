@@ -69,6 +69,8 @@ protected:
 
         _p_ChartWidget->to_set_config(shared_configs);
         _p_ChartWidgetConfig->to_set_config(shared_configs);
+        _p_ChartWidgetConfig->to_set_init_input();
+        _p_ChartWidgetConfig->slot_apply();
 
         qDebug() << "DONE3\n";
 
