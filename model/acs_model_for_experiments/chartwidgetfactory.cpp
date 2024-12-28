@@ -15,6 +15,7 @@ iWidgetAbstractFactory::~iWidgetAbstractFactory() {}
 
 void iChartWidget::_to_reset_chart()
 {
+    /*
     if (_pSeries != nullptr && _pSeries->count() != 0)
     {
         auto p = _pSeries->at(_pSeries->count()-1);
@@ -29,6 +30,7 @@ void iChartWidget::_to_reset_chart()
         _pSeries_def->clear();
         _pSeries_def->append(p);
     }
+    */
 }
 
 void iChartWidget::_to_model_init()
@@ -163,6 +165,7 @@ void ChartWidget_velocity::_to_run()
     _pRegistrator->to_set_dt_to_plot(_experiment->to_check_time_to_show());
     _experiment->to_run();
 
+    emit signal_to_notify_run_finished();
     qDebug() << "DONE0\n";
 }
 
@@ -234,6 +237,7 @@ void ChartWidget_theta::_to_run()
     _pRegistrator->to_set_dt_to_plot(_experiment->to_check_time_to_show());
     _experiment->to_run();
 
+    emit signal_to_notify_run_finished();
     qDebug() << "DONE0\n";
 }
 
@@ -307,6 +311,7 @@ void ChartWidget_regulator::_to_run()
     _pRegistrator->to_set_dt_to_plot(_experiment->to_check_time_to_show());
     _experiment->to_run();
 
+    emit signal_to_notify_run_finished();
     qDebug() << "DONE0\n";
 }
 

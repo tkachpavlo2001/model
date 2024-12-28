@@ -1,5 +1,7 @@
 #include "experiment_executor.h"
 #include"registrator.h"
+#include "thread"
+#include "chrono"
 
 void Experiment_executor_interface::reset_interval()
 {
@@ -30,6 +32,7 @@ void Experiment_executor_interface::to_run(Registrator * own_registrator) const
             fout << *acs_model;
             ++show_num;
             last_show_time = start_time + show_num * time_to_show;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
         acs_model->to_calculate();
         current_time = acs_model->to_check_t();

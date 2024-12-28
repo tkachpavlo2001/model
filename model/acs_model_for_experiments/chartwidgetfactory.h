@@ -93,7 +93,7 @@ protected:
     double rangeY_min = -10;
     double rangeY_max = 50;
     double scaling_speed = 0.1;
-    double run_time = 1480;
+    double run_time = 300; //1480;
 
     void _to_back_init()
     {
@@ -274,7 +274,7 @@ public slots:
         a.detach();
     }
 public:
-    void to_update_chart() { _pMainChart->update(); }
+    void to_update_chart() { /*_pMainChart->update();*/ }
     // static iChartWidget * to_new(QWidget*p_parent) { return new iChartWidget(p_parent); }
 };
 class ChartWidget_velocity : public iChartWidget
@@ -411,12 +411,22 @@ signals:
     void signal_model_updated();
     void signal_update_chart();
 private slots:
-    void slot_run_model() { emit signal_run_model(); }
+    void slot_run_model()
+    {
+        disconnect(_pRunButton, &QPushButton::clicked, this, &iChartWidgetConfig::slot_run_model);
+        _pRunButton->setText("PROCESSING");
+        emit signal_run_model();
+    }
 public slots:
     void slot_apply()
     {
         std::thread a ([this](){ _to_handle_changes(); emit signal_model_updated();} );
         a.detach();
+    }
+    void slot_run_finished()
+    {
+        _pRunButton->setText("Run");
+        connect(_pRunButton, &QPushButton::clicked, this, &iChartWidgetConfig::slot_run_model);
     }
 protected:
     iChartWidgetConfig(QWidget*p_parent) : QWidget(p_parent) { _to_init(); }

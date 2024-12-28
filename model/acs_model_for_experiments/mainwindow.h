@@ -35,6 +35,10 @@ private:
 protected:
     MainWindow()
     {
+        this->setWindowTitle("List of available models");
+        this->setFixedHeight(150);
+        this->resize(400,400);
+
         QWidget * pCentralWidget = new QWidget(this);
         this->setCentralWidget(pCentralWidget);
 
@@ -53,11 +57,21 @@ protected:
         _pbutton_regulator_run->setText("Regulator");
         pMainLayout->addWidget(_pbutton_regulator_run);
 
-        connect(_pbutton_velocity_run, &QPushButton::clicked, this, &MainWindow::slot_run_velocity_mode);
-        connect(_pbutton_theta_run, &QPushButton::clicked, this, &MainWindow::slot_run_theta_mode);
-        connect(_pbutton_regulator_run, &QPushButton::clicked, this, &MainWindow::slot_run_regulator_mode);
+        connect(_pbutton_velocity_run, &QPushButton::clicked, this, &MainWindow::_slot_run_velocity_mode);
+        connect(_pbutton_theta_run, &QPushButton::clicked, this, &MainWindow::_slot_run_theta_mode);
+        connect(_pbutton_regulator_run, &QPushButton::clicked, this, &MainWindow::_slot_run_regulator_mode);
 
+        QHBoxLayout * pInfoLayout = new QHBoxLayout();
+        pMainLayout->addLayout(pInfoLayout);
+        QPushButton * pAskButton = new QPushButton(this);
+        pAskButton->setText("?");
+        QPushButton * pInfoButton = new QPushButton(this);
+        pInfoButton->setText("i");
+        pInfoLayout->addWidget(pAskButton);
+        pInfoLayout->addWidget(pInfoButton);
 
+        connect(pAskButton, &QPushButton::clicked, this, &MainWindow::_slot_ask_activated);
+        connect(pInfoButton, &QPushButton::clicked, this, &MainWindow::_slot_info_activated);
     }
     ~MainWindow() override { _to_delete(_pWidgetFactory); };
 
@@ -76,14 +90,31 @@ protected:
 
         connect(_p_ChartWidgetConfig, &iChartWidgetConfig::signal_run_model, _p_ChartWidget, &iChartWidget::slot_to_run_model);
         connect(_p_ChartWidgetConfig, &iChartWidgetConfig::signal_model_updated, _p_ChartWidget, &iChartWidget::slot_to_update_model);
+        connect(_p_ChartWidget, &iChartWidget::signal_to_notify_run_finished, _p_ChartWidgetConfig, &iChartWidgetConfig::slot_run_finished);
 
         _p_ChartWidget->show();
         _p_ChartWidgetConfig->show();
     }
 private slots:
-    void slot_run_velocity_mode() { _to_delete(_pWidgetFactory); _pWidgetFactory = new WidgetFactory_velocity; _to_run_subApp(); }
-    void slot_run_theta_mode() { _to_delete(_pWidgetFactory); _pWidgetFactory = new WidgetFactory_theta; _to_run_subApp(); }
-    void slot_run_regulator_mode() { _to_delete(_pWidgetFactory); _pWidgetFactory = new WidgetFactory_regulator; _to_run_subApp(); }
+    void _slot_run_velocity_mode() { _to_delete(_pWidgetFactory); _pWidgetFactory = new WidgetFactory_velocity; _to_run_subApp(); }
+    void _slot_run_theta_mode() { _to_delete(_pWidgetFactory); _pWidgetFactory = new WidgetFactory_theta; _to_run_subApp(); }
+    void _slot_run_regulator_mode() { _to_delete(_pWidgetFactory); _pWidgetFactory = new WidgetFactory_regulator; _to_run_subApp(); }
+    void _slot_ask_activated()
+    {
+        QLabel * p = new QLabel;
+        p->setText("?");
+        p->setAlignment(Qt::AlignTop);
+        p->show();
+        p->setFixedSize(400,400);
+    }
+    void _slot_info_activated()
+    {
+        QLabel * p = new QLabel;
+        p->setText("i");
+        p->setAlignment(Qt::AlignTop);
+        p->show();
+        p->setFixedSize(400,400);
+    }
 public:
     static MainWindow * to_new()
     {
