@@ -147,6 +147,8 @@ protected:
     }
     void _to_front_init()
     {
+        this->setWindowTitle("Chart window");
+
         _pMainLayout = new QHBoxLayout(this);
         this->setLayout(_pMainLayout);
         this->resize(400,300);
@@ -358,6 +360,8 @@ protected:
 private:
     void _to_init()
     {
+        this->setWindowTitle("Value definition window");
+
         _pMainLayout = new QVBoxLayout(this);
         this->setLayout(_pMainLayout);
 
