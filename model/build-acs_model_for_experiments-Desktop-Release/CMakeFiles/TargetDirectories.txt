@@ -1,0 +1,4 @@
+/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/build-acs_model_for_experiments-Desktop-Release/CMakeFiles/ACS_MODEL.dir
+/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/build-acs_model_for_experiments-Desktop-Release/CMakeFiles/edit_cache.dir
+/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/build-acs_model_for_experiments-Desktop-Release/CMakeFiles/rebuild_cache.dir
+/home/tkachpavlo/Документы/HomeWork/Diploma_ALL/theCodePart/model/build-acs_model_for_experiments-Desktop-Release/CMakeFiles/ACS_MODEL_autogen.dir

@@ -230,7 +230,7 @@ protected:
     bool _is_changed_config() override;
     void _to_show_value(QSlider*p)
     {
-        p->setToolTip(QString::number(p->value()));
+        p->setToolTip(QString(QString::number(p->value()) + QString("%")));
         QToolTip::showText(cursor().pos(), p->toolTip(), p);
     }
 signals:

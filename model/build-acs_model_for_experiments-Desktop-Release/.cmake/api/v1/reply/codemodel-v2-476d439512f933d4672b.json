@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "acs_model_for_experiments",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ACS_MODEL::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ACS_MODEL-Release-fec350f783c69112bd5c.json",
+					"name" : "ACS_MODEL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ACS_MODEL_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ACS_MODEL_autogen-Release-f0c7a26c0ca25d7d5d50.json",
+					"name" : "ACS_MODEL_autogen",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/tkachpavlo/\u0414\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u044b/HomeWork/Diploma_ALL/theCodePart/model/build-acs_model_for_experiments-Desktop-Release",
+		"source" : "/home/tkachpavlo/\u0414\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u044b/HomeWork/Diploma_ALL/theCodePart/model/acs_model_for_experiments"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}
